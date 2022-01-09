@@ -1,0 +1,11 @@
+name: StadtServer
+version: 1.9.1
+author: mfk1016
+main: me.mfk1016.stadtserver.StadtServer
+api-version: 1.18
+depend: [ ProtocolLib ]
+
+commands:
+  stadtserver:
+    description: Configuration and Debugging
+    usage: /stadtserver [config|book] [key|enchantment] [value|level]

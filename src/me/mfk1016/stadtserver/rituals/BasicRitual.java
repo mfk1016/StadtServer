@@ -1,0 +1,63 @@
+package me.mfk1016.stadtserver.rituals;
+
+import me.mfk1016.stadtserver.StadtServer;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.scheduler.BukkitRunnable;
+
+public abstract class BasicRitual {
+
+    protected final StadtServer plugin;
+    protected final Block focusBlock;
+    private final BukkitRunnable ritualWorker;
+    protected RitualState state;
+    private int timer = 0;
+
+    public BasicRitual(StadtServer plugin, Block focusBlock) {
+        this.plugin = plugin;
+        this.focusBlock = focusBlock;
+        this.state = RitualState.INIT;
+        BasicRitual instance = this;
+        ritualWorker = new BukkitRunnable() {
+            @Override
+            public void run() {
+                onRitualCheck(timer);
+                if (state == RitualState.SUCCESS) {
+                    onRitualSuccess(timer);
+                    RitualManager.ritualStopped(instance);
+                    cancel();
+                } else if (state == RitualState.FAILURE) {
+                    onRitualFail(timer);
+                    RitualManager.ritualStopped(instance);
+                    cancel();
+                } else if (state == RitualState.CANCEL) {
+                    cancel();
+                }
+                timer++;
+            }
+        };
+    }
+
+    protected void performRitual() {
+        ritualWorker.runTaskTimer(plugin, 10, 10);
+    }
+
+    public void cancelRitual() {
+        state = RitualState.CANCEL;
+        focusBlock.getWorld().playSound(focusBlock.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+        onRitualCancel();
+    }
+
+    public abstract boolean hasProperShape();
+
+    public abstract boolean startRitual(Entity sacrifice);
+
+    public abstract void onRitualCheck(int timer);
+
+    public abstract void onRitualSuccess(int timer);
+
+    public abstract void onRitualFail(int timer);
+
+    protected abstract void onRitualCancel();
+}
