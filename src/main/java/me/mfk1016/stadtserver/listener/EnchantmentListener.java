@@ -187,7 +187,10 @@ public class EnchantmentListener extends BasicListener {
             EnchantmentManager.enchantItem(toAdd, origin.getEnchantment(), level);
             results.add(toAdd);
         });
-        event.getOutcome().add(results.get(StadtServer.RANDOM.nextInt(results.size())));
+        if (results.size() == 1)
+            event.getOutcome().add(results.get(0));
+        else if (results.size() >= 2)
+            event.getOutcome().add(results.get(StadtServer.RANDOM.nextInt(results.size())));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
