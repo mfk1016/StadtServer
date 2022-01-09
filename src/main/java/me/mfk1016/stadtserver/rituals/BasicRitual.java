@@ -24,11 +24,11 @@ public abstract class BasicRitual {
             public void run() {
                 onRitualCheck(timer);
                 if (state == RitualState.SUCCESS) {
-                    onRitualSuccess(timer);
+                    onRitualSuccess();
                     RitualManager.ritualStopped(instance);
                     cancel();
                 } else if (state == RitualState.FAILURE) {
-                    onRitualFail(timer);
+                    onRitualFail();
                     RitualManager.ritualStopped(instance);
                     cancel();
                 } else if (state == RitualState.CANCEL) {
@@ -51,13 +51,13 @@ public abstract class BasicRitual {
 
     public abstract boolean hasProperShape();
 
-    public abstract boolean startRitual(Entity sacrifice);
+    public abstract void startRitual(Entity sacrifice);
 
     public abstract void onRitualCheck(int timer);
 
-    public abstract void onRitualSuccess(int timer);
+    public abstract void onRitualSuccess();
 
-    public abstract void onRitualFail(int timer);
+    public abstract void onRitualFail();
 
     protected abstract void onRitualCancel();
 }

@@ -30,7 +30,7 @@ public class DispenserDropperLogic {
     }
 
     public void tryChuteAction(Dropper dropperState, ItemStack item) {
-        if (!WrenchEnchantment.isWrenched(dropperState, plugin))
+        if (!WrenchEnchantment.isWrenched(dropperState))
             return;
 
         Block dropperBlock = dropperState.getBlock();
@@ -50,7 +50,7 @@ public class DispenserDropperLogic {
 
     public boolean tryPlacerAction(Block dispenserBlock, ItemStack item) {
         org.bukkit.block.Dispenser dispenserState = (org.bukkit.block.Dispenser) dispenserBlock.getState();
-        if (!WrenchEnchantment.isWrenched(dispenserState, plugin))
+        if (!WrenchEnchantment.isWrenched(dispenserState))
             return false;
 
         Dispenser dispenser = (Dispenser) dispenserBlock.getBlockData();

@@ -26,7 +26,6 @@ import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -39,7 +38,7 @@ public class WrenchEnchantment extends CustomEnchantment {
         super(plugin, "Wrench", "wrench");
     }
 
-    public static boolean isWrenched(TileState state, Plugin plugin) {
+    public static boolean isWrenched(TileState state) {
         PersistentDataContainer pdc = state.getPersistentDataContainer();
         int result = pdc.getOrDefault(Keys.IS_WRENCHED, PersistentDataType.INTEGER, 0);
         return result == 1;

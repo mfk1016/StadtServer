@@ -39,11 +39,8 @@ public class Keys {
     public static NamespacedKey IS_ANCIENT_TOME;
 
 
-    private static StadtServer plugin;
-
     public static void initialize(StadtServer p) {
-        plugin = p;
-        IS_WRENCHED = new NamespacedKey(plugin, IS_WRENCHED_s);
-        IS_ANCIENT_TOME = new NamespacedKey(plugin, IS_ANCIENT_TOME_s);
+        IS_WRENCHED = new NamespacedKey(p, IS_WRENCHED_s);
+        IS_ANCIENT_TOME = new NamespacedKey(p, IS_ANCIENT_TOME_s);
     }
 }

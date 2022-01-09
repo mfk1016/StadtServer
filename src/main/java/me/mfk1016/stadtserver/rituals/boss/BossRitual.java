@@ -43,11 +43,11 @@ public abstract class BossRitual extends BasicRitual {
     }
 
     @Override
-    public boolean startRitual(Entity sacrifice) {
+    public void startRitual(Entity sacrifice) {
         if (!hasProperShape()) {
             cancelRitual();
             RitualManager.ritualStopped(this);
-            return false;
+            return;
         }
         bossSpawnLocation = sacrifice.getLocation();
         bossBar = Bukkit.createBossBar(bossBarKey, bossName, BarColor.PINK, BarStyle.SOLID);
@@ -58,7 +58,6 @@ public abstract class BossRitual extends BasicRitual {
         bossBar.setProgress(0D);
         bossBar.setVisible(true);
         performRitual();
-        return true;
     }
 
     @Override
@@ -96,12 +95,12 @@ public abstract class BossRitual extends BasicRitual {
     }
 
     @Override
-    public void onRitualSuccess(int timer) {
+    public void onRitualSuccess() {
         deleteBossBar();
     }
 
     @Override
-    public void onRitualFail(int timer) {
+    public void onRitualFail() {
         if (boss != null)
             boss.remove();
         deleteBossBar();

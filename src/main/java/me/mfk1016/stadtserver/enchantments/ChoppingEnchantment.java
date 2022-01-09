@@ -62,7 +62,7 @@ public class ChoppingEnchantment extends CustomEnchantment {
 
     @Override
     public boolean canEnchantItem(@NotNull ItemStack item) {
-        return item != null && MaterialTypes.isAxe(item.getType());
+        return MaterialTypes.isAxe(item.getType());
     }
 
     @Override

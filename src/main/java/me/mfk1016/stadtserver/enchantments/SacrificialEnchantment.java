@@ -63,7 +63,7 @@ public class SacrificialEnchantment extends CustomEnchantment {
 
     @Override
     public boolean canEnchantItem(@NotNull ItemStack item) {
-        return item != null && (MaterialTypes.isSword(item.getType()) || MaterialTypes.isAxe(item.getType()));
+        return MaterialTypes.isSword(item.getType()) || MaterialTypes.isAxe(item.getType());
     }
 
     @Override
