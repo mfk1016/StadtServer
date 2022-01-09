@@ -37,19 +37,29 @@ public class SacrificialEnchantment extends CustomEnchantment {
     }
 
     @Override
-    public int getMaxLevel() { return 1; }
+    public int getMaxLevel() {
+        return 1;
+    }
 
     @Override
-    public int getStartLevel() { return 1; }
+    public int getStartLevel() {
+        return 1;
+    }
 
     @Override
-    public @NotNull EnchantmentTarget getItemTarget() { return EnchantmentTarget.BREAKABLE; }
+    public @NotNull EnchantmentTarget getItemTarget() {
+        return EnchantmentTarget.BREAKABLE;
+    }
 
     @Override
-    public boolean isCursed() { return false; }
+    public boolean isCursed() {
+        return false;
+    }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment other) { return false; }
+    public boolean conflictsWith(@NotNull Enchantment other) {
+        return false;
+    }
 
     @Override
     public boolean canEnchantItem(@NotNull ItemStack item) {

@@ -27,6 +27,10 @@ import java.util.Objects;
 
 public class BossMobListener extends BasicListener {
 
+    public BossMobListener(StadtServer plugin) {
+        super(plugin);
+    }
+
     public static boolean isValidBossMobType(EntityType type) {
         return switch (type) {
             case BLAZE, CREEPER, DROWNED, ENDERMAN, EVOKER, GUARDIAN, HUSK, PIGLIN, PIGLIN_BRUTE, PILLAGER, SHULKER,
@@ -47,10 +51,6 @@ public class BossMobListener extends BasicListener {
         // Name the boss
         mob.setCustomName(bossName);
         mob.setCustomNameVisible(true);
-    }
-
-    public BossMobListener(StadtServer plugin) {
-        super(plugin);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

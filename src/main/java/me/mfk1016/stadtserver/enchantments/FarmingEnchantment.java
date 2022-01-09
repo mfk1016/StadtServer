@@ -3,7 +3,6 @@ package me.mfk1016.stadtserver.enchantments;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.MaterialTypes;
 import me.mfk1016.stadtserver.origin.enchantment.*;
-import me.mfk1016.stadtserver.origin.enchantment.VillagerTradeOrigin;
 import me.mfk1016.stadtserver.util.CropData;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -100,8 +99,6 @@ public class FarmingEnchantment extends CustomEnchantment {
 
         return result;
     }
-
-    /* --- LISTENERS --- */
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onHoeUse(PlayerInteractEvent event) {

@@ -33,10 +33,9 @@ public class Keys {
 
     // Set if a block is in wrenched state
     private static final String IS_WRENCHED_s = "is_wrenched";
-    public static NamespacedKey IS_WRENCHED;
-
     // Set if an enchanted book is an ancient tome
     private static final String IS_ANCIENT_TOME_s = "is_ancient_tome";
+    public static NamespacedKey IS_WRENCHED;
     public static NamespacedKey IS_ANCIENT_TOME;
 
 

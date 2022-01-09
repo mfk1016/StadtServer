@@ -4,8 +4,6 @@ import org.bukkit.Material;
 
 public class MaterialTypes {
 
-    /* --- TOOLS --- */
-
     public static boolean isTool(Material material) {
         return isPickaxe(material) ||
                 isShovel(material) ||
@@ -53,8 +51,6 @@ public class MaterialTypes {
         };
     }
 
-    /* --- ARMOR --- */
-
     public static boolean isArmor(Material material) {
         return isHelmet(material) ||
                 isChestplate(material) ||
@@ -94,8 +90,6 @@ public class MaterialTypes {
             default -> false;
         };
     }
-
-    /* --- WOODEN STUFF --- */
 
     public static boolean isLog(Material material) {
         return switch (material) {

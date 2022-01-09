@@ -2,9 +2,9 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.logic.MaterialTypes;
 import me.mfk1016.stadtserver.logic.wrench.WrenchAction;
 import me.mfk1016.stadtserver.logic.wrench.WrenchActionStateChange;
-import me.mfk1016.stadtserver.logic.MaterialTypes;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
@@ -35,12 +35,9 @@ public class WrenchEnchantment extends CustomEnchantment {
 
     private static final List<SmithingRecipe> wrenchRecipes = new ArrayList<>();
 
-
     public WrenchEnchantment(StadtServer plugin) {
         super(plugin, "Wrench", "wrench");
     }
-
-    // extends stuff
 
     public static boolean isWrenched(TileState state, Plugin plugin) {
         PersistentDataContainer pdc = state.getPersistentDataContainer();
@@ -98,21 +95,15 @@ public class WrenchEnchantment extends CustomEnchantment {
         return MaterialTypes.isShovel(item.getType());
     }
 
-    /* --- BLOCK WRENCHED --- */
-
     @Override
     public int getAnvilCost(ItemStack sacrifice, int level) {
         return 1;
     }
 
-    /* --- SMITHING TABLE --- */
-
     @Override
     public Set<EnchantmentOrigin> getOrigins() {
         return new HashSet<>();
     }
-
-    /* --- LISTENERS --- */
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerWrenchBlock(PlayerInteractEvent event) {

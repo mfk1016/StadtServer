@@ -14,10 +14,6 @@ public enum BottleType {
         this.mat = mat;
     }
 
-    public ItemStack asItemStack() {
-        return new ItemStack(mat);
-    }
-
     public static BottleType fromItemStack(ItemStack stack) {
         return switch (stack.getType()) {
             case POTION -> BottleType.NORMAL;
@@ -25,5 +21,9 @@ public enum BottleType {
             case LINGERING_POTION -> BottleType.LINGER;
             default -> null;
         };
+    }
+
+    public ItemStack asItemStack() {
+        return new ItemStack(mat);
     }
 }

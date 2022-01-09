@@ -6,7 +6,6 @@ import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -21,37 +20,6 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 public class AncientTome {
 
     private static final List<Enchantment> probabilities = new ArrayList<>();
-
-    public static boolean isAncientTome(ItemStack stack) {
-        if (stackEmpty(stack))
-            return false;
-        if (!(stack.getItemMeta() instanceof EnchantmentStorageMeta meta))
-            return false;
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        return pdc.getOrDefault(Keys.IS_ANCIENT_TOME, PersistentDataType.INTEGER, 0) == 1;
-    }
-
-    public static ItemStack createAncientTome(Enchantment enchantment) {
-        ItemStack result = new ItemStack(Material.ENCHANTED_BOOK);
-        EnchantmentStorageMeta meta = (EnchantmentStorageMeta) Objects.requireNonNull(result.getItemMeta());
-        meta.addStoredEnchant(enchantment, enchantment.getMaxLevel(), true);
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(Keys.IS_ANCIENT_TOME, PersistentDataType.INTEGER, 1);
-        meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Ancient Tome");
-        result.setItemMeta(meta);
-        return result;
-    }
-
-    public static ItemStack randomAncientTome() {
-        int rolled = StadtServer.RANDOM.nextInt(probabilities.size());
-        return createAncientTome(probabilities.get(rolled));
-    }
-
-
-    private static void addEnchantment(Enchantment enchantment, int weight) {
-        for (int i = 0; i < weight; i++)
-            probabilities.add(enchantment);
-    }
 
     static {
         addEnchantment(Enchantment.ARROW_DAMAGE, 3);
@@ -84,6 +52,36 @@ public class AncientTome {
         addEnchantment(EnchantmentManager.SMITHING, 1);
         addEnchantment(EnchantmentManager.FARMING, 1);
         addEnchantment(EnchantmentManager.EAGLE_EYE, 2);
+    }
+
+    public static boolean isAncientTome(ItemStack stack) {
+        if (stackEmpty(stack))
+            return false;
+        if (!(stack.getItemMeta() instanceof EnchantmentStorageMeta meta))
+            return false;
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        return pdc.getOrDefault(Keys.IS_ANCIENT_TOME, PersistentDataType.INTEGER, 0) == 1;
+    }
+
+    public static ItemStack createAncientTome(Enchantment enchantment) {
+        ItemStack result = new ItemStack(Material.ENCHANTED_BOOK);
+        EnchantmentStorageMeta meta = (EnchantmentStorageMeta) Objects.requireNonNull(result.getItemMeta());
+        meta.addStoredEnchant(enchantment, enchantment.getMaxLevel(), true);
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        pdc.set(Keys.IS_ANCIENT_TOME, PersistentDataType.INTEGER, 1);
+        meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Ancient Tome");
+        result.setItemMeta(meta);
+        return result;
+    }
+
+    public static ItemStack randomAncientTome() {
+        int rolled = StadtServer.RANDOM.nextInt(probabilities.size());
+        return createAncientTome(probabilities.get(rolled));
+    }
+
+    private static void addEnchantment(Enchantment enchantment, int weight) {
+        for (int i = 0; i < weight; i++)
+            probabilities.add(enchantment);
     }
 
 }

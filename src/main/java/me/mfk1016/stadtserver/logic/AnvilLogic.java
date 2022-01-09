@@ -27,6 +27,47 @@ public class AnvilLogic {
     private static final List<Pair<Enchantment, Function<Boolean, Integer>>> vanillaCosts = new ArrayList<>();
     private static final org.bukkit.util.Vector TO_BLOCK_CENTER = new Vector(0.5, 0.1, 0.5);
 
+    static {
+        vanillaCosts.add(new Pair<>(Enchantment.ARROW_DAMAGE, (isBook) -> (1)));
+        vanillaCosts.add(new Pair<>(Enchantment.ARROW_FIRE, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.ARROW_INFINITE, (isBook) -> (isBook ? 4 : 8)));
+        vanillaCosts.add(new Pair<>(Enchantment.ARROW_KNOCKBACK, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.BINDING_CURSE, (isBook) -> (isBook ? 4 : 8)));
+        vanillaCosts.add(new Pair<>(Enchantment.CHANNELING, (isBook) -> (isBook ? 4 : 8)));
+        vanillaCosts.add(new Pair<>(Enchantment.DAMAGE_ALL, (isBook) -> (1)));
+        vanillaCosts.add(new Pair<>(Enchantment.DAMAGE_ARTHROPODS, (isBook) -> (isBook ? 1 : 2)));
+        vanillaCosts.add(new Pair<>(Enchantment.DAMAGE_UNDEAD, (isBook) -> (isBook ? 1 : 2)));
+        vanillaCosts.add(new Pair<>(Enchantment.DEPTH_STRIDER, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.DIG_SPEED, (isBook) -> (1)));
+        vanillaCosts.add(new Pair<>(Enchantment.DURABILITY, (isBook) -> (isBook ? 1 : 2)));
+        vanillaCosts.add(new Pair<>(Enchantment.FIRE_ASPECT, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.FROST_WALKER, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.IMPALING, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.KNOCKBACK, (isBook) -> (isBook ? 1 : 2)));
+        vanillaCosts.add(new Pair<>(Enchantment.LOOT_BONUS_BLOCKS, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.LOOT_BONUS_MOBS, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.LOYALTY, (isBook) -> (1)));
+        vanillaCosts.add(new Pair<>(Enchantment.LUCK, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.LURE, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.MENDING, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.MULTISHOT, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.OXYGEN, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.PIERCING, (isBook) -> (1)));
+        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_ENVIRONMENTAL, (isBook) -> (1)));
+        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_EXPLOSIONS, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_FALL, (isBook) -> (isBook ? 1 : 2)));
+        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_FIRE, (isBook) -> (isBook ? 1 : 2)));
+        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_PROJECTILE, (isBook) -> (isBook ? 1 : 2)));
+        vanillaCosts.add(new Pair<>(Enchantment.QUICK_CHARGE, (isBook) -> (isBook ? 1 : 2)));
+        vanillaCosts.add(new Pair<>(Enchantment.RIPTIDE, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.SILK_TOUCH, (isBook) -> (isBook ? 4 : 8)));
+        vanillaCosts.add(new Pair<>(Enchantment.SOUL_SPEED, (isBook) -> (isBook ? 4 : 8)));
+        vanillaCosts.add(new Pair<>(Enchantment.SWEEPING_EDGE, (isBook) -> (isBook ? 2 : 4)));
+        vanillaCosts.add(new Pair<>(Enchantment.THORNS, (isBook) -> (isBook ? 4 : 8)));
+        vanillaCosts.add(new Pair<>(Enchantment.VANISHING_CURSE, (isBook) -> (isBook ? 4 : 8)));
+        vanillaCosts.add(new Pair<>(Enchantment.WATER_WORKER, (isBook) -> (isBook ? 2 : 4)));
+    }
+
     public static boolean doAnvilEnchant(PrepareAnvilEvent event) {
         AnvilInventory anvil = event.getInventory();
         ItemStack sacrifice = Objects.requireNonNull(anvil.getItem(1));
@@ -80,7 +121,6 @@ public class AnvilLogic {
         return hasResult;
     }
 
-
     public static void doAnvilRepair(PrepareAnvilEvent event) {
         AnvilInventory anvil = event.getInventory();
         ItemStack sacrifice = Objects.requireNonNull(anvil.getItem(1));
@@ -96,7 +136,7 @@ public class AnvilLogic {
             repairCost += 2;
         } else {
             // Calculate the amount of items needed for repairing
-            int durabilityPerItem = (int) Math.ceil((double)result.getType().getMaxDurability() / 4D);
+            int durabilityPerItem = (int) Math.ceil((double) result.getType().getMaxDurability() / 4D);
             int neededItems = (int) Math.ceil((double) resultDamage.getDamage() / (double) durabilityPerItem);
             int usedItems = Math.min(neededItems, sacrifice.getAmount());
             if (usedItems < sacrifice.getAmount() && !anvil.getViewers().isEmpty()) {
@@ -117,7 +157,6 @@ public class AnvilLogic {
         result.setItemMeta(resultDamage);
         event.setResult(result);
     }
-
 
     public static void doAnvilRename(PrepareAnvilEvent event) {
         AnvilInventory anvil = event.getInventory();
@@ -153,8 +192,6 @@ public class AnvilLogic {
         return 0;
     }
 
-    /* --- REPAIR MATERIAL --- */
-
     public static boolean isRepairMaterial(ItemStack item, Material repair) {
         if (item.getType() == repair)
             return true;
@@ -176,46 +213,5 @@ public class AnvilLogic {
             case TRIDENT -> repair == Material.NAUTILUS_SHELL;
             default -> false;
         };
-    }
-
-    static {
-        vanillaCosts.add(new Pair<>(Enchantment.ARROW_DAMAGE, (isBook) -> (1)));
-        vanillaCosts.add(new Pair<>(Enchantment.ARROW_FIRE, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.ARROW_INFINITE, (isBook) -> (isBook ? 4 : 8)));
-        vanillaCosts.add(new Pair<>(Enchantment.ARROW_KNOCKBACK, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.BINDING_CURSE, (isBook) -> (isBook ? 4 : 8)));
-        vanillaCosts.add(new Pair<>(Enchantment.CHANNELING, (isBook) -> (isBook ? 4 : 8)));
-        vanillaCosts.add(new Pair<>(Enchantment.DAMAGE_ALL, (isBook) -> (1)));
-        vanillaCosts.add(new Pair<>(Enchantment.DAMAGE_ARTHROPODS, (isBook) -> (isBook ? 1 : 2)));
-        vanillaCosts.add(new Pair<>(Enchantment.DAMAGE_UNDEAD, (isBook) -> (isBook ? 1 : 2)));
-        vanillaCosts.add(new Pair<>(Enchantment.DEPTH_STRIDER, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.DIG_SPEED, (isBook) -> (1)));
-        vanillaCosts.add(new Pair<>(Enchantment.DURABILITY, (isBook) -> (isBook ? 1 : 2)));
-        vanillaCosts.add(new Pair<>(Enchantment.FIRE_ASPECT, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.FROST_WALKER, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.IMPALING, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.KNOCKBACK, (isBook) -> (isBook ? 1 : 2)));
-        vanillaCosts.add(new Pair<>(Enchantment.LOOT_BONUS_BLOCKS, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.LOOT_BONUS_MOBS, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.LOYALTY, (isBook) -> (1)));
-        vanillaCosts.add(new Pair<>(Enchantment.LUCK, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.LURE, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.MENDING, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.MULTISHOT, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.OXYGEN, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.PIERCING, (isBook) -> (1)));
-        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_ENVIRONMENTAL, (isBook) -> (1)));
-        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_EXPLOSIONS, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_FALL, (isBook) -> (isBook ? 1 : 2)));
-        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_FIRE, (isBook) -> (isBook ? 1 : 2)));
-        vanillaCosts.add(new Pair<>(Enchantment.PROTECTION_PROJECTILE, (isBook) -> (isBook ? 1 : 2)));
-        vanillaCosts.add(new Pair<>(Enchantment.QUICK_CHARGE, (isBook) -> (isBook ? 1 : 2)));
-        vanillaCosts.add(new Pair<>(Enchantment.RIPTIDE, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.SILK_TOUCH, (isBook) -> (isBook ? 4 : 8)));
-        vanillaCosts.add(new Pair<>(Enchantment.SOUL_SPEED, (isBook) -> (isBook ? 4 : 8)));
-        vanillaCosts.add(new Pair<>(Enchantment.SWEEPING_EDGE, (isBook) -> (isBook ? 2 : 4)));
-        vanillaCosts.add(new Pair<>(Enchantment.THORNS, (isBook) -> (isBook ? 4 : 8)));
-        vanillaCosts.add(new Pair<>(Enchantment.VANISHING_CURSE, (isBook) -> (isBook ? 4 : 8)));
-        vanillaCosts.add(new Pair<>(Enchantment.WATER_WORKER, (isBook) -> (isBook ? 2 : 4)));
     }
 }

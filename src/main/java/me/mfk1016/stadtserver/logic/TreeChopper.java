@@ -61,8 +61,6 @@ public class TreeChopper {
         performChop();
     }
 
-    // Helpers
-
     private void collectLogs() {
 
         int leavesFound = 0;

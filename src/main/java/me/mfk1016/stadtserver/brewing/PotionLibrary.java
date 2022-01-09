@@ -99,7 +99,42 @@ public class PotionLibrary {
     public static final PotionEffect HARM_3 = effectDefInstant(HARM, 3);
 
 
-    // HELPER
+    private static final Map<PotionEffectType, String> potionNames = new HashMap<>();
+
+    static {
+        potionNames.put(ABSORPTION, "Absorption");
+        potionNames.put(BAD_OMEN, "Bad Omen");
+        potionNames.put(BLINDNESS, "Blindness");
+        potionNames.put(CONDUIT_POWER, "Conduit Power");
+        potionNames.put(CONFUSION, "Nausea");
+        potionNames.put(DAMAGE_RESISTANCE, "Shielding");
+        potionNames.put(DOLPHINS_GRACE, "Dolphins Grace");
+        potionNames.put(FAST_DIGGING, "Stamina");
+        potionNames.put(FIRE_RESISTANCE, "Fire Resistance");
+        potionNames.put(GLOWING, "Glowing");
+        potionNames.put(HARM, "Harming");
+        potionNames.put(HEAL, "Healing");
+        potionNames.put(HEALTH_BOOST, "Health Boost");
+        potionNames.put(HERO_OF_THE_VILLAGE, "Hero of the Village");
+        potionNames.put(HUNGER, "Hunger");
+        potionNames.put(INCREASE_DAMAGE, "Strength");
+        potionNames.put(INVISIBILITY, "Invisibility");
+        potionNames.put(JUMP, "Leaping");
+        potionNames.put(LEVITATION, "Levitation");
+        potionNames.put(LUCK, "Luck");
+        potionNames.put(NIGHT_VISION, "Night Vision");
+        potionNames.put(POISON, "Poison");
+        potionNames.put(REGENERATION, "Regeneration");
+        potionNames.put(SATURATION, "Saturation");
+        potionNames.put(SLOW, "Slowness");
+        potionNames.put(SLOW_DIGGING, "Mining Fatigue");
+        potionNames.put(SLOW_FALLING, "Slow Falling");
+        potionNames.put(SPEED, "Swiftness");
+        potionNames.put(UNLUCK, "Unluck");
+        potionNames.put(WATER_BREATHING, "Water Breathing");
+        potionNames.put(WEAKNESS, "Weakness");
+        potionNames.put(WITHER, "Wither");
+    }
 
     public static boolean isCustomBrew(ItemStack input) {
         if (!(input.getItemMeta() instanceof PotionMeta potion))
@@ -179,50 +214,11 @@ public class PotionLibrary {
         return result;
     }
 
-    // internal
-
     private static PotionEffect effectDef(PotionEffectType type, int min, int sec, int level) {
         return new PotionEffect(type, (min * 60 + sec) * 20, level - 1);
     }
 
     private static PotionEffect effectDefInstant(PotionEffectType type, int level) {
         return new PotionEffect(type, 1, level - 1);
-    }
-
-    private static final Map<PotionEffectType, String> potionNames = new HashMap<>();
-
-    static {
-        potionNames.put(ABSORPTION, "Absorption");
-        potionNames.put(BAD_OMEN, "Bad Omen");
-        potionNames.put(BLINDNESS, "Blindness");
-        potionNames.put(CONDUIT_POWER, "Conduit Power");
-        potionNames.put(CONFUSION, "Nausea");
-        potionNames.put(DAMAGE_RESISTANCE, "Shielding");
-        potionNames.put(DOLPHINS_GRACE, "Dolphins Grace");
-        potionNames.put(FAST_DIGGING, "Stamina");
-        potionNames.put(FIRE_RESISTANCE, "Fire Resistance");
-        potionNames.put(GLOWING, "Glowing");
-        potionNames.put(HARM, "Harming");
-        potionNames.put(HEAL, "Healing");
-        potionNames.put(HEALTH_BOOST, "Health Boost");
-        potionNames.put(HERO_OF_THE_VILLAGE, "Hero of the Village");
-        potionNames.put(HUNGER, "Hunger");
-        potionNames.put(INCREASE_DAMAGE, "Strength");
-        potionNames.put(INVISIBILITY, "Invisibility");
-        potionNames.put(JUMP, "Leaping");
-        potionNames.put(LEVITATION, "Levitation");
-        potionNames.put(LUCK, "Luck");
-        potionNames.put(NIGHT_VISION, "Night Vision");
-        potionNames.put(POISON, "Poison");
-        potionNames.put(REGENERATION, "Regeneration");
-        potionNames.put(SATURATION, "Saturation");
-        potionNames.put(SLOW, "Slowness");
-        potionNames.put(SLOW_DIGGING, "Mining Fatigue");
-        potionNames.put(SLOW_FALLING, "Slow Falling");
-        potionNames.put(SPEED, "Swiftness");
-        potionNames.put(UNLUCK, "Unluck");
-        potionNames.put(WATER_BREATHING, "Water Breathing");
-        potionNames.put(WEAKNESS, "Weakness");
-        potionNames.put(WITHER, "Wither");
     }
 }

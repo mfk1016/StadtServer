@@ -3,7 +3,6 @@ package me.mfk1016.stadtserver.enchantments;
 import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.*;
-import me.mfk1016.stadtserver.origin.enchantment.VillagerTradeOrigin;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -95,8 +94,6 @@ public class EagleEyeEnchantment extends CustomEnchantment {
 
         return result;
     }
-
-    /* --- LISTENERS --- */
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBowShoot(EntityShootBowEvent event) {

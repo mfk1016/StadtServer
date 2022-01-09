@@ -3,7 +3,6 @@ package me.mfk1016.stadtserver.enchantments;
 import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.*;
-import me.mfk1016.stadtserver.origin.enchantment.VillagerTradeOrigin;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
@@ -35,8 +34,6 @@ public class SmithingEnchantment extends CustomEnchantment {
         super(plugin, "Smithing", "smithing");
     }
 
-    // extends stuff
-
     public static int repairCostLimit(int enchantmentLevel) {
         if (enchantmentLevel > 5)
             return 3;
@@ -61,18 +58,24 @@ public class SmithingEnchantment extends CustomEnchantment {
         }
     }
 
-    private static boolean isNetheriteTool(ItemStack item) {
-        return switch (item.getType()) {
-            case NETHERITE_AXE, NETHERITE_HOE, NETHERITE_PICKAXE, NETHERITE_SHOVEL, NETHERITE_SWORD -> true;
-            default -> false;
-        };
-    }
+    public static void tryApplySmithingEnchantment(PrepareAnvilEvent event) {
+        // Assumes, that the anvil state (items, enchantments, costs) is correct and it is only repairing
+        AnvilInventory anvil = event.getInventory();
+        ItemStack result = Objects.requireNonNull(event.getResult());
 
-    private static boolean isNetheriteArmor(ItemStack item) {
-        return switch (item.getType()) {
-            case NETHERITE_BOOTS, NETHERITE_CHESTPLATE, NETHERITE_HELMET, NETHERITE_LEGGINGS -> true;
-            default -> false;
-        };
+        if (!EnchantmentManager.getItemEnchantments(result).containsKey(EnchantmentManager.SMITHING))
+            return;
+
+        // Prevent a repair cost overflow
+        if (result.getItemMeta() instanceof Repairable repairMeta && repairMeta.getRepairCost() > 63) {
+            repairMeta.setRepairCost(63);
+            result.setItemMeta((ItemMeta) repairMeta);
+        }
+
+        // Adjust the repair cost
+        int smithingLevel = EnchantmentManager.getItemEnchantments(result).get(EnchantmentManager.SMITHING);
+        int newRepairCost = Math.min(anvil.getRepairCost(), repairCostLimit(smithingLevel));
+        anvil.setRepairCost(newRepairCost);
     }
 
     @Override
@@ -95,8 +98,6 @@ public class SmithingEnchantment extends CustomEnchantment {
         return false;
     }
 
-    /* --- SMITHING FEATURE --- */
-
     @Override
     public boolean conflictsWith(Enchantment other) {
         return other.equals(Enchantment.MENDING);
@@ -115,8 +116,6 @@ public class SmithingEnchantment extends CustomEnchantment {
             return 2 * level;
         }
     }
-
-    /* --- SMITHING BALANCE --- */
 
     @Override
     public Set<EnchantmentOrigin> getOrigins() {
@@ -144,25 +143,5 @@ public class SmithingEnchantment extends CustomEnchantment {
         result.add(new BossMobBookOrigin(this, 50, levelChancesBoss, EntityType.PIGLIN_BRUTE, 1, World.Environment.NETHER));
 
         return result;
-    }
-
-    public static void tryApplySmithingEnchantment(PrepareAnvilEvent event) {
-        // Assumes, that the anvil state (items, enchantments, costs) is correct and it is only repairing
-        AnvilInventory anvil = event.getInventory();
-        ItemStack result = Objects.requireNonNull(event.getResult());
-
-        if (!EnchantmentManager.getItemEnchantments(result).containsKey(EnchantmentManager.SMITHING))
-            return;
-
-        // Prevent a repair cost overflow
-        if (result.getItemMeta() instanceof Repairable repairMeta && repairMeta.getRepairCost() > 63) {
-            repairMeta.setRepairCost(63);
-            result.setItemMeta((ItemMeta) repairMeta);
-        }
-
-        // Adjust the repair cost
-        int smithingLevel = EnchantmentManager.getItemEnchantments(result).get(EnchantmentManager.SMITHING);
-        int newRepairCost = Math.min(anvil.getRepairCost(), repairCostLimit(smithingLevel));
-        anvil.setRepairCost(newRepairCost);
     }
 }

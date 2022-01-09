@@ -105,7 +105,8 @@ public class StadtServerCommand implements CommandExecutor {
         }
         try {
             targetLevel = Integer.parseInt(args[2]);
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+        }
 
         if (!BossMobListener.isValidBossMobType(targetType))
             return false;

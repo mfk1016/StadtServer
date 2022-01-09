@@ -29,8 +29,6 @@ public class DispenserDropperLogic {
                 tryPlanting(dispenserBlock, item);
     }
 
-    /* --- DROPPER CHUTE MECHANIC --- */
-
     public void tryChuteAction(Dropper dropperState, ItemStack item) {
         if (!WrenchEnchantment.isWrenched(dropperState, plugin))
             return;
@@ -50,8 +48,6 @@ public class DispenserDropperLogic {
         runnable.runTaskLater(plugin, 1L);
     }
 
-    /* --- DISPENSER BLOCK PLACER MECHANIC --- */
-
     public boolean tryPlacerAction(Block dispenserBlock, ItemStack item) {
         org.bukkit.block.Dispenser dispenserState = (org.bukkit.block.Dispenser) dispenserBlock.getState();
         if (!WrenchEnchantment.isWrenched(dispenserState, plugin))
@@ -67,8 +63,6 @@ public class DispenserDropperLogic {
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> dispenserState.update(true));
         return true;
     }
-
-    /* --- DISPENSER SEED PLANTING --- */
 
     private boolean tryPlanting(Block dispenserBlock, ItemStack item) {
         if (CropData.isPlantable(item.getType())) {

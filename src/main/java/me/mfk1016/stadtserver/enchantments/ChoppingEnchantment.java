@@ -5,7 +5,6 @@ import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.MaterialTypes;
 import me.mfk1016.stadtserver.logic.TreeChopper;
 import me.mfk1016.stadtserver.origin.enchantment.*;
-import me.mfk1016.stadtserver.origin.enchantment.VillagerTradeOrigin;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -35,8 +34,6 @@ public class ChoppingEnchantment extends CustomEnchantment {
     public ChoppingEnchantment(StadtServer plugin) {
         super(plugin, "Chopping", "chopping");
     }
-
-    // extends stuff
 
     @Override
     public int getMaxLevel() {
@@ -99,8 +96,6 @@ public class ChoppingEnchantment extends CustomEnchantment {
 
         return result;
     }
-
-    /* --- LISTENERS --- */
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockBreak(BlockBreakEvent event) {

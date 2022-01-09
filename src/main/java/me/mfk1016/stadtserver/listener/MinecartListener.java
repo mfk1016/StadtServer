@@ -36,8 +36,6 @@ public class MinecartListener extends BasicListener {
         logic = l;
     }
 
-    /* --- MINECART PHYSICS --- */
-
     @EventHandler(priority = EventPriority.NORMAL)
     public void onVehicleMove(VehicleMoveEvent event) {
         if (event.getVehicle() instanceof Minecart cart) {
@@ -74,8 +72,6 @@ public class MinecartListener extends BasicListener {
             logic.pushMinecarts(rail);
         }
     }
-
-    /* --- PLAYER INTERACTIONS --- */
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRightClick(PlayerInteractEntityEvent event) {
@@ -141,8 +137,6 @@ public class MinecartListener extends BasicListener {
         }
     }
 
-    // Helpers
-
     private boolean hasCartAttached(Player player) {
         return player.hasMetadata(Keys.CART_ATTACHED);
     }
@@ -155,8 +149,6 @@ public class MinecartListener extends BasicListener {
         MetadataValue val = player.getMetadata(Keys.CART_ATTACHED).get(0);
         return ((WeakReference<Minecart>) Objects.requireNonNull(val.value())).get();
     }
-
-    // Sounds
 
     private void playAttachSound(Minecart cart) {
         Block target = cart.getLocation().getBlock();

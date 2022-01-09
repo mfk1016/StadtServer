@@ -13,7 +13,6 @@ import java.lang.reflect.InvocationTargetException;
 
 public abstract class BasicListener implements Listener {
 
-    // Config values
     private static final String CONFIG_PLAYER_MESSAGE = "send_player_message";
 
     protected final StadtServer plugin;

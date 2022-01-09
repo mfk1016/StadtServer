@@ -12,8 +12,6 @@ import java.util.Map;
 
 public class InventorySorter {
 
-    /* --- TOP LEVEL --- */
-
     public static void sortInventory(Inventory inventory) {
         ItemStack[] contents = inventory.getContents();
         mergeStacks(contents);
@@ -33,8 +31,6 @@ public class InventorySorter {
         left.setContents(leftContents);
         right.setContents(rightContents);
     }
-
-    /* --- PREPARATION --- */
 
     // Merge similar stacks together as good as possible
     private static void mergeStacks(ItemStack[] contents) {
@@ -67,8 +63,6 @@ public class InventorySorter {
             }
         }
     }
-
-    /* --- COMPARISION --- */
 
     private static int cmp(ItemStack a, ItemStack b) {
 

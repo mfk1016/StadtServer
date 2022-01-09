@@ -1,16 +1,13 @@
 package me.mfk1016.stadtserver;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import me.mfk1016.stadtserver.enchantments.WrenchEnchantment;
 import me.mfk1016.stadtserver.listener.*;
 import me.mfk1016.stadtserver.logic.DispenserDropperLogic;
 import me.mfk1016.stadtserver.logic.MinecartLogic;
 import me.mfk1016.stadtserver.rituals.RitualManager;
 import me.mfk1016.stadtserver.util.Keys;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,15 +17,12 @@ import java.util.logging.Logger;
 
 public class StadtServer extends JavaPlugin {
 
-    // Plugin wide stuff
     public static final Logger LOGGER = Logger.getLogger("Minecraft");
     public static final Random RANDOM = new Random();
 
-    // Singleton Logic elements
     private final MinecartLogic minecartLogic = new MinecartLogic(this);
     private final DispenserDropperLogic dispenserDropperLogic = new DispenserDropperLogic(this);
 
-    // Listeners
     private final MinecartListener minecartListener = new MinecartListener(this, minecartLogic);
     private final SmallFunctionsListener smallFunctionsListener = new SmallFunctionsListener(this, dispenserDropperLogic);
     private final SignPacketListener signPacketListener = new SignPacketListener(this, smallFunctionsListener);
@@ -62,9 +56,6 @@ public class StadtServer extends JavaPlugin {
         ProtocolLibrary.getProtocolManager().addPacketListener(signPacketListener);
 
         LOGGER.info(getDescription().getName() + ": register recipes...");
-        for (SmithingRecipe wrenchRecipe : WrenchEnchantment.getWrenchRecipes(this)) {
-            Bukkit.addRecipe(wrenchRecipe);
-        }
         RecipeManager.registerRecipes(this);
 
         Objects.requireNonNull(getCommand("stadtserver")).setExecutor(new StadtServerCommand(this));

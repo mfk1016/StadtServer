@@ -2,6 +2,7 @@ package me.mfk1016.stadtserver;
 
 import me.mfk1016.stadtserver.brewing.BrewingRecipe;
 import me.mfk1016.stadtserver.brewing.recipe.*;
+import me.mfk1016.stadtserver.enchantments.WrenchEnchantment;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -14,9 +15,11 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class RecipeManager {
 
-    /* --- REGISTRATION --- */
-
     private static final List<BrewingRecipe> ALL_BREWING_RECIPES = new ArrayList<>();
+    private static final int FURNACE = 0;
+    private static final int SMOKER = 1;
+    private static final int BLAST = 2;
+
 
     public static void registerRecipes(StadtServer plugin) {
         for (SmeltingRecipes recipe : SmeltingRecipes.values()) {
@@ -27,6 +30,9 @@ public class RecipeManager {
         }
         for (StoneCutterRecipes recipe : StoneCutterRecipes.values()) {
             Bukkit.addRecipe(recipe.toRecipe(plugin));
+        }
+        for (SmithingRecipe wrenchRecipe : WrenchEnchantment.getWrenchRecipes(plugin)) {
+            Bukkit.addRecipe(wrenchRecipe);
         }
 
         // Clay block to clay ball
@@ -54,8 +60,6 @@ public class RecipeManager {
         ALL_BREWING_RECIPES.clear();
     }
 
-    /* --- RECIPE CHECKING --- */
-
     public static BrewingRecipe matchBrewingRecipe(BrewerInventory inventory) {
 
         ItemStack ingredient = inventory.getIngredient();
@@ -80,12 +84,6 @@ public class RecipeManager {
         }
         return null;
     }
-
-    /* --- RECIPES --- */
-
-    private static final int FURNACE = 0;
-    private static final int SMOKER = 1;
-    private static final int BLAST = 2;
 
     private enum SmeltingRecipes {
         RED_SAND("red_sand", SMOKER, Material.RED_SAND, Material.SAND, 0.1F, 100),

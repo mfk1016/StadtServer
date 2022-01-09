@@ -47,8 +47,6 @@ public class EnchantmentListener extends BasicListener {
         super(p);
     }
 
-    /* --- ANVIL / GRINDSTONE --- */
-
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPrepareAnvil(PrepareAnvilEvent event) {
         AnvilInventory anvil = event.getInventory();
@@ -116,9 +114,9 @@ public class EnchantmentListener extends BasicListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPrepareGrindstone(PrepareResultEvent event) { EnchantmentManager.fixGrindstoneResult(event); }
-
-    /* --- OBTAINING ENCHANTMENTS --- */
+    public void onPrepareGrindstone(PrepareResultEvent event) {
+        EnchantmentManager.fixGrindstoneResult(event);
+    }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onFishing(PlayerFishEvent event) {
@@ -223,10 +221,8 @@ public class EnchantmentListener extends BasicListener {
         }
     }
 
-    /* --- BANE OF THE ATHROPODS BALANCE --- */
-
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerHitEntity(EntityDamageByEntityEvent event) {
+    public void onPlayerHitEntityWithBane(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player player))
             return;
 
@@ -242,8 +238,6 @@ public class EnchantmentListener extends BasicListener {
         event.setDamage(event.getDamage() + (level * 2.5));
 
     }
-
-    /* --- WATER BUCKET WITH INFINITY --- */
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void tryAnvilInfinityWaterBucket(PrepareAnvilEvent event) {

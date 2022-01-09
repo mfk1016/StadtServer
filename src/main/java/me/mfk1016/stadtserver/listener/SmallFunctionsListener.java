@@ -44,8 +44,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
     - Sticky Piston + Lightning Rod = Block breaker
 
-    - Coarse Dirt + Bonemeal + Water = Clay
-
     - Ladder placement helper
  */
 public class SmallFunctionsListener extends BasicListener {
@@ -59,8 +57,6 @@ public class SmallFunctionsListener extends BasicListener {
         action = a;
     }
 
-    /* --- DISPENSER PLANTING --- */
-
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockDispense(BlockDispenseEvent event) {
         if (event.getBlock().getType() == Material.DISPENSER) {
@@ -72,8 +68,6 @@ public class SmallFunctionsListener extends BasicListener {
         }
     }
 
-    /* --- DROPPER + WRENCH = CHUTE --- */
-
     @EventHandler(priority = EventPriority.NORMAL)
     public void onItemEnterChute(InventoryMoveItemEvent event) {
         if (!(event.getDestination().getHolder() instanceof Dropper dropperState))
@@ -81,8 +75,6 @@ public class SmallFunctionsListener extends BasicListener {
 
         action.tryChuteAction(dropperState, event.getItem());
     }
-
-    /* --- DIRT TO PATH --- */
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onShovelInteractDirt(PlayerInteractEvent event) {
@@ -95,8 +87,6 @@ public class SmallFunctionsListener extends BasicListener {
         dirt.setType(Material.DIRT_PATH);
         StadtServer.broadcastSound(dirt, Sound.ITEM_HOE_TILL, 1f, 1f);
     }
-
-    /* --- SIGN EDITING --- */
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSignClick(PlayerInteractEvent event) {
@@ -134,8 +124,6 @@ public class SmallFunctionsListener extends BasicListener {
         return editedSigns.contains(sign);
     }
 
-    /* --- STICKY PISTON + LIGHTNING ROD --- */
-
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPistonTrigger(BlockPhysicsEvent event) {
         if (event.getBlock().getType() != Material.STICKY_PISTON)
@@ -157,8 +145,6 @@ public class SmallFunctionsListener extends BasicListener {
         if (toBreak.getPistonMoveReaction() == PistonMoveReaction.MOVE)
             toBreak.breakNaturally(fakePick);
     }
-
-    /* --- RIGHT CLICK LADDER WITH LADDER --- */
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRightClickLadder(PlayerInteractEvent event) {
