@@ -1,16 +1,20 @@
 package me.mfk1016.stadtserver.logic;
 
 import me.mfk1016.stadtserver.EnchantmentManager;
+import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.scheduler.BukkitWorker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
@@ -111,27 +115,18 @@ public class InventorySorter {
     }
 
     private static int cmpType(ItemStack a, ItemStack b) {
-        if (MaterialTypes.isTool(a.getType()) && MaterialTypes.isTool(b.getType())) {
-            return 0;
-        } else if (MaterialTypes.isTool(a.getType())) {
-            return -1;
-        } else if (MaterialTypes.isTool(b.getType())) {
-            return 1;
-        } else if (MaterialTypes.isArmor(a.getType()) && MaterialTypes.isArmor(b.getType())) {
-            return 0;
-        } else if (MaterialTypes.isArmor(a.getType())) {
-            return -1;
-        } else if (MaterialTypes.isArmor(b.getType())) {
-            return 1;
-        } else if (a.getType().isEdible() && b.getType().isEdible()) {
-            return 0;
-        } else if (a.getType().isEdible()) {
-            return -1;
-        } else if (b.getType().isEdible()) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return cmpChain(MaterialTypes::isTool,
+                        MaterialTypes::isStackTool,
+                        MaterialTypes::isArmor,
+                        MaterialTypes::isVehicle,
+                        MaterialTypes::isRedstone,
+                        MaterialTypes::isRail,
+                        MaterialTypes::isInventory,
+                        MaterialTypes::isFurniture,
+                        MaterialTypes::isChoppingResult,
+                        MaterialTypes::isFarmingResult,
+                        MaterialTypes::isAnimalResult,
+                        MaterialTypes::isMonsterResult).apply(new Pair<>(a, b));
     }
 
     private static int cmpLexical(ItemStack a, ItemStack b) {
@@ -139,14 +134,6 @@ public class InventorySorter {
         StringBuilder bs = new StringBuilder(b.getType().name().toLowerCase());
         boolean aCatFound = false;
         boolean bCatFound = false;
-        if (as.toString().equals("repeater") || as.toString().equals("comparator")) {
-            as.insert(0, "redstonez");
-            aCatFound = true;
-        }
-        if (bs.toString().equals("repeater") || bs.toString().equals("comparator")) {
-            bs.insert(0, "redstonez");
-            bCatFound = true;
-        }
         for (var cat : categories) {
             if (!aCatFound && as.toString().contains(cat)) {
                 as.insert(0, cat);
@@ -228,7 +215,6 @@ public class InventorySorter {
         categories.add("pumpkin");
         categories.add("slime");
         categories.add("piston");
-        categories.add("rail");
         categories.add("minecart");
 
         categories.add("lingering_potion");
@@ -261,7 +247,6 @@ public class InventorySorter {
         categories.add("diorite");
         categories.add("andesite");
         categories.add("deepslate");
-        categories.add("redstone");
         categories.add("red_sandstone");
         categories.add("sandstone");
         categories.add("end_stone");
@@ -273,5 +258,21 @@ public class InventorySorter {
         categories.add("stone_brick");
         categories.add("stone");
         categories.add("brick");
+    }
+
+    @SafeVarargs
+    private static Function<Pair<ItemStack, ItemStack>, Integer> cmpChain(Predicate<Material>... cmps) {
+        return (p) -> {
+            for (var cmp : cmps) {
+                if (cmp.test(p._1.getType()) && cmp.test(p._2.getType())) {
+                    return 0;
+                } else if (cmp.test(p._1.getType())) {
+                    return -1;
+                } else if (cmp.test(p._2.getType())) {
+                    return 1;
+                }
+            }
+            return 0;
+        };
     }
 }
