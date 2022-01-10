@@ -260,6 +260,7 @@ public class InventorySorter {
         categories.add("granite");
         categories.add("diorite");
         categories.add("andesite");
+        categories.add("deepslate");
         categories.add("redstone");
         categories.add("red_sandstone");
         categories.add("sandstone");
