@@ -72,11 +72,13 @@ public class EagleEyeEnchantment extends CustomEnchantment {
     public Set<EnchantmentOrigin> getOrigins() {
         Set<EnchantmentOrigin> result = new HashSet<>();
 
-        // Villager: 5% at villager level 4/5 for Eagle Eye I / II with 2/1 distribution
-        int[] levelChancesVillager = {2, 1, 0, 0, 0};
-        int[] baseCosts = {15, 30, 0, 0, 0};
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesVillager, 4, baseCosts, 5));
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesVillager, 5, baseCosts, 8));
+        // Librarian: 3% at villager level 1+ for Eagle Eye I / II with 2/1 distribution
+        // Fletcher: 7% at villager level 3+ for Eagle Eye II / III with 2/1 distribution
+        int[] levelChancesLibrarian = {2, 1, 0, 0, 0};
+        int[] levelChancesFletcher = {0, 2, 1, 0, 0};
+        int[] baseCosts = {15, 30, 45, 60, 75};
+        result.add(new VillagerTradeOrigin(this, 3, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 7, levelChancesFletcher, Villager.Profession.FLETCHER, 3, baseCosts));
 
         // Piglin: 3% chance for Eagle Eye III
         int[] levelChancesPiglin = {0, 0, 1, 0, 0};

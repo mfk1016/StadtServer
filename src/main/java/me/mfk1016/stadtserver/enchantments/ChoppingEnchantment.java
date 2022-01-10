@@ -13,6 +13,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -82,13 +83,14 @@ public class ChoppingEnchantment extends CustomEnchantment {
         // 10% chance for Chopping when getting an enchanted book
         result.add(new FishBookOrigin(this, 10, levelChances));
 
-        // 5%/8% chance for Chopping at villager level 4/5
+        // Librarian: 3% chance for Chopping at level 5
+        // Toolsmith: 7% chance for Chopping at level 5
         int[] baseCosts = {30};
-        result.add(new VillagerTradeOrigin(this, 5, levelChances, 4, baseCosts, 5));
-        result.add(new VillagerTradeOrigin(this, 8, levelChances, 5, baseCosts, 5));
+        result.add(new VillagerTradeOrigin(this, 3, levelChances, Villager.Profession.LIBRARIAN, 5, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 7, levelChances, Villager.Profession.TOOLSMITH, 5, baseCosts));
 
-        // Boss Pillager/Vindicator: 25%/50% chance for chopping
-        result.add(new BossMobBookOrigin(this, 25, levelChances, EntityType.PILLAGER, 1, World.Environment.NORMAL));
+        // Boss Pillager/Vindicator: 50% chance for chopping
+        result.add(new BossMobBookOrigin(this, 50, levelChances, EntityType.PILLAGER, 1, World.Environment.NORMAL));
         result.add(new BossMobBookOrigin(this, 50, levelChances, EntityType.VINDICATOR, 1, World.Environment.NORMAL));
 
         // Loot Chest: 5% Chance in the overworld

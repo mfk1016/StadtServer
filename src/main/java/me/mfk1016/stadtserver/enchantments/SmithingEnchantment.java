@@ -8,6 +8,7 @@ import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
@@ -121,16 +122,18 @@ public class SmithingEnchantment extends CustomEnchantment {
     public Set<EnchantmentOrigin> getOrigins() {
         Set<EnchantmentOrigin> result = new HashSet<>();
 
-        // Villager: 5% at villager level 1/2/3 for Smithing I / II with 2/1 distribution
-        int[] levelChancesVillager = {2, 1, 0, 0, 0};
-        int[] baseCosts = {10, 20, 0, 0, 0};
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesVillager, 1, baseCosts, 4));
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesVillager, 2, baseCosts, 5));
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesVillager, 3, baseCosts, 6));
+        // Librarian: 3% at villager level 1+ for Smithing I / II with 2/1 distribution
+        // Tool/Weaponsmith: 7% at villager level 3+ for Smithing II / III / IV with 4/2/1 distribution
+        int[] levelChancesLibrarian = {2, 1, 0, 0, 0};
+        int[] levelChancesSmith = {0, 4, 2, 1, 0};
+        int[] baseCosts = {10, 20, 30, 40, 0};
+        result.add(new VillagerTradeOrigin(this, 7, levelChancesSmith, Villager.Profession.TOOLSMITH, 3, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 7, levelChancesSmith, Villager.Profession.WEAPONSMITH, 3, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 3, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
 
-        // Piglin: 6% chance for Smithing III / IV with 2/1 distribution
+        // Piglin: 4% chance for Smithing III / IV with 2/1 distribution
         int[] levelChancesPiglin = {0, 0, 2, 1, 0};
-        result.add(new PiglinTradeOrigin(this, 6, levelChancesPiglin));
+        result.add(new PiglinTradeOrigin(this, 4, levelChancesPiglin));
 
         // Loot chest: 10%/20%/25% chance for Smithing IV in overworld/nether/end
         int[] levelChancesLoot = {0, 0, 0, 1, 0};

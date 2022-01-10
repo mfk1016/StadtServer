@@ -136,21 +136,9 @@ public class EnchantmentListener extends BasicListener {
     public void onVillagerAquireTrade(VillagerAcquireTradeEvent event) {
         if (!(event.getEntity() instanceof Villager villager))
             return;
-        if (villager.getProfession() != Villager.Profession.LIBRARIAN)
-            return;
 
         MerchantRecipe recipe = event.getRecipe();
         ItemStack result = recipe.getResult();
-
-        // Check the trade -> must be an enchanted book for emeralds
-        if (result.getType() != Material.ENCHANTED_BOOK)
-            return;
-        int emeraldSlot = 0;
-        if (recipe.getIngredients().get(1).getType() == Material.EMERALD) {
-            emeraldSlot = 1;
-        } else if (recipe.getIngredients().get(0).getType() != Material.EMERALD) {
-            return;
-        }
 
         // Librarian items with mending are replaced with smithing 3
         boolean isMending = EnchantmentManager.isEnchantedWith(result, Enchantment.MENDING);
@@ -173,8 +161,9 @@ public class EnchantmentListener extends BasicListener {
             MerchantRecipe newRecipe = new MerchantRecipe(result, recipe.getUses(), recipe.getMaxUses(),
                     recipe.hasExperienceReward(), recipe.getVillagerExperience(),
                     1f);
-            newRecipe.setIngredients(recipe.getIngredients());
-            newRecipe.getIngredients().get(emeraldSlot).setAmount(matched._1.getCostForLevel(StadtServer.RANDOM, matched._2));
+            ItemStack book = new ItemStack(Material.BOOK);
+            ItemStack emeralds = new ItemStack(Material.EMERALD, matched._1.getCostForLevel(matched._2));
+            newRecipe.setIngredients(List.of(book, emeralds));
             event.setRecipe(newRecipe);
         }
     }
@@ -187,9 +176,7 @@ public class EnchantmentListener extends BasicListener {
             EnchantmentManager.enchantItem(toAdd, origin.getEnchantment(), level);
             results.add(toAdd);
         });
-        if (results.size() == 1)
-            event.getOutcome().add(results.get(0));
-        else if (results.size() >= 2)
+        if (!results.isEmpty())
             event.getOutcome().add(results.get(StadtServer.RANDOM.nextInt(results.size())));
     }
 

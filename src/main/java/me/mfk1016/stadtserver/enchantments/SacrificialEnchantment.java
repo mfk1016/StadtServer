@@ -3,10 +3,7 @@ package me.mfk1016.stadtserver.enchantments;
 import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.MaterialTypes;
-import me.mfk1016.stadtserver.origin.enchantment.BossMobBookOrigin;
-import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
-import me.mfk1016.stadtserver.origin.enchantment.LootChestOrigin;
-import me.mfk1016.stadtserver.origin.enchantment.PiglinTradeOrigin;
+import me.mfk1016.stadtserver.origin.enchantment.*;
 import me.mfk1016.stadtserver.rituals.RitualManager;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -80,6 +77,10 @@ public class SacrificialEnchantment extends CustomEnchantment {
         Set<EnchantmentOrigin> result = new HashSet<>();
 
         int[] levelChances = {1};
+
+        // Cleric: 3% at villager level 5 for Sacrificial
+        int[] baseCosts = {30};
+        result.add(new VillagerTradeOrigin(this, 3, levelChances, Villager.Profession.CLERIC, 5, baseCosts));
 
         // Piglin: 5% chance for Sacrificial
         result.add(new PiglinTradeOrigin(this, 5, levelChances));

@@ -15,6 +15,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -78,22 +79,23 @@ public class FarmingEnchantment extends CustomEnchantment {
         Set<EnchantmentOrigin> result = new HashSet<>();
 
         // Fishing: 15% for Farming I / II, distributed 3/2 when getting an enchanted book
-        int[] levelChancesFish = {3, 2, 0, 0, 0};
+        int[] levelChancesFish = {3, 2, 0};
         result.add(new FishBookOrigin(this, 15, levelChancesFish));
 
-        // Villager: 5% at villager level 1/2/3 for Farming I / II with 3/2 distribution
-        int[] levelChancesVillager = {3, 2, 0, 0, 0};
-        int[] baseCosts = {10, 20, 0, 0, 0};
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesVillager, 1, baseCosts, 4));
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesVillager, 2, baseCosts, 5));
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesVillager, 3, baseCosts, 6));
+        // Librarian: 3% at villager level 1+ for Farming I / II with 3/2 distribution
+        // Farmer: 7% at villager level 3+ for Farming III
+        int[] levelChancesLibrarian = {3, 2, 0};
+        int[] levelChancesFarmer = {0, 0, 1};
+        int[] baseCosts = {10, 20, 30};
+        result.add(new VillagerTradeOrigin(this, 3, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 7, levelChancesFarmer, Villager.Profession.FARMER, 3, baseCosts));
 
         // Loot chest: 5% chance in the overworld for Farming II / III with 2/1 distribution
-        int[] levelChancesLoot = {0, 2, 1, 0, 0};
+        int[] levelChancesLoot = {0, 2, 1};
         result.add(new LootChestOrigin(this, 5, levelChancesLoot, World.Environment.NORMAL));
 
         // Boss Zombie: 10% chance in the overworld for Farming III
-        int[] levelChancesBoss = {0, 0, 1, 0, 0};
+        int[] levelChancesBoss = {0, 0, 1};
         result.add(new BossMobBookOrigin(this, 10, levelChancesBoss, EntityType.ZOMBIE, 1, World.Environment.NORMAL));
         result.add(new BossMobBookOrigin(this, 10, levelChancesBoss, EntityType.ZOMBIE_VILLAGER, 1, World.Environment.NORMAL));
 
