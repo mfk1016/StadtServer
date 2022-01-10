@@ -8,7 +8,6 @@ import org.bukkit.entity.Villager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class VillagerTradeOrigin extends EnchantmentOrigin {
 
