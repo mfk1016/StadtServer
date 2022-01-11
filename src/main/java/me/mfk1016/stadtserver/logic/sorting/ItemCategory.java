@@ -57,6 +57,8 @@ public class ItemCategory {
                 bidx = i;
         }
         int result = Integer.compare(aidx, bidx);
+        if (result == 0 && aidx == subcategories.size())
+            return 0;
         return result == 0 ? subcategories.get(aidx).cmp(a, b) : result;
     }
 
