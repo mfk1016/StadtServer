@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import me.mfk1016.stadtserver.listener.*;
 import me.mfk1016.stadtserver.logic.DispenserDropperLogic;
 import me.mfk1016.stadtserver.logic.MinecartLogic;
+import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
 import me.mfk1016.stadtserver.rituals.RitualManager;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Sound;
@@ -41,6 +42,7 @@ public class StadtServer extends JavaPlugin {
         LOGGER.info(getDescription().getName() + ": check configuration...");
         saveDefaultConfig();
         Keys.initialize(this);
+        CategoryManager.initialize();
 
         LOGGER.info(getDescription().getName() + ": register enchantments...");
         EnchantmentManager.onPluginEnable(this);

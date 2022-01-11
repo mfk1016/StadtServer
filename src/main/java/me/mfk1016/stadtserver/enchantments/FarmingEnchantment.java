@@ -1,7 +1,7 @@
 package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.logic.MaterialTypes;
+import me.mfk1016.stadtserver.logic.sorting.ToolCategories;
 import me.mfk1016.stadtserver.origin.enchantment.*;
 import me.mfk1016.stadtserver.util.CropData;
 import org.bukkit.GameMode;
@@ -62,7 +62,7 @@ public class FarmingEnchantment extends CustomEnchantment {
 
     @Override
     public boolean canEnchantItem(@NotNull ItemStack item) {
-        return MaterialTypes.isHoe(item.getType());
+        return ToolCategories.isHoe(item.getType());
     }
 
     @Override
@@ -106,7 +106,7 @@ public class FarmingEnchantment extends CustomEnchantment {
     public void onHoeUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack hoe = player.getInventory().getItemInMainHand();
-        if (stackEmpty(hoe) || !MaterialTypes.isHoe(hoe.getType()) || event.getAction() != Action.RIGHT_CLICK_BLOCK)
+        if (stackEmpty(hoe) || !ToolCategories.isHoe(hoe.getType()) || event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
         int farmingLevel = hoe.getEnchantments().getOrDefault(this, 0);
         Block target = event.getClickedBlock();

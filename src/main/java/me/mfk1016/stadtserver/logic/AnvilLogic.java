@@ -1,6 +1,7 @@
 package me.mfk1016.stadtserver.logic;
 
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
+import me.mfk1016.stadtserver.logic.sorting.FarmCategories;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -205,9 +206,14 @@ public class AnvilLogic {
             case IRON_AXE, IRON_HOE, IRON_PICKAXE, IRON_SHOVEL, IRON_SWORD, SHEARS,
                     IRON_BOOTS, IRON_CHESTPLATE, IRON_LEGGINGS, IRON_HELMET,
                     CHAINMAIL_BOOTS, CHAINMAIL_CHESTPLATE, CHAINMAIL_HELMET, CHAINMAIL_LEGGINGS -> repair == Material.IRON_INGOT;
-            case STONE_AXE, STONE_HOE, STONE_PICKAXE, STONE_SHOVEL, STONE_SWORD -> MaterialTypes.isAnvilStone(repair);
+            case STONE_AXE, STONE_HOE, STONE_PICKAXE, STONE_SHOVEL, STONE_SWORD ->
+                    switch (repair) {
+                        case COBBLESTONE, COBBLED_DEEPSLATE, BLACKSTONE, GRANITE,
+                                DIORITE, ANDESITE -> true;
+                        default -> false;
+                    };
             case LEATHER_BOOTS, LEATHER_CHESTPLATE, LEATHER_LEGGINGS, LEATHER_HELMET -> repair == Material.LEATHER;
-            case WOODEN_AXE, WOODEN_HOE, WOODEN_PICKAXE, WOODEN_SHOVEL, WOODEN_SWORD, SHIELD -> MaterialTypes.isPlanks(repair);
+            case WOODEN_AXE, WOODEN_HOE, WOODEN_PICKAXE, WOODEN_SHOVEL, WOODEN_SWORD, SHIELD -> FarmCategories.isPlanks(repair);
             case TURTLE_HELMET -> repair == Material.SCUTE;
             case ELYTRA -> repair == Material.PHANTOM_MEMBRANE;
             case TRIDENT -> repair == Material.NAUTILUS_SHELL;

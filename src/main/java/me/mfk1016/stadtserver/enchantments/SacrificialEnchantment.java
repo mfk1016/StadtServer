@@ -2,7 +2,7 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.logic.MaterialTypes;
+import me.mfk1016.stadtserver.logic.sorting.ToolCategories;
 import me.mfk1016.stadtserver.origin.enchantment.*;
 import me.mfk1016.stadtserver.rituals.RitualManager;
 import org.bukkit.Material;
@@ -60,7 +60,7 @@ public class SacrificialEnchantment extends CustomEnchantment {
 
     @Override
     public boolean canEnchantItem(@NotNull ItemStack item) {
-        return MaterialTypes.isSword(item.getType()) || MaterialTypes.isAxe(item.getType());
+        return ToolCategories.isSword(item.getType()) || ToolCategories.isAxe(item.getType());
     }
 
     @Override

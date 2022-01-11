@@ -2,8 +2,9 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.logic.MaterialTypes;
+import me.mfk1016.stadtserver.logic.sorting.FarmCategories;
 import me.mfk1016.stadtserver.logic.TreeChopper;
+import me.mfk1016.stadtserver.logic.sorting.ToolCategories;
 import me.mfk1016.stadtserver.origin.enchantment.*;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -63,7 +64,7 @@ public class ChoppingEnchantment extends CustomEnchantment {
 
     @Override
     public boolean canEnchantItem(@NotNull ItemStack item) {
-        return MaterialTypes.isAxe(item.getType());
+        return ToolCategories.isAxe(item.getType());
     }
 
     @Override
@@ -110,7 +111,7 @@ public class ChoppingEnchantment extends CustomEnchantment {
 
         // Calculate the logs to chop
         Block target = event.getBlock();
-        if (!MaterialTypes.isLog(target.getType()))
+        if (!FarmCategories.isLog(target.getType()))
             return;
         TreeChopper tc = new TreeChopper(player, axe, target, plugin);
         tc.chopTree();

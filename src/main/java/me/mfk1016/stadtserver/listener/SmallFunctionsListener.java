@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.DispenserDropperLogic;
-import me.mfk1016.stadtserver.logic.MaterialTypes;
+import me.mfk1016.stadtserver.logic.sorting.ToolCategories;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -81,7 +81,7 @@ public class SmallFunctionsListener extends BasicListener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null || event.getItem() == null)
             return;
         Block dirt = Objects.requireNonNull(event.getClickedBlock());
-        if (dirt.getType() != Material.DIRT || !MaterialTypes.isShovel(event.getItem().getType()))
+        if (dirt.getType() != Material.DIRT || !ToolCategories.isShovel(event.getItem().getType()))
             return;
 
         dirt.setType(Material.DIRT_PATH);

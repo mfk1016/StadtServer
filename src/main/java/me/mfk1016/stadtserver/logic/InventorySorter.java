@@ -1,13 +1,13 @@
 package me.mfk1016.stadtserver.logic;
 
 import me.mfk1016.stadtserver.EnchantmentManager;
+import me.mfk1016.stadtserver.logic.sorting.*;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.scheduler.BukkitWorker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,11 +79,11 @@ public class InventorySorter {
         if (result != 0 || a == null) return result;
 
         // Type
-        result = cmpType(a, b);
+        result = CategoryManager.cmp(a.getType(), b.getType());
         if (result != 0) return result;
 
         // Lexical
-        result = cmpLexical(a, b);
+        result = Integer.compare(a.getType().name().compareTo(b.getType().name()), 0);
         if (result != 0) return result;
 
         // Amount
@@ -100,53 +100,18 @@ public class InventorySorter {
     }
 
     private static int cmpExistence(ItemStack a, ItemStack b) {
-        boolean notExistsA = stackEmpty(a);
-        boolean notExistsB = stackEmpty(b);
-        // null / air > alles andere
-        if (notExistsA && notExistsB) {
+        boolean existsA = !stackEmpty(a);
+        boolean existsB = !stackEmpty(b);
+        // item < emtpy stack
+        if (existsA && existsB) {
             return 0;
-        } else if (notExistsA) {
-            return 1;
-        } else if (notExistsB) {
+        } else if (existsA) {
             return -1;
+        } else if (existsB) {
+            return 1;
         } else {
             return 0;
         }
-    }
-
-    private static int cmpType(ItemStack a, ItemStack b) {
-        return cmpChain(MaterialTypes::isTool,
-                        MaterialTypes::isStackTool,
-                        MaterialTypes::isArmor,
-                        MaterialTypes::isVehicle,
-                        MaterialTypes::isRedstone,
-                        MaterialTypes::isRail,
-                        MaterialTypes::isInventory,
-                        MaterialTypes::isFurniture,
-                        MaterialTypes::isChoppingResult,
-                        MaterialTypes::isFarmingResult,
-                        MaterialTypes::isAnimalResult,
-                        MaterialTypes::isMonsterResult).apply(new Pair<>(a, b));
-    }
-
-    private static int cmpLexical(ItemStack a, ItemStack b) {
-        StringBuilder as = new StringBuilder(a.getType().name().toLowerCase());
-        StringBuilder bs = new StringBuilder(b.getType().name().toLowerCase());
-        boolean aCatFound = false;
-        boolean bCatFound = false;
-        for (var cat : categories) {
-            if (!aCatFound && as.toString().contains(cat)) {
-                as.insert(0, cat);
-                aCatFound = true;
-            }
-            if (!bCatFound && bs.toString().contains(cat)) {
-                bs.insert(0, cat);
-                bCatFound = true;
-            }
-            if (aCatFound && bCatFound)
-                break;
-        }
-        return Integer.compare(as.toString().compareTo(bs.toString()), 0);
     }
 
     private static int cmpEnchantments(ItemStack a, ItemStack b) {
@@ -190,89 +155,5 @@ public class InventorySorter {
         } else {
             return 0;
         }
-    }
-
-    private static final List<String> categories = new ArrayList<>();
-
-    static {
-        categories.add("dark_oak");
-        categories.add("oak");
-        categories.add("birch");
-        categories.add("spruce");
-        categories.add("acacia");
-        categories.add("jungle");
-        categories.add("crimson");
-        categories.add("nether_wart");
-        categories.add("warped");
-        categories.add("azalea");
-        categories.add("dirt");
-        categories.add("honey");
-        categories.add("chorus");
-        categories.add("carrot");
-        categories.add("potato");
-        categories.add("glowstone");
-        categories.add("melon");
-        categories.add("pumpkin");
-        categories.add("slime");
-        categories.add("piston");
-        categories.add("minecart");
-
-        categories.add("lingering_potion");
-        categories.add("splash_potion");
-        categories.add("potion");
-
-        categories.add("dye");
-        categories.add("bed");
-        categories.add("banner");
-        categories.add("candle");
-        categories.add("carpet");
-        categories.add("glass_pane");
-        categories.add("glass");
-        categories.add("wool");
-        categories.add("shulker_box");
-        categories.add("glazed_terracotta");
-        categories.add("terracotta");
-        categories.add("concrete");
-
-        categories.add("netherite");
-        categories.add("diamond");
-        categories.add("gold");
-        categories.add("iron");
-        categories.add("copper");
-        categories.add("amethyst");
-        categories.add("lapis");
-        categories.add("coal");
-        categories.add("quartz");
-        categories.add("granite");
-        categories.add("diorite");
-        categories.add("andesite");
-        categories.add("deepslate");
-        categories.add("red_sandstone");
-        categories.add("sandstone");
-        categories.add("end_stone");
-        categories.add("cobblestone");
-        categories.add("basalt");
-        categories.add("blackstone");
-        categories.add("prismarine");
-        categories.add("nether_brick");
-        categories.add("stone_brick");
-        categories.add("stone");
-        categories.add("brick");
-    }
-
-    @SafeVarargs
-    private static Function<Pair<ItemStack, ItemStack>, Integer> cmpChain(Predicate<Material>... cmps) {
-        return (p) -> {
-            for (var cmp : cmps) {
-                if (cmp.test(p._1.getType()) && cmp.test(p._2.getType())) {
-                    return 0;
-                } else if (cmp.test(p._1.getType())) {
-                    return -1;
-                } else if (cmp.test(p._2.getType())) {
-                    return 1;
-                }
-            }
-            return 0;
-        };
     }
 }
