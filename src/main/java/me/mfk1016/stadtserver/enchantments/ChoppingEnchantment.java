@@ -2,8 +2,8 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.logic.sorting.FarmCategories;
 import me.mfk1016.stadtserver.logic.TreeChopper;
+import me.mfk1016.stadtserver.logic.sorting.FarmCategories;
 import me.mfk1016.stadtserver.logic.sorting.ToolCategories;
 import me.mfk1016.stadtserver.origin.enchantment.*;
 import org.bukkit.GameMode;

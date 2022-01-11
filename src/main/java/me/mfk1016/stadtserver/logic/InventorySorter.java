@@ -1,20 +1,15 @@
 package me.mfk1016.stadtserver.logic;
 
 import me.mfk1016.stadtserver.EnchantmentManager;
-import me.mfk1016.stadtserver.logic.sorting.*;
-import me.mfk1016.stadtserver.util.Pair;
+import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 

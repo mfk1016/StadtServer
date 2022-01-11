@@ -117,8 +117,8 @@ public class ToolCategories {
 
     public static boolean isTool(Material material) {
         return material.name().toLowerCase().contains("disc") || switch (material) {
-                case DIAMOND_HORSE_ARMOR, GOLDEN_HORSE_ARMOR, IRON_HORSE_ARMOR, LEATHER_HORSE_ARMOR, SADDLE -> true;
-                default -> false;
-            };
+            case DIAMOND_HORSE_ARMOR, GOLDEN_HORSE_ARMOR, IRON_HORSE_ARMOR, LEATHER_HORSE_ARMOR, SADDLE -> true;
+            default -> false;
+        };
     }
 }
