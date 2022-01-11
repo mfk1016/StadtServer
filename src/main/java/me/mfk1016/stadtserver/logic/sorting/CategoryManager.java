@@ -86,6 +86,7 @@ public class CategoryManager {
         addCategory("work.bed", nameMatch("BED"));
         addCategory("work.banner", nameMatch("BANNER"));
 
+        addCategory("magic", FarmCategories::isMagicBrew);
 
         addCategory("mine.coal", nameMatch("COAL"));
         addCategory("mine.smelt", MineCategories::isSmeltable);
@@ -101,7 +102,6 @@ public class CategoryManager {
         addCategory("mine", MineCategories::isMine);
 
 
-        addCategory("farm.magic", FarmCategories::isMagicBrew);
         addCategory("farm.monster", FarmCategories::isMobDrop);
 
         addCategory("farm.food", FarmCategories::isFood);
