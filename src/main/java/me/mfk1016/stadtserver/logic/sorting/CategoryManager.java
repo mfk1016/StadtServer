@@ -7,12 +7,10 @@ import me.mfk1016.stadtserver.StadtServer;
 import org.bukkit.Material;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class CategoryManager {
 
