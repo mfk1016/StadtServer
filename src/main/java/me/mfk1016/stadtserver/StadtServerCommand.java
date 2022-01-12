@@ -127,7 +127,7 @@ public class StadtServerCommand implements CommandExecutor {
     }
 
     private boolean onCommandSorting() {
-        CategoryManager.dumpJson(plugin);
+        CategoryManager.initialize(plugin);
         return true;
     }
 }

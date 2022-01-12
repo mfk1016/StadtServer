@@ -42,7 +42,7 @@ public class StadtServer extends JavaPlugin {
         LOGGER.info(getDescription().getName() + ": check configuration...");
         saveDefaultConfig();
         Keys.initialize(this);
-        CategoryManager.initialize();
+        CategoryManager.initialize(this);
 
         LOGGER.info(getDescription().getName() + ": register enchantments...");
         EnchantmentManager.onPluginEnable(this);

@@ -1,32 +1,23 @@
 package me.mfk1016.stadtserver.logic.sorting;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 public class ItemCategory {
 
     private final String name;
     private final String fullName;
-    private Predicate<Material> memberFunction;
+    private Material[] materials;
     private final List<ItemCategory> subcategories = new ArrayList<>();
 
-    public List<Material> toDump = new ArrayList<>();
-
-    public ItemCategory(@NotNull String name, @NotNull String namespace, @Nullable Predicate<Material> memberFunction) {
+    public ItemCategory(@NotNull String name, @NotNull String namespace, @Nullable Material[] materials) {
         this.name = name;
         this.fullName = namespace.isBlank() ? name : namespace + "." + name;
-        this.memberFunction = Objects.requireNonNullElseGet(memberFunction, () -> (m) -> false);
+        this.materials = materials;
     }
 
     public String getName() {
@@ -50,38 +41,47 @@ public class ItemCategory {
     }
 
     public int cmp(Material a, Material b) {
-        if (isLeaf())
-            return 0;
-        int aidx = subcategories.size();
-        int bidx = aidx;
-        for (int i = 0; i < subcategories.size(); i++) {
-            if (aidx <= i && bidx <= i)
-                break;
-            ItemCategory subcat = subcategories.get(i);
-            if (i < aidx && subcat.isMember(a))
-                aidx = i;
-            if (i < bidx && subcat.isMember(b))
-                bidx = i;
+        boolean memA, memB;
+        for (var cat : subcategories) {
+            memA = cat.isMember(a);
+            memB = cat.isMember(b);
+            if (memA && memB) {
+                return cat.cmp(a, b);
+            } else if (memA) {
+                return -1;
+            } else if (memB) {
+                return 1;
+            }
         }
-        int result = Integer.compare(aidx, bidx);
-        if (result == 0 && aidx == subcategories.size())
+
+        if (materials == null || materials.length == 0)
             return 0;
-        return result == 0 ? subcategories.get(aidx).cmp(a, b) : result;
+        int idxA = materials.length;
+        int idxB = materials.length;
+        for (int i = 0; i < materials.length; i++) {
+            if (idxA <= i && idxB <= i)
+                break;
+            if (materials[i] == a)
+                idxA = i;
+            if (materials[i] == b)
+                idxB = i;
+        }
+        return Integer.compare(idxA, idxB);
     }
 
-    public void addSubCategory(@NotNull String name, @Nullable Predicate<Material> memberFunction) {
+    public void addSubCategory(@NotNull String name, @Nullable Material[] mats) {
         String[] chain = name.split("\\.");
         if (chain.length == 1) {
             if (!isSubCategory(name))
-                subcategories.add(new ItemCategory(name, fullName, memberFunction));
+                subcategories.add(new ItemCategory(name, fullName, mats));
             else
-                getSubCategory(name).setMemberFunction(memberFunction);
+                getSubCategory(name).setMaterials(mats);
         } else {
             String subname = chain[0];
             String leftName = name.substring(subname.length() + 1);
             if (!isSubCategory(subname))
                 subcategories.add(new ItemCategory(subname, fullName, null));
-            getSubCategory(subname).addSubCategory(leftName, memberFunction);
+            getSubCategory(subname).addSubCategory(leftName, mats);
         }
     }
 
@@ -103,8 +103,11 @@ public class ItemCategory {
     }
 
     public boolean isMember(Material mat) {
-        if (memberFunction.test(mat))
-            return true;
+        if (materials != null)
+            for (var m : materials) {
+                if (mat == m)
+                    return true;
+            }
         for (var cat : subcategories) {
             if (cat.isMember(mat))
                 return true;
@@ -112,19 +115,7 @@ public class ItemCategory {
         return false;
     }
 
-    public void setMemberFunction(Predicate<Material> memberFunction) {
-        this.memberFunction = memberFunction;
-    }
-
-    public List<Pair<String, List<String>>> toJson() {
-        List<Pair<String, List<String>>> result = new ArrayList<>();
-        for (var cat : subcategories) {
-            result.addAll(cat.toJson());
-        }
-        if (!toDump.isEmpty()) {
-            List<String> matkeys = toDump.stream().map((mat) -> mat.getKey().toString()).toList();
-            result.add(new Pair<>(fullName, matkeys));
-        }
-        return result;
+    public void setMaterials(Material[] mats) {
+        this.materials = mats;
     }
 }

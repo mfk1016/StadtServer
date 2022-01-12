@@ -3,7 +3,6 @@
     "minecraft:stick",
     "minecraft:torch"
   ],
-
   "tool.pickaxe": [
     "minecraft:netherite_pickaxe",
     "minecraft:diamond_pickaxe",
@@ -60,7 +59,6 @@
     "minecraft:carrot_on_a_stick",
     "minecraft:warped_fungus_on_a_stick"
   ],
-
   "tool.armor.helmet": [
     "minecraft:netherite_helmet",
     "minecraft:diamond_helmet",
@@ -99,7 +97,6 @@
   "tool.armor": [
     "minecraft:armor_stand"
   ],
-
   "tool.map": [
     "minecraft:map",
     "minecraft:filled_map"
@@ -165,7 +162,6 @@
     "minecraft:iron_horse_armor",
     "minecraft:leather_horse_armor"
   ],
-
   "valuable": [
     "minecraft:dragon_egg",
     "minecraft:dragon_head",
@@ -274,7 +270,6 @@
     "minecraft:music_disc_otherside",
     "minecraft:music_disc_pigstep"
   ],
-
   "vehicle.boat": [
     "minecraft:oak_boat",
     "minecraft:spruce_boat",
@@ -296,7 +291,6 @@
     "minecraft:detector_rail",
     "minecraft:activator_rail"
   ],
-
   "redstone.basic": [
     "minecraft:redstone_block",
     "minecraft:redstone",
@@ -367,7 +361,6 @@
     "minecraft:crimson_pressure_plate",
     "minecraft:warped_pressure_plate"
   ],
-
   "farm.food": [
     "minecraft:cooked_beef",
     "minecraft:cooked_porkchop",
@@ -462,7 +455,6 @@
     "minecraft:cobweb",
     "minecraft:phantom_membrane"
   ],
-
   "farm.dye": [
     "minecraft:white_dye",
     "minecraft:orange_dye",
@@ -597,7 +589,6 @@
     "minecraft:warped_roots",
     "minecraft:nether_sprouts"
   ],
-
   "farm.tree.sapling": [
     "minecraft:oak_sapling",
     "minecraft:spruce_sapling",
@@ -713,7 +704,6 @@
     "minecraft:warped_fence_gate",
     "minecraft:warped_fence"
   ],
-
   "mine.coal": [
     "minecraft:coal_block",
     "minecraft:coal",
@@ -825,7 +815,6 @@
     "minecraft:crying_obsidian",
     "minecraft:magma_block"
   ],
-
   "build.bed": [
     "minecraft:white_bed",
     "minecraft:orange_bed",
@@ -897,7 +886,6 @@
     "minecraft:painting",
     "minecraft:jack_o_lantern"
   ],
-
   "build.soil.dirt": [
     "minecraft:dirt",
     "minecraft:grass_block",
@@ -996,7 +984,6 @@
     "minecraft:packed_ice",
     "minecraft:blue_ice"
   ],
-
   "build.normal.cobble": [
     "minecraft:cobblestone",
     "minecraft:cobblestone_slab",
@@ -1162,7 +1149,6 @@
     "minecraft:prismarine_shard",
     "minecraft:prismarine_crystals"
   ],
-
   "build.nether.rack": [
     "minecraft:netherrack",
     "minecraft:crimson_nylium",
@@ -1206,7 +1192,6 @@
     "minecraft:polished_basalt",
     "minecraft:smooth_basalt"
   ],
-
   "build.end.stone": [
     "minecraft:end_stone",
     "minecraft:end_stone_bricks",
@@ -1221,7 +1206,6 @@
     "minecraft:purpur_stairs",
     "minecraft:purpur_pillar"
   ],
-
   "": [
     "minecraft:end_portal_frame",
     "minecraft:barrier",
@@ -1235,5 +1219,98 @@
     "minecraft:nether_portal",
     "minecraft:end_portal",
     "minecraft:end_gateway"
+  ],
+  "_order": [
+    "important",
+    "tool.pickaxe",
+    "tool.shovel",
+    "tool.axe",
+    "tool.weapon.sword",
+    "tool.weapon",
+    "tool.hoe",
+    "tool.misc",
+    "tool.armor.helmet",
+    "tool.armor.chest",
+    "tool.armor.leggins",
+    "tool.armor.boots",
+    "tool.armor",
+    "tool.map",
+    "tool.potion",
+    "tool.projectile",
+    "tool.stack.sign",
+    "tool.stack.bucket",
+    "tool.stack",
+    "tool",
+    "valuable",
+    "work.station",
+    "work.inventory",
+    "work.enchant",
+    "work.brew",
+    "work",
+    "vehicle.boat",
+    "vehicle.minecart",
+    "vehicle",
+    "redstone.basic",
+    "redstone.button",
+    "redstone.door",
+    "redstone.trapdoor",
+    "redstone",
+    "farm.food",
+    "farm.animal.meat",
+    "farm.animal.honey",
+    "farm.animal.wool",
+    "farm.animal",
+    "farm.monster",
+    "farm.dye",
+    "farm.plant.crop",
+    "farm.plant.grow",
+    "farm.plant.seed",
+    "farm.plant.coral",
+    "farm.plant",
+    "farm.tree.sapling",
+    "farm.tree.leaves",
+    "farm.tree.oak",
+    "farm.tree.birch",
+    "farm.tree.spruce",
+    "farm.tree.jungle",
+    "farm.tree.acacia",
+    "farm.tree.dark_oak",
+    "farm.tree.crimson",
+    "farm.tree",
+    "mine.coal",
+    "mine.amethyst",
+    "mine.gold",
+    "mine.iron",
+    "mine.copper",
+    "mine.lapis",
+    "mine.quartz",
+    "mine.glow",
+    "mine.smelt",
+    "mine",
+    "build.bed",
+    "build.banner",
+    "build.furniture",
+    "build.soil.dirt",
+    "build.soil.clay",
+    "build.soil.claybrick",
+    "build.soil.concrete",
+    "build.soil",
+    "build.normal.cobble",
+    "build.normal.stone",
+    "build.normal.granite",
+    "build.normal.diorite",
+    "build.normal.andesite",
+    "build.normal.deepslate",
+    "build.normal.sandstone",
+    "build.normal.red_sandstone",
+    "build.normal.glass",
+    "build.normal",
+    "build.nether.rack",
+    "build.nether.brick",
+    "build.nether.blackstone",
+    "build.nether",
+    "build.end.stone",
+    "build.end",
+    ""
   ]
 }
