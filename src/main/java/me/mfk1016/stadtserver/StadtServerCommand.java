@@ -50,8 +50,11 @@ public class StadtServerCommand implements CommandExecutor {
                 return onCommandAncientTome(player);
             }
         } else if (Objects.equals(section, "sort")) {
+            boolean setDefault = false;
+            if (args.length == 2 && args[1].equals("reset"))
+                setDefault = true;
             if (sender instanceof Player player) {
-                return onCommandSorting();
+                return onCommandSorting(setDefault);
             }
         }
         return false;
@@ -126,8 +129,8 @@ public class StadtServerCommand implements CommandExecutor {
         return true;
     }
 
-    private boolean onCommandSorting() {
-        CategoryManager.initialize(plugin);
+    private boolean onCommandSorting(boolean setDefault) {
+        CategoryManager.initialize(plugin, setDefault);
         return true;
     }
 }

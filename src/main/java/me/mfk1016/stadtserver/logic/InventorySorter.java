@@ -74,11 +74,7 @@ public class InventorySorter {
         if (result != 0 || a == null) return result;
 
         // Type
-        result = CategoryManager.cmp(a.getType(), b.getType());
-        if (result != 0) return result;
-
-        // Lexical
-        result = Integer.compare(a.getType().name().compareTo(b.getType().name()), 0);
+        result = CategoryManager.sort(a.getType(), b.getType());
         if (result != 0) return result;
 
         // Amount
