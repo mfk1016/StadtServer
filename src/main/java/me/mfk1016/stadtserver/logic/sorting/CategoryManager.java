@@ -1,9 +1,21 @@
 package me.mfk1016.stadtserver.logic.sorting;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class CategoryManager {
@@ -156,5 +168,30 @@ public class CategoryManager {
         addCategory("build.glass", nameMatch("GLASS"));
         addCategory("build.prismarine.lantern", singleMatch(Material.SEA_LANTERN));
         addCategory("build.prismarine", nameMatch("PRISMARINE"));
+    }
+
+    public static void dumpJson(StadtServer plugin) {
+
+        var allmats = Arrays.stream(Material.values()).filter((mat) -> !mat.name().contains("LEGACY")).toList();
+        for (Material mat : allmats) {
+            root.matchCategory(mat).toDump.add(mat);
+        }
+
+        List<Pair<String, List<String>>> entries = root.toJson();
+        Map<String, Object> result = new HashMap<>();
+        for (var p : entries) {
+            result.put(p._1, p._2);
+        }
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String fileData = gson.toJson(result);
+
+        File sortingConfig = new File(plugin.getDataFolder(), "categories.json");
+        sortingConfig.delete();
+        try {
+            Files.write(sortingConfig.toPath(), fileData.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

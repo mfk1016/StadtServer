@@ -1,5 +1,10 @@
 package me.mfk1016.stadtserver.logic.sorting;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +20,8 @@ public class ItemCategory {
     private final String fullName;
     private Predicate<Material> memberFunction;
     private final List<ItemCategory> subcategories = new ArrayList<>();
+
+    public List<Material> toDump = new ArrayList<>();
 
     public ItemCategory(@NotNull String name, @NotNull String namespace, @Nullable Predicate<Material> memberFunction) {
         this.name = name;
@@ -107,5 +114,17 @@ public class ItemCategory {
 
     public void setMemberFunction(Predicate<Material> memberFunction) {
         this.memberFunction = memberFunction;
+    }
+
+    public List<Pair<String, List<String>>> toJson() {
+        List<Pair<String, List<String>>> result = new ArrayList<>();
+        for (var cat : subcategories) {
+            result.addAll(cat.toJson());
+        }
+        if (!toDump.isEmpty()) {
+            List<String> matkeys = toDump.stream().map((mat) -> mat.getKey().toString()).toList();
+            result.add(new Pair<>(fullName, matkeys));
+        }
+        return result;
     }
 }

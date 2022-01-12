@@ -3,6 +3,7 @@ package me.mfk1016.stadtserver;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.listener.BossMobListener;
 import me.mfk1016.stadtserver.logic.AncientTome;
+import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
 import me.mfk1016.stadtserver.util.BossName;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -47,6 +48,10 @@ public class StadtServerCommand implements CommandExecutor {
         } else if (Objects.equals(section, "ancient")) {
             if (sender instanceof Player player) {
                 return onCommandAncientTome(player);
+            }
+        } else if (Objects.equals(section, "sort")) {
+            if (sender instanceof Player player) {
+                return onCommandSorting();
             }
         }
         return false;
@@ -118,6 +123,11 @@ public class StadtServerCommand implements CommandExecutor {
 
     private boolean onCommandAncientTome(Player player) {
         player.getWorld().dropItem(player.getLocation(), AncientTome.randomAncientTome());
+        return true;
+    }
+
+    private boolean onCommandSorting() {
+        CategoryManager.dumpJson(plugin);
         return true;
     }
 }
