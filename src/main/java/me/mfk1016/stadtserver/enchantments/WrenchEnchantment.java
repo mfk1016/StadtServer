@@ -2,7 +2,7 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.logic.sorting.ToolCategories;
+import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.logic.wrench.WrenchAction;
 import me.mfk1016.stadtserver.logic.wrench.WrenchActionStateChange;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
@@ -91,7 +91,7 @@ public class WrenchEnchantment extends CustomEnchantment {
 
     @Override
     public boolean canEnchantItem(ItemStack item) {
-        return ToolCategories.isShovel(item.getType());
+        return PluginCategories.isShovel(item.getType());
     }
 
     @Override

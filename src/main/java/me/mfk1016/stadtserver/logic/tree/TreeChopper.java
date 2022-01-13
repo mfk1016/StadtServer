@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.logic;
+package me.mfk1016.stadtserver.logic.tree;
 
 import me.mfk1016.stadtserver.StadtServer;
 import org.bukkit.GameMode;
@@ -68,7 +68,7 @@ public class TreeChopper {
             Block current = blocksToCheck.getFirst();
             for (Block relative : getUpwardRelatives(current)) {
                 if (relative != null && !checkedBlocks.contains(relative)) {
-                    if (isLog(relative)) {
+                    if (isLog(relative) || isWood(relative)) {
                         treeLogs.addLast(relative);
                         blocksToCheck.addLast(relative);
                     } else if (isLeaves(relative)) {
@@ -123,13 +123,7 @@ public class TreeChopper {
     }
 
     private int limitForLog() {
-        return switch (logType) {
-            case ACACIA_LOG, BIRCH_LOG -> 12;
-            case CRIMSON_STEM, WARPED_STEM -> 70;
-            case DARK_OAK_LOG, OAK_LOG -> 80;
-            case JUNGLE_LOG, SPRUCE_LOG -> 160;
-            default -> 10;
-        };
+        return 500;
     }
 
     private boolean isLog(Block block) {
@@ -148,6 +142,20 @@ public class TreeChopper {
             case JUNGLE_LOG -> toCheck == Material.JUNGLE_LEAVES;
             case SPRUCE_LOG -> toCheck == Material.SPRUCE_LEAVES;
             default -> toCheck == Material.DIAMOND_BLOCK;
+        };
+    }
+
+    private boolean isWood(Block block) {
+        return switch (logType) {
+            case ACACIA_LOG -> block.getType() == Material.ACACIA_WOOD;
+            case BIRCH_LOG -> block.getType() == Material.BIRCH_WOOD;
+            case CRIMSON_STEM -> block.getType() == Material.CRIMSON_HYPHAE;
+            case WARPED_STEM -> block.getType() == Material.WARPED_HYPHAE;
+            case DARK_OAK_LOG -> block.getType() == Material.DARK_OAK_WOOD;
+            case OAK_LOG -> block.getType() == Material.OAK_WOOD;
+            case JUNGLE_LOG -> block.getType() == Material.JUNGLE_WOOD;
+            case SPRUCE_LOG -> block.getType() == Material.SPRUCE_WOOD;
+            default -> false;
         };
     }
 }

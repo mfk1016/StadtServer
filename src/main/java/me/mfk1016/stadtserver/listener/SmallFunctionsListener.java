@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.DispenserDropperLogic;
-import me.mfk1016.stadtserver.logic.sorting.ToolCategories;
+import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -81,7 +81,7 @@ public class SmallFunctionsListener extends BasicListener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null || event.getItem() == null)
             return;
         Block dirt = Objects.requireNonNull(event.getClickedBlock());
-        if (dirt.getType() != Material.DIRT || !ToolCategories.isShovel(event.getItem().getType()))
+        if (dirt.getType() != Material.DIRT || !PluginCategories.isShovel(event.getItem().getType()))
             return;
 
         dirt.setType(Material.DIRT_PATH);
@@ -92,7 +92,7 @@ public class SmallFunctionsListener extends BasicListener {
     public void onSignClick(PlayerInteractEvent event) {
 
         Player p = event.getPlayer();
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && p.isSneaking())
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !p.isSneaking())
             return;
         if (p.getInventory().getItemInMainHand().getType() == Material.GLOW_INK_SAC)
             return;

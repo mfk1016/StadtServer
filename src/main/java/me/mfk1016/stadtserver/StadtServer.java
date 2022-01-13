@@ -31,6 +31,7 @@ public class StadtServer extends JavaPlugin {
     private final BossMobListener bossMobListener = new BossMobListener(this);
     private final DoorListener doorListener = new DoorListener(this);
     private final BrewingListener brewingListener = new BrewingListener(this);
+    private final TreeListener treeListener = new TreeListener(this);
 
     public static void broadcastSound(Block block, Sound sound, float volume, float pitch) {
         block.getWorld().playSound(block.getLocation(), sound, volume, pitch);
@@ -55,6 +56,7 @@ public class StadtServer extends JavaPlugin {
         pm.registerEvents(this.bossMobListener, this);
         pm.registerEvents(this.doorListener, this);
         pm.registerEvents(this.brewingListener, this);
+        pm.registerEvents(this.treeListener, this);
         ProtocolLibrary.getProtocolManager().addPacketListener(signPacketListener);
 
         LOGGER.info(getDescription().getName() + ": register recipes...");

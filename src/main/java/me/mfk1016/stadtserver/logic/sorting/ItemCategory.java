@@ -32,12 +32,16 @@ public class ItemCategory {
         return subcategories.isEmpty();
     }
 
-    public ItemCategory matchCategory(Material mat) {
-        for (var cat : subcategories) {
-            if (cat.isMember(mat))
-                return cat.matchCategory(mat);
+    public boolean isMatched(String fullName, Material mat) {
+        if (this.fullName == fullName) {
+            return isMember(mat);
         }
-        return this;
+        if (fullName.startsWith(this.fullName))
+            for (var cat : subcategories) {
+                if (isMatched(fullName, mat))
+                    return true;
+            }
+        return false;
     }
 
     public int cmp(Material a, Material b) {
