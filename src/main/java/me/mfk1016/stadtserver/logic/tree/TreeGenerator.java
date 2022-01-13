@@ -32,6 +32,8 @@ public abstract class TreeGenerator {
     }
 
     public boolean isEnoughSpace() {
+        if (nwBase.getLocation().getBlockY() + treeHeight > 310)
+            return false;
         int validHeight = 1;
         // Get the north west corner of the check area
         Block corner = nwBase;
@@ -62,7 +64,9 @@ public abstract class TreeGenerator {
     protected List<Pair<Block, Axis>> connectLogs(Block base, Block last) {
         List<Pair<Block, Axis>> result = new ArrayList<>();
         Vector distance = base.getLocation().toVector().subtract(last.getLocation().toVector());
-        assert distance.length() > 0;
+        if (distance.length() == 0)
+            return result;
+
         Axis axis;
         double xstep = Math.signum(distance.getX());
         double ystep = Math.signum(distance.getY());
@@ -80,11 +84,15 @@ public abstract class TreeGenerator {
             ystep *= (Math.abs(distance.getY()) / Math.abs(distance.getZ()));
             axis = Axis.Z;
         }
+
+        Vector step = new Vector(xstep, ystep, zstep);
+        if (step.length() == 0)
+            return result;
         Vector offset = new Vector();
         while (distance.length() > offset.length()) {
             Block current = last.getRelative(offset.getBlockX(), offset.getBlockY(), offset.getBlockZ());
             result.add(new Pair<>(current, axis));
-            offset.add(new Vector(xstep, ystep, zstep));
+            offset.add(step);
         }
         result.add(new Pair<>(base, Axis.Y));
         Collections.reverse(result);
