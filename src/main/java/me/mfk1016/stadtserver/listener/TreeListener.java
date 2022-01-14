@@ -1,7 +1,7 @@
 package me.mfk1016.stadtserver.listener;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.logic.tree.BigBirchGenerator;
+import me.mfk1016.stadtserver.logic.tree.LinearBirchGenerator;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
@@ -45,7 +45,7 @@ public class TreeListener extends BasicListener {
             if (nwBase == null)
                 return;
             int height = 20 + StadtServer.RANDOM.nextInt(15);
-            BigBirchGenerator gen = new BigBirchGenerator(nwBase, height);
+            LinearBirchGenerator gen = new LinearBirchGenerator(nwBase, height);
             if (gen.isEnoughSpace()) {
                 gen.generateTree();
                 event.setCancelled(true);

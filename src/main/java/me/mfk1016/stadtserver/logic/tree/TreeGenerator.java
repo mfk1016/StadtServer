@@ -1,8 +1,10 @@
 package me.mfk1016.stadtserver.logic.tree;
 
+import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Axis;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Orientable;
@@ -59,6 +61,19 @@ public abstract class TreeGenerator {
             return true;
         treeHeight = validHeight;
         return true;
+    }
+
+    protected Block randomBranchEnd(Block base, Branch b, double angleDown, double angleUp, double distance) {
+        Pair<Vector, Vector> quadEdges = b.getSphereQuadrant(angleDown, angleUp);
+        double offX = (quadEdges._2.getX() - quadEdges._1.getX()) * StadtServer.RANDOM.nextDouble();
+        double offY = (quadEdges._2.getY() - quadEdges._1.getY()) * StadtServer.RANDOM.nextDouble();
+        double offZ = (quadEdges._2.getZ() - quadEdges._1.getZ()) * StadtServer.RANDOM.nextDouble();
+        Vector toEnd = quadEdges._1.add(new Vector(offX, offY, offZ));
+        toEnd = toEnd.normalize().multiply(distance);
+        Location resultLoc = base.getLocation().clone().add(toEnd);
+        if (resultLoc.getBlockY() < -64 || resultLoc.getBlockY() > 319)
+            return base;
+        return resultLoc.getBlock();
     }
 
     protected List<Pair<Block, Axis>> connectLogs(Block base, Block last) {
