@@ -1,9 +1,11 @@
 package me.mfk1016.stadtserver.listener;
 
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.logic.tree.LinearBirchGenerator;
+import me.mfk1016.stadtserver.logic.tree.TreeGenerator;
+import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
-import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -18,38 +20,55 @@ public class TreeListener extends BasicListener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onTreeGrow(StructureGrowEvent event) {
-        Block block = event.getLocation().getBlock();
-        if (event.getSpecies() == TreeType.BIRCH) {
-            // Check that 2x2 saplings are placed
-            Block nwBase = null;
-            Material sap = Material.BIRCH_SAPLING;
-            if (block.getType() != sap)
-                return;
-            Block N, S, W, E;
-            N = block.getRelative(BlockFace.NORTH);
-            S = block.getRelative(BlockFace.SOUTH);
-            W = block.getRelative(BlockFace.WEST);
-            E = block.getRelative(BlockFace.EAST);
-            if (N.getType() == sap && W.getType() == sap && W.getRelative(BlockFace.NORTH).getType() == sap) {
-                nwBase = W.getRelative(BlockFace.NORTH);
-            }
-            if (N.getType() == sap && E.getType() == sap && E.getRelative(BlockFace.NORTH).getType() == sap) {
-                nwBase = N;
-            }
-            if (S.getType() == sap && W.getType() == sap && W.getRelative(BlockFace.SOUTH).getType() == sap) {
-                nwBase = W;
-            }
-            if (S.getType() == sap && E.getType() == sap && E.getRelative(BlockFace.SOUTH).getType() == sap) {
-                nwBase = block;
-            }
-            if (nwBase == null)
-                return;
-            int height = 20 + StadtServer.RANDOM.nextInt(15);
-            LinearBirchGenerator gen = new LinearBirchGenerator(nwBase, height);
+        Pair<Integer, Block> sizebase = getTreeShape(event.getLocation().getBlock());
+        if (sizebase == null)
+            return;
+        int size = sizebase._1;
+        Block nwBase = sizebase._2;
+        Material sapling = nwBase.getType();
+
+        if (size == 2 && (sapling == Material.BIRCH_SAPLING || sapling == Material.ACACIA_SAPLING || sapling == Material.OAK_SAPLING)) {
+            Material[] treeMats = TreeGenerator.getTreeMaterials(sapling);
+            LinearBirchGenerator gen = new LinearBirchGenerator(nwBase, treeMats[0], treeMats[1], sapling, treeMats[2]);
             if (gen.isEnoughSpace()) {
                 gen.generateTree();
                 event.setCancelled(true);
             }
         }
+    }
+
+    private Pair<Integer, Block> getTreeShape(Block test) {
+        if (!PluginCategories.isSapling(test.getType()))
+            return null;
+        Material sap = test.getType();
+        Block nwBase = test;
+        // Go to the north west edge
+        int steps = 0;
+        while (steps < 20) {
+            if (nwBase.getRelative(BlockFace.NORTH).getType() == sap) {
+                nwBase = nwBase.getRelative(BlockFace.NORTH);
+                steps++;
+            } else if (nwBase.getRelative(BlockFace.WEST).getType() == sap) {
+                nwBase = nwBase.getRelative(BlockFace.WEST);
+                steps++;
+            } else {
+                steps = 20;
+            }
+        }
+        // Find out the tree size
+        int size = 1;
+        // target = size to check - 1 (aka relatives)
+        for (int target = 1; target <= 4; target++) {
+            for (int x = 0; x < target; x++) {
+                if (nwBase.getRelative(x, 0, target).getType() != sap)
+                    return new Pair<>(size, nwBase);
+                if (nwBase.getRelative(target, 0, x).getType() != sap)
+                    return new Pair<>(size, nwBase);
+            }
+            if (nwBase.getRelative(target, 0, target).getType() != sap)
+                return new Pair<>(size, nwBase);
+            size++;
+        }
+        return new Pair<>(size, nwBase);
     }
 }

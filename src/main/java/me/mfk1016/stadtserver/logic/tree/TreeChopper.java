@@ -1,6 +1,7 @@
 package me.mfk1016.stadtserver.logic.tree;
 
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,6 +27,7 @@ public class TreeChopper {
     private final LinkedList<Block> blocksToCheck = new LinkedList<>();
     private final LinkedList<Block> treeLogs = new LinkedList<>();
     private final Material logType;
+    private final int maxLogs;
     private Iterator<Block> tmpIterator;
 
     public TreeChopper(Player player, ItemStack axe, Block init, StadtServer plugin) {
@@ -34,6 +36,7 @@ public class TreeChopper {
         this.axe = axe;
         blocksToCheck.add(init);
         logType = init.getType();
+        maxLogs = plugin.getConfig().getInt(Keys.CONFIG_MAX_LOGS);
     }
 
     public void chopTree() {
@@ -64,7 +67,7 @@ public class TreeChopper {
     private void collectLogs() {
 
         int leavesFound = 0;
-        while (blocksToCheck.size() > 0 && treeLogs.size() < limitForLog()) {
+        while (blocksToCheck.size() > 0 && treeLogs.size() < maxLogs) {
             Block current = blocksToCheck.getFirst();
             for (Block relative : getUpwardRelatives(current)) {
                 if (relative != null && !checkedBlocks.contains(relative)) {
@@ -120,10 +123,6 @@ public class TreeChopper {
             }
         }
         return result;
-    }
-
-    private int limitForLog() {
-        return 500;
     }
 
     private boolean isLog(Block block) {

@@ -1,1 +1,2 @@
 send_player_message: true
+chop_max_logs: 500

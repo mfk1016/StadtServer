@@ -129,4 +129,21 @@ public abstract class TreeGenerator {
             return;
         leaves.setType(leavesType);
     }
+
+    public abstract void generateTree();
+
+
+    public static Material[] getTreeMaterials(Material sapling) {
+        return switch (sapling) {
+            case OAK_SAPLING -> new Material[]{Material.OAK_LOG, Material.OAK_LEAVES, Material.OAK_WOOD};
+            case BIRCH_SAPLING -> new Material[]{Material.BIRCH_LOG, Material.BIRCH_LEAVES, Material.BIRCH_WOOD};
+            case SPRUCE_SAPLING -> new Material[]{Material.SPRUCE_LOG, Material.SPRUCE_LEAVES, Material.SPRUCE_WOOD};
+            case JUNGLE_SAPLING -> new Material[]{Material.JUNGLE_LOG, Material.JUNGLE_LEAVES, Material.JUNGLE_WOOD};
+            case ACACIA_SAPLING -> new Material[]{Material.ACACIA_LOG, Material.ACACIA_LEAVES, Material.ACACIA_WOOD};
+            case DARK_OAK_SAPLING -> new Material[]{Material.DARK_OAK_LOG, Material.DARK_OAK_LEAVES, Material.DARK_OAK_WOOD};
+            case CRIMSON_FUNGUS -> new Material[]{Material.CRIMSON_STEM, Material.NETHER_WART_BLOCK, Material.CRIMSON_HYPHAE};
+            case WARPED_FUNGUS -> new Material[]{Material.WARPED_STEM, Material.WARPED_WART_BLOCK, Material.WARPED_HYPHAE};
+            default -> null;
+        };
+    }
 }

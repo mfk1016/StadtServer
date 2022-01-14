@@ -5,6 +5,10 @@ import org.bukkit.NamespacedKey;
 
 public class Keys {
 
+    // Configuration
+    public static final String CONFIG_PLAYER_MESSAGE = "send_player_message";
+    public static final String CONFIG_MAX_LOGS = "chop_max_logs";
+
     // Entitites: Strings
 
     // Contains the eagle eye level of the used bow/crossbow
@@ -40,6 +44,8 @@ public class Keys {
 
 
     public static void initialize(StadtServer p) {
+        p.getConfig().addDefault(CONFIG_PLAYER_MESSAGE, true);
+        p.getConfig().addDefault(CONFIG_MAX_LOGS, 500);
         IS_WRENCHED = new NamespacedKey(p, IS_WRENCHED_s);
         IS_ANCIENT_TOME = new NamespacedKey(p, IS_ANCIENT_TOME_s);
     }

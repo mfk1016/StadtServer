@@ -14,20 +14,27 @@ import java.util.List;
 
 public class LinearBirchGenerator extends TreeGenerator {
 
-    // 2x2 Birch Tree; height = highest log
-    private int branchLength;
+    private static final int MIN_HEIGHT = 20;
+    private static final int HEIGHT_RANGE = 10;
+    private static final double TRUNK_FACTOR = 0.75D;
+
     private int trunkHeight;
     private int minBranch;
+    private final Material woodMat;
 
-    public LinearBirchGenerator(Block nwBase, int height) {
-        super(nwBase, height, 20, Material.BIRCH_LOG, Material.BIRCH_LEAVES, Material.BIRCH_SAPLING);
+    public LinearBirchGenerator(Block nwBase, Material log, Material leaves, Material sap, Material wood) {
+        super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
+                log, leaves, sap);
         checkSquare = 6;
+        woodMat = wood;
     }
 
+    @Override
     public void generateTree() {
-        trunkHeight = (int) ((double) treeHeight / 4D * 3D);
+        trunkHeight = (int) ((double) treeHeight * TRUNK_FACTOR);
         minBranch = trunkHeight / 4;
-        branchLength = treeHeight - trunkHeight;
+        int branchLength = treeHeight - trunkHeight;
+        // 2x2 Birch Tree; height = highest log
         // trunk
         for (int y = 0; y < trunkHeight; y++) {
             for (int x = 0; x < 2; x++) {
@@ -59,7 +66,7 @@ public class LinearBirchGenerator extends TreeGenerator {
                 for (BlockFace face : BlockFace.values()) {
                     if (face == BlockFace.DOWN) {
                         if (!log.getRelative(face).getType().isOccluding())
-                            log.setType(Material.BIRCH_WOOD);
+                            log.setType(woodMat);
                         continue;
                     }
                     if (!face.isCartesian() || i < branchLogs.size() / 2)

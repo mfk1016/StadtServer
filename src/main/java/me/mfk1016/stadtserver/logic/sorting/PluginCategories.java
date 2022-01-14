@@ -65,4 +65,12 @@ public class PluginCategories {
             default -> false;
         };
     }
+
+    public static boolean isSapling(Material material) {
+        return switch (material) {
+            case BIRCH_SAPLING, ACACIA_SAPLING, OAK_SAPLING, JUNGLE_SAPLING, DARK_OAK_SAPLING, SPRUCE_SAPLING,
+                    WARPED_FUNGUS, CRIMSON_FUNGUS -> true;
+            default -> false;
+        };
+    }
 }
