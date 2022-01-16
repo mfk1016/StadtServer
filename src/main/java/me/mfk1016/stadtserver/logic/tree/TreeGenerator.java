@@ -10,9 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Orientable;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public abstract class TreeGenerator {
 
@@ -23,6 +21,7 @@ public abstract class TreeGenerator {
     protected final Material leavesType;
     protected final Material saplingType;
     protected int checkSquare = 3;
+    private final Set<Block> placedLeaves = new HashSet<>();
 
     public TreeGenerator(Block nwBase, int treeHeight, int minHeight, Material log, Material leaves, Material sapling) {
         this.nwBase = nwBase;
@@ -43,17 +42,17 @@ public abstract class TreeGenerator {
             int offset = (checkSquare - 1) / 2;
             corner = nwBase.getRelative(-offset, 0, -offset);
         }
-        for (int x = 0; x < checkSquare; x++) {
+        for (int y = 0; y < treeHeight; y++) {
             for (int z = 0; z < checkSquare; z++) {
-                for (int y = 0; y < treeHeight; y++) {
+                for (int x = 0; y < checkSquare; x++) {
                     Block current = corner.getRelative(x, y, z);
                     if (PluginCategories.isLog(current.getType()) || PluginCategories.isWood(current.getType()))
                         continue;
                     if (current.getType().isOccluding())
                         break;
                 }
-                validHeight++;
             }
+            validHeight++;
         }
         if (validHeight < minHeight)
             return false;
@@ -63,8 +62,8 @@ public abstract class TreeGenerator {
         return true;
     }
 
-    protected Block randomBranchEnd(Block base, Branch b, double angleDown, double angleUp, double distance) {
-        Pair<Vector, Vector> quadEdges = b.getSphereQuadrant(angleDown, angleUp);
+    protected Block randomBranchEnd(Block base, Branch b, double angleDown, double angleUp, double distance, double spread) {
+        Pair<Vector, Vector> quadEdges = b.getSphereQuadrant(angleDown, angleUp, spread);
         double offX = (quadEdges._2.getX() - quadEdges._1.getX()) * StadtServer.RANDOM.nextDouble();
         double offY = (quadEdges._2.getY() - quadEdges._1.getY()) * StadtServer.RANDOM.nextDouble();
         double offZ = (quadEdges._2.getZ() - quadEdges._1.getZ()) * StadtServer.RANDOM.nextDouble();
@@ -76,7 +75,13 @@ public abstract class TreeGenerator {
         return resultLoc.getBlock();
     }
 
-    protected List<Pair<Block, Axis>> connectLogs(Block base, Block last) {
+    // Returns Pairs of block, axis determining the complete branch.
+    // The indexes of the base branch are index % size(base + additionalBases)
+    protected List<Pair<Block, Axis>> connectLogs(Block base, Block last, Block... additionalBases) {
+        List<Vector> additionalBaseOffsets = new ArrayList<>();
+        for (var b : additionalBases) {
+            additionalBaseOffsets.add(b.getLocation().toVector().subtract(base.getLocation().toVector()));
+        }
         List<Pair<Block, Axis>> result = new ArrayList<>();
         Vector distance = base.getLocation().toVector().subtract(last.getLocation().toVector());
         if (distance.length() == 0)
@@ -106,8 +111,15 @@ public abstract class TreeGenerator {
         Vector offset = new Vector();
         while (distance.length() > offset.length()) {
             Block current = last.getRelative(offset.getBlockX(), offset.getBlockY(), offset.getBlockZ());
+            for (var baseOffset : additionalBaseOffsets) {
+                Block add = current.getRelative(baseOffset.getBlockX(), baseOffset.getBlockY(), baseOffset.getBlockZ());
+                result.add(new Pair<>(add, axis));
+            }
             result.add(new Pair<>(current, axis));
             offset.add(step);
+        }
+        for (Block additionBase : additionalBases) {
+            result.add(new Pair<>(additionBase, Axis.Y));
         }
         result.add(new Pair<>(base, Axis.Y));
         Collections.reverse(result);
@@ -124,26 +136,64 @@ public abstract class TreeGenerator {
         }
     }
 
+    protected void generateSphereLeaves(Block center, int radius) {
+        for (int x = 0; x <= radius; x++)
+            for (int y = 0; y <= radius; y++)
+                for (int z = 0; z <= radius; z++) {
+                    double currDist = Math.sqrt(x * x + y * y + z * z);
+                    if (currDist <= radius) {
+                        int random = currDist == radius ? 2 : 1;
+                        if (StadtServer.RANDOM.nextInt(random) == 0)
+                            setLeaves(center.getRelative(x, y, z));
+                        if (StadtServer.RANDOM.nextInt(random) == 0)
+                            setLeaves(center.getRelative(-x, y, z));
+                        if (StadtServer.RANDOM.nextInt(random) == 0)
+                            setLeaves(center.getRelative(x, -y, z));
+                        if (StadtServer.RANDOM.nextInt(random) == 0)
+                            setLeaves(center.getRelative(x, y, -z));
+                        if (StadtServer.RANDOM.nextInt(random) == 0)
+                            setLeaves(center.getRelative(-x, -y, z));
+                        if (StadtServer.RANDOM.nextInt(random) == 0)
+                            setLeaves(center.getRelative(-x, y, -z));
+                        if (StadtServer.RANDOM.nextInt(random) == 0)
+                            setLeaves(center.getRelative(x, -y, -z));
+                        if (StadtServer.RANDOM.nextInt(random) == 0)
+                            setLeaves(center.getRelative(-x, -y, -z));
+                    }
+                }
+    }
+
     protected void setLeaves(Block leaves) {
-        if (!leaves.isEmpty())
+        if (!leaves.isEmpty() || placedLeaves.contains(leaves))
             return;
+        placedLeaves.add(leaves);
         leaves.setType(leavesType);
     }
 
     public abstract void generateTree();
 
-
-    public static Material[] getTreeMaterials(Material sapling) {
-        return switch (sapling) {
-            case OAK_SAPLING -> new Material[]{Material.OAK_LOG, Material.OAK_LEAVES, Material.OAK_WOOD};
-            case BIRCH_SAPLING -> new Material[]{Material.BIRCH_LOG, Material.BIRCH_LEAVES, Material.BIRCH_WOOD};
-            case SPRUCE_SAPLING -> new Material[]{Material.SPRUCE_LOG, Material.SPRUCE_LEAVES, Material.SPRUCE_WOOD};
-            case JUNGLE_SAPLING -> new Material[]{Material.JUNGLE_LOG, Material.JUNGLE_LEAVES, Material.JUNGLE_WOOD};
-            case ACACIA_SAPLING -> new Material[]{Material.ACACIA_LOG, Material.ACACIA_LEAVES, Material.ACACIA_WOOD};
-            case DARK_OAK_SAPLING -> new Material[]{Material.DARK_OAK_LOG, Material.DARK_OAK_LEAVES, Material.DARK_OAK_WOOD};
-            case CRIMSON_FUNGUS -> new Material[]{Material.CRIMSON_STEM, Material.NETHER_WART_BLOCK, Material.CRIMSON_HYPHAE};
-            case WARPED_FUNGUS -> new Material[]{Material.WARPED_STEM, Material.WARPED_WART_BLOCK, Material.WARPED_HYPHAE};
-            default -> null;
-        };
+    public static TreeGenerator matchGenerator(Block root, Material saplingType, int size, boolean planted) {
+        switch (saplingType) {
+            case OAK_SAPLING -> {
+                if (size == 2)
+                    return new GermanOakGenerator(root);
+            }
+            case BIRCH_SAPLING -> {
+                if (size == 2)
+                    if (StadtServer.RANDOM.nextInt(5) == 0)
+                        return new CurvedHimalayaBirchGenerator(root);
+                    else
+                        return new HimalayaBirchGenerator(root);
+            }
+            case DARK_OAK_SAPLING -> {
+                if (size == 2 && planted)
+                    return new EuropeanBuckeyeGenerator(root);
+            }
+            case ACACIA_SAPLING -> {
+                if (size == 2)
+                    return new LinearAcaciaGenerator(root);
+            }
+        }
+        return null;
     }
 }

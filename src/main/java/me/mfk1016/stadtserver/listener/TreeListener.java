@@ -2,7 +2,6 @@ package me.mfk1016.stadtserver.listener;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
-import me.mfk1016.stadtserver.logic.tree.LinearBirchGenerator;
 import me.mfk1016.stadtserver.logic.tree.TreeGenerator;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
@@ -26,14 +25,10 @@ public class TreeListener extends BasicListener {
         int size = sizebase._1;
         Block nwBase = sizebase._2;
         Material sapling = nwBase.getType();
-
-        if (size == 2 && (sapling == Material.BIRCH_SAPLING || sapling == Material.ACACIA_SAPLING || sapling == Material.OAK_SAPLING)) {
-            Material[] treeMats = TreeGenerator.getTreeMaterials(sapling);
-            LinearBirchGenerator gen = new LinearBirchGenerator(nwBase, treeMats[0], treeMats[1], sapling, treeMats[2]);
-            if (gen.isEnoughSpace()) {
-                gen.generateTree();
-                event.setCancelled(true);
-            }
+        TreeGenerator gen = TreeGenerator.matchGenerator(nwBase, sapling, size, event.isFromBonemeal());
+        if (gen != null && gen.isEnoughSpace()) {
+            gen.generateTree();
+            event.setCancelled(true);
         }
     }
 

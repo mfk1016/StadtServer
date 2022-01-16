@@ -5,6 +5,7 @@ import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Leaves;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -74,8 +75,9 @@ public class TreeChopper {
                     if (isLog(relative) || isWood(relative)) {
                         treeLogs.addLast(relative);
                         blocksToCheck.addLast(relative);
-                    } else if (isLeaves(relative)) {
-                        leavesFound++;
+                    } else if (leavesFound < 5 && isLeaves(relative) && relative.getBlockData() instanceof Leaves leaves) {
+                        if (!leaves.isPersistent())
+                            leavesFound++;
                     }
                     checkedBlocks.add(relative);
                 }

@@ -1,6 +1,7 @@
 package me.mfk1016.stadtserver.logic.tree;
 
 import me.mfk1016.stadtserver.util.Pair;
+import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
 public enum Branch {
@@ -26,6 +27,19 @@ public enum Branch {
         };
     }
 
+    public BlockFace toFace() {
+        return switch (this) {
+            case S -> BlockFace.SOUTH;
+            case E -> BlockFace.EAST;
+            case N -> BlockFace.NORTH;
+            case W -> BlockFace.WEST;
+            case SE -> BlockFace.SOUTH_EAST;
+            case NE -> BlockFace.NORTH_EAST;
+            case NW -> BlockFace.NORTH_WEST;
+            case SW -> BlockFace.SOUTH_WEST;
+        };
+    }
+
     public Pair<Branch, Branch> neighbors() {
         return switch (this) {
             case S -> new Pair<>(SW, SE);
@@ -39,7 +53,13 @@ public enum Branch {
         };
     }
 
-    public Pair<Vector, Vector> getSphereQuadrant(double yAngleDown, double yAngleUp) {
+    public boolean isNeighbor(Branch b) {
+        Pair<Branch, Branch> n = neighbors();
+        return b == this || n._1 == b || n._2 == b;
+    }
+
+    public Pair<Vector, Vector> getSphereQuadrant(double yAngleDown, double yAngleUp, double spread) {
+        assert 0 <= spread && spread <= 1;
         double angleA, angleB;
         double dir = switch (this) {
             case E -> 0D;
@@ -51,8 +71,9 @@ public enum Branch {
             case S -> 270D;
             case SE -> 315D;
         };
-        angleA = Math.toRadians(dir - 20D);
-        angleB = Math.toRadians(dir + 20D);
+        spread = spread * 20D;
+        angleA = Math.toRadians(dir - spread);
+        angleB = Math.toRadians(dir + spread);
         double yd = Math.toRadians(90D - yAngleDown);
         double yu = Math.toRadians(90D - yAngleUp);
 
@@ -60,5 +81,13 @@ public enum Branch {
         Vector a = new Vector(Math.cos(angleA) * Math.sin(yd), Math.cos(yd), Math.sin(angleA) * Math.sin(yd));
         Vector b = new Vector(Math.cos(angleB) * Math.sin(yu), Math.cos(yu), Math.sin(angleB) * Math.sin(yu));
         return new Pair<>(a, b);
+    }
+
+    public static Branch[] cardinals() {
+        return new Branch[]{S, E, N, W};
+    }
+
+    public static Branch[] nonCardinals() {
+        return new Branch[]{SE, NE, NW, SW};
     }
 }

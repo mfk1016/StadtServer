@@ -4,29 +4,30 @@ import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Axis;
 import org.bukkit.Material;
+import org.bukkit.block.Beehive;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Bee;
+import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class LinearBirchGenerator extends TreeGenerator {
+public class HimalayaBirchGenerator extends TreeGenerator {
 
-    private static final int MIN_HEIGHT = 20;
-    private static final int HEIGHT_RANGE = 10;
+    private static final int MIN_HEIGHT = 30;
+    private static final int HEIGHT_RANGE = 15;
     private static final double TRUNK_FACTOR = 0.75D;
 
     private int trunkHeight;
     private int minBranch;
-    private final Material woodMat;
 
-    public LinearBirchGenerator(Block nwBase, Material log, Material leaves, Material sap, Material wood) {
+    public HimalayaBirchGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
-                log, leaves, sap);
+                Material.BIRCH_LOG, Material.BIRCH_LEAVES, Material.BIRCH_SAPLING);
         checkSquare = 6;
-        woodMat = wood;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class LinearBirchGenerator extends TreeGenerator {
             double yUp = Math.max(80D - ((currBranch - 1) * 2), 45D);
             double yDown = yUp - 2;
             int length = branchLength + StadtServer.RANDOM.nextInt(3);
-            Block last = randomBranchEnd(locbranch._1, locbranch._2, yDown, yUp, length);
+            Block last = randomBranchEnd(locbranch._1, locbranch._2, yDown, yUp, length, 0.8);
             List<Pair<Block, Axis>> branchLogs = connectLogs(locbranch._1, last);
             for (int i = 0; i < branchLogs.size(); i++) {
                 Block log = branchLogs.get(i)._1;
@@ -66,13 +67,33 @@ public class LinearBirchGenerator extends TreeGenerator {
                 for (BlockFace face : BlockFace.values()) {
                     if (face == BlockFace.DOWN) {
                         if (!log.getRelative(face).getType().isOccluding())
-                            log.setType(woodMat);
+                            log.setType(Material.BIRCH_WOOD);
                         continue;
                     }
                     if (!face.isCartesian() || i < branchLogs.size() / 2)
                         continue;
                     setLeaves(log.getRelative(face));
                     setLeaves(log.getRelative(face).getRelative(BlockFace.UP));
+                }
+            }
+            // bees to last branch ?
+            if (currBranch == branchBases.size() && StadtServer.RANDOM.nextInt(20) == 0) {
+                Block target = locbranch._1.getRelative(BlockFace.DOWN);
+                for (Branch b : Branch.cardinals()) {
+                    Block nest = target.getRelative(b.toFace());
+                    if (!nest.getType().isOccluding()) {
+                        nest.setType(Material.BEE_NEST);
+                        Block spawn = nest.getRelative(BlockFace.DOWN);
+                        Bee bee1 = (Bee) spawn.getWorld().spawnEntity(spawn.getLocation(), EntityType.BEE);
+                        Bee bee2 = (Bee) spawn.getWorld().spawnEntity(spawn.getLocation(), EntityType.BEE);
+                        Bee bee3 = (Bee) spawn.getWorld().spawnEntity(spawn.getLocation(), EntityType.BEE);
+                        Beehive nestData = (Beehive) nest.getState();
+                        nestData.addEntity(bee1);
+                        nestData.addEntity(bee2);
+                        nestData.addEntity(bee3);
+                        nestData.update();
+                        break;
+                    }
                 }
             }
             currBranch++;
