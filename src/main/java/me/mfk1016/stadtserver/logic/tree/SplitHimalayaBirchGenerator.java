@@ -15,19 +15,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class CurvedHimalayaBirchGenerator extends TreeGenerator {
+public class SplitHimalayaBirchGenerator extends TreeGenerator {
 
     private static final int MIN_HEIGHT = 30;
     private static final int HEIGHT_RANGE = 15;
     private static final double TRUNK_FACTOR = 0.75D;
 
-    private int trunkHeight;
     private int minBranch;
     private Branch trunkBranch;
     private final List<Block> trunkBases = new ArrayList<>();
     private final List<Block> offTrunkBases = new ArrayList<>();
 
-    public CurvedHimalayaBirchGenerator(Block nwBase) {
+    public SplitHimalayaBirchGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
                 Material.BIRCH_LOG, Material.BIRCH_LEAVES, Material.BIRCH_SAPLING);
         checkSquare = 6;
@@ -35,11 +34,11 @@ public class CurvedHimalayaBirchGenerator extends TreeGenerator {
 
     @Override
     public void generateTree() {
-        trunkHeight = (int) ((double) treeHeight * TRUNK_FACTOR);
-        int trunkSectionLength = trunkHeight / 3;
+        int trunkHeight = (int) ((double) treeHeight * TRUNK_FACTOR);
+        int trunkSectionLength = trunkHeight / 4;
         trunkBranch = Branch.cardinals()[StadtServer.RANDOM.nextInt(4)];
 
-        // first part: 90 degree
+        // first part: up
         Block firstTrunkLast = nwBase.getRelative(0, trunkSectionLength, 0);
         Block[] firstAdditionalBases = {
                 nwBase.getRelative(1, 0, 0),
@@ -48,9 +47,9 @@ public class CurvedHimalayaBirchGenerator extends TreeGenerator {
         };
         List<Pair<Block, Axis>> trunk = connectLogs(nwBase, firstTrunkLast, firstAdditionalBases);
         List<Pair<Block, Axis>> offTrunk = new ArrayList<>(trunk);
-        // second part: 70 degree
-        Block secondTrunkLast = randomBranchEnd(firstTrunkLast, trunkBranch, 60D, 60D, trunkSectionLength, 0);
-        Block secondOffTrunkLast = randomBranchEnd(firstTrunkLast, trunkBranch.invert(), 60D, 60D, trunkSectionLength, 0);
+        // second part: 60-70 degree split
+        Block secondTrunkLast = randomBranchEnd(firstTrunkLast, trunkBranch, 60D, 70D, trunkSectionLength, 0);
+        Block secondOffTrunkLast = randomBranchEnd(firstTrunkLast, trunkBranch.invert(), 60D, 70D, trunkSectionLength, 0);
         Block[] secondAdditionalBases = {
                 firstTrunkLast.getRelative(1, 0, 0),
                 firstTrunkLast.getRelative(0, 0, 1),
@@ -60,9 +59,9 @@ public class CurvedHimalayaBirchGenerator extends TreeGenerator {
         trunk.addAll(secondTrunk);
         List<Pair<Block, Axis>> secondOffTrunk = connectLogs(firstTrunkLast, secondOffTrunkLast, secondAdditionalBases);
         offTrunk.addAll(secondOffTrunk);
-        // third part 80 degree opposite
-        Block thirdTrunkLast = randomBranchEnd(secondTrunkLast, trunkBranch.invert(), 80D, 80D, trunkSectionLength, 0);
-        Block thirdOffTrunkLast = randomBranchEnd(secondOffTrunkLast, trunkBranch, 80D, 80D, trunkSectionLength, 0);
+        // third part: 80-90 degree further
+        Block thirdTrunkLast = randomBranchEnd(secondTrunkLast, trunkBranch, 80D, 90D, trunkSectionLength * 2, 0);
+        Block thirdOffTrunkLast = randomBranchEnd(secondOffTrunkLast, trunkBranch.invert(), 80D, 90D, trunkSectionLength, 0);
         Block[] thirdAdditionalBases = {
                 secondTrunkLast.getRelative(1, 0, 0),
                 secondTrunkLast.getRelative(0, 0, 1),
@@ -81,8 +80,6 @@ public class CurvedHimalayaBirchGenerator extends TreeGenerator {
         for (int i = 0; i < trunk.size(); i++) {
             Block currLog = trunk.get(i)._1;
             setLog(currLog, trunk.get(i)._2);
-            if (!currLog.getRelative(BlockFace.DOWN).getType().isOccluding())
-                currLog.setType(Material.BIRCH_WOOD);
             if (i % 4 == 0) {
                 trunkBases.add(trunk.get(i)._1);
             }
@@ -90,14 +87,22 @@ public class CurvedHimalayaBirchGenerator extends TreeGenerator {
         for (int i = 0; i < offTrunk.size(); i++) {
             Block currLog = offTrunk.get(i)._1;
             setLog(currLog, offTrunk.get(i)._2);
-            if (!currLog.getRelative(BlockFace.DOWN).getType().isOccluding())
-                currLog.setType(Material.BIRCH_WOOD);
             if (i % 4 == 0) {
                 offTrunkBases.add(offTrunk.get(i)._1);
             }
         }
 
-        trunkHeight = trunkBases.size();
+        // Trunk wood for all exposed logs
+        for (Pair<Block, Axis> blockAxisPair : trunk) {
+            if (!blockAxisPair._1.getRelative(BlockFace.DOWN).getType().isOccluding() || !blockAxisPair._1.getRelative(BlockFace.UP).getType().isOccluding())
+                blockAxisPair._1.setType(Material.BIRCH_WOOD);
+        }
+        for (Pair<Block, Axis> blockAxisPair : offTrunk) {
+            if (!blockAxisPair._1.getRelative(BlockFace.DOWN).getType().isOccluding() || !blockAxisPair._1.getRelative(BlockFace.UP).getType().isOccluding())
+                blockAxisPair._1.setType(Material.BIRCH_WOOD);
+        }
+
+        trunkHeight = Math.max(trunkBases.size(), offTrunkBases.size());
         minBranch = trunkHeight / 4;
 
         // trunk top leaves

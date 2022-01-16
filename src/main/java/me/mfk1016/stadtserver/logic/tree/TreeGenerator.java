@@ -7,6 +7,8 @@ import org.bukkit.Axis;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.block.data.Orientable;
 import org.bukkit.util.Vector;
 
@@ -170,6 +172,20 @@ public abstract class TreeGenerator {
         leaves.setType(leavesType);
     }
 
+    protected void setVines(Block target) {
+        if (!target.isEmpty() || placedLeaves.contains(target))
+            return;
+        target.setType(Material.VINE);
+        MultipleFacing vine = (MultipleFacing) Material.VINE.createBlockData();
+        for (BlockFace face : BlockFace.values()) {
+            if (vine.getAllowedFaces().contains(face) && target.getRelative(face).getType().isSolid()) {
+                vine.setFace(face, true);
+                target.setBlockData(vine);
+                break;
+            }
+        }
+    }
+
     public abstract void generateTree();
 
     public static TreeGenerator matchGenerator(Block root, Material saplingType, int size, boolean planted) {
@@ -180,8 +196,8 @@ public abstract class TreeGenerator {
             }
             case BIRCH_SAPLING -> {
                 if (size == 2)
-                    if (StadtServer.RANDOM.nextInt(5) == 0)
-                        return new CurvedHimalayaBirchGenerator(root);
+                    if (StadtServer.RANDOM.nextInt(4) == 0)
+                        return new SplitHimalayaBirchGenerator(root);
                     else
                         return new HimalayaBirchGenerator(root);
             }
@@ -191,7 +207,11 @@ public abstract class TreeGenerator {
             }
             case ACACIA_SAPLING -> {
                 if (size == 2)
-                    return new LinearAcaciaGenerator(root);
+                    return new BigAcaciaGenerator(root);
+            }
+            case JUNGLE_SAPLING -> {
+                if (size == 3)
+                    return new MerantiKingGenerator(root);
             }
         }
         return null;

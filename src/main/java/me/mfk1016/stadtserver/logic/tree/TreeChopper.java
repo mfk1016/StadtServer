@@ -30,6 +30,7 @@ public class TreeChopper {
     private final Material logType;
     private final int maxLogs;
     private Iterator<Block> tmpIterator;
+    private int chopSpeed = 2;
 
     public TreeChopper(Player player, ItemStack axe, Block init, StadtServer plugin) {
         this.plugin = plugin;
@@ -90,7 +91,9 @@ public class TreeChopper {
 
         blocksToCheck.clear();
         checkedBlocks.clear();
-        tmpIterator = treeLogs.iterator();
+        tmpIterator = treeLogs.descendingIterator();
+        if (treeLogs.size() > 500)
+            chopSpeed = 4;
     }
 
     private void performChop() {
@@ -101,7 +104,7 @@ public class TreeChopper {
                 if (treeLogs.size() == 0)
                     this.cancel();
                 int broken = 0;
-                while (tmpIterator.hasNext() && broken < 2) {
+                while (tmpIterator.hasNext() && broken < chopSpeed) {
                     tmpIterator.next().breakNaturally(axe);
                     broken++;
                     tmpIterator.remove();

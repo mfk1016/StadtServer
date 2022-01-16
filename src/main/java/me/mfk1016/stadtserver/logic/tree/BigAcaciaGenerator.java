@@ -12,16 +12,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class LinearAcaciaGenerator extends TreeGenerator {
+public class BigAcaciaGenerator extends TreeGenerator {
 
-    private static final int MIN_HEIGHT = 20;
-    private static final int HEIGHT_RANGE = 10;
-    private static final double TRUNK_FACTOR = 0.75D;
+    private static final int MIN_HEIGHT = 12;
+    private static final int HEIGHT_RANGE = 5;
+    private static final double TRUNK_FACTOR = 0.2D;
 
     private int trunkHeight;
-    private int minBranch;
 
-    public LinearAcaciaGenerator(Block nwBase) {
+    public BigAcaciaGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
                 Material.ACACIA_LOG, Material.ACACIA_LEAVES, Material.ACACIA_SAPLING);
         checkSquare = 6;
@@ -30,21 +29,13 @@ public class LinearAcaciaGenerator extends TreeGenerator {
     @Override
     public void generateTree() {
         trunkHeight = (int) ((double) treeHeight * TRUNK_FACTOR);
-        minBranch = trunkHeight / 4;
         int branchLength = treeHeight - trunkHeight;
-        // 2x2 Birch Tree; height = highest log
+        // 2x2 Acacia Tree; height = highest log
         // trunk
         for (int y = 0; y < trunkHeight; y++) {
             for (int x = 0; x < 2; x++) {
                 for (int z = 0; z < 2; z++) {
                     setLog(nwBase.getRelative(x, y, z), Axis.Y);
-                    if (y == trunkHeight - 1)
-                        for (BlockFace face : BlockFace.values()) {
-                            if (!face.isCartesian())
-                                continue;
-                            setLeaves(nwBase.getRelative(x, y, z).getRelative(face));
-                            setLeaves(nwBase.getRelative(x, y - 1, z).getRelative(face));
-                        }
                 }
             }
         }
@@ -52,27 +43,22 @@ public class LinearAcaciaGenerator extends TreeGenerator {
         List<Pair<Block, Branch>> branchBases = pickBranchBases();
         int currBranch = 1;
         for (var locbranch : branchBases) {
-            double yUp = Math.max(80D - ((currBranch - 1) * 2), 45D);
-            double yDown = yUp - 2;
-            int length = branchLength + StadtServer.RANDOM.nextInt(3);
+            double yUp = Math.max(75D - ((currBranch - 1) * 2.5), 40D);
+            double yDown = yUp - 2.5;
+            int length = branchLength + StadtServer.RANDOM.nextInt(3) + (currBranch / 3);
             Block last = randomBranchEnd(locbranch._1, locbranch._2, yDown, yUp, length, 0.8);
             List<Pair<Block, Axis>> branchLogs = connectLogs(locbranch._1, last);
-            for (int i = 0; i < branchLogs.size(); i++) {
-                Block log = branchLogs.get(i)._1;
-                Axis axis = branchLogs.get(i)._2;
-                setLog(log, axis);
-                for (BlockFace face : BlockFace.values()) {
-                    if (face == BlockFace.DOWN) {
-                        if (!log.getRelative(face).getType().isOccluding())
-                            log.setType(Material.BIRCH_WOOD);
-                        continue;
-                    }
-                    if (!face.isCartesian() || i < branchLogs.size() / 2)
-                        continue;
-                    setLeaves(log.getRelative(face));
-                    setLeaves(log.getRelative(face).getRelative(BlockFace.UP));
+            for (Pair<Block, Axis> branchLog : branchLogs) {
+                setLog(branchLog._1, Axis.Y);
+                setLog(branchLog._1.getRelative(BlockFace.DOWN), Axis.Y);
+                if (!branchLog._1.getRelative(0, -2, 0).getType().isOccluding()) {
+                    branchLog._1.getRelative(BlockFace.DOWN).setType(Material.ACACIA_WOOD);
+                }
+                if (!branchLog._1.getRelative(0, 1, 0).getType().isOccluding()) {
+                    branchLog._1.setType(Material.ACACIA_WOOD);
                 }
             }
+            addAcaciaLeaves(last);
             currBranch++;
         }
     }
@@ -81,16 +67,11 @@ public class LinearAcaciaGenerator extends TreeGenerator {
     private List<Pair<Block, Branch>> pickBranchBases() {
         List<Branch> branches = new ArrayList<>(Arrays.stream(Branch.values()).toList());
         Collections.shuffle(branches);
-        branches.addAll(new ArrayList<>(branches));
         List<Pair<Block, Branch>> result = new ArrayList<>();
         int currentHeight = trunkHeight;
         for (Branch b : branches) {
-            if (currentHeight < minBranch)
-                break;
             Block loc0 = pickBranchRoot(b, currentHeight);
-            currentHeight -= StadtServer.RANDOM.nextInt(2);
-            Block loc1 = pickBranchRoot(b.invert(), currentHeight);
-            currentHeight -= 1;
+            Block loc1 = pickBranchRoot(b.invert(), currentHeight - 1);
             result.add(new Pair<>(loc0, b));
             result.add(new Pair<>(loc1, b.invert()));
         }
@@ -109,5 +90,22 @@ public class LinearAcaciaGenerator extends TreeGenerator {
             case W -> nwBase.getRelative(0, height - 1, StadtServer.RANDOM.nextInt(2));
             case SW -> nwBase.getRelative(0, height - 1, 1);
         };
+    }
+
+    private void addAcaciaLeaves(Block last) {
+        for (int x = -4; x <= 4; x++) {
+            for (int z = -4; z <= 4; z++) {
+                if (Math.abs(x) + Math.abs(z) >= 7)
+                    continue;
+                setLeaves(last.getRelative(x, 0, z));
+            }
+        }
+        for (int x = -3; x <= 3; x++) {
+            for (int z = -3; z <= 3; z++) {
+                if (Math.abs(x) + Math.abs(z) >= 5)
+                    continue;
+                setLeaves(last.getRelative(x, 1, z));
+            }
+        }
     }
 }
