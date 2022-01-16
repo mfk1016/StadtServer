@@ -91,7 +91,7 @@ public class TreeChopper {
 
         blocksToCheck.clear();
         checkedBlocks.clear();
-        tmpIterator = treeLogs.descendingIterator();
+        tmpIterator = treeLogs.iterator();
         if (treeLogs.size() > 500)
             chopSpeed = 4;
     }

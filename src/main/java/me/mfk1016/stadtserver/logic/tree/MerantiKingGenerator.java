@@ -46,6 +46,7 @@ public class MerantiKingGenerator extends TreeGenerator {
                 }
             }
         }
+
         // branches
         List<Pair<Block, Branch>> branchBases = pickBranchBases();
         int currBranch = 1;
@@ -63,6 +64,33 @@ public class MerantiKingGenerator extends TreeGenerator {
             }
             addMeratiLeaves(last);
             currBranch++;
+        }
+
+        // roots
+        for (var branch : Branch.cardinals()) {
+            Block root = pickBranchRoot(branch, 1);
+            int rootHeight = StadtServer.RANDOM.nextInt(3) + 2;
+            Block log = root.getRelative(branch.toFace());
+            if (!log.isEmpty() && !PluginCategories.isLeaves(log.getType()) && log.getType() != saplingType)
+                continue;
+            for (int i = 0; i < rootHeight; i++) {
+                setWood(log.getRelative(0, i, 0), Axis.Y);
+                setWood(log.getRelative(0, i - 2, 0).getRelative(branch.toFace()), Axis.Y);
+            }
+        }
+
+        // trunk vines
+        for (int y = 0; y < trunkHeight; y++) {
+            for (int i = 0; i < 3; i++) {
+                if (StadtServer.RANDOM.nextInt(3) == 0)
+                    setVines(nwBase.getRelative(-1, y, i), BlockFace.EAST);
+                if (StadtServer.RANDOM.nextInt(3) == 0)
+                    setVines(nwBase.getRelative(3, y, i), BlockFace.WEST);
+                if (StadtServer.RANDOM.nextInt(3) == 0)
+                    setVines(nwBase.getRelative(i, y, -1), BlockFace.SOUTH);
+                if (StadtServer.RANDOM.nextInt(3) == 0)
+                    setVines(nwBase.getRelative(i, y, 3), BlockFace.NORTH);
+            }
         }
     }
 
@@ -121,36 +149,39 @@ public class MerantiKingGenerator extends TreeGenerator {
     }
 
     private void addMeratiLeaves(Block last) {
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
-                if (Math.abs(x) + Math.abs(z) >= 3)
-                    continue;
-                setLeaves(last.getRelative(x, 2, z));
-                setLeaves(last.getRelative(x, -1, z));
-            }
-        }
-        for (int x = -3; x <= 3; x++) {
-            for (int z = -3; z <= 3; z++) {
-                if (Math.abs(x) + Math.abs(z) >= 5)
-                    continue;
-                setLeaves(last.getRelative(x, 1, z));
-            }
-        }
-        for (int x = -4; x <= 4; x++) {
-            for (int z = -4; z <= 4; z++) {
-                if (Math.abs(x) + Math.abs(z) >= 7)
-                    continue;
-                setLeaves(last.getRelative(x, 0, z));
-                int vineRandom = StadtServer.RANDOM.nextInt(4);
-                if (vineRandom <= 1) {
-                    if (x == -4)
-                        setVines(last.getRelative(-5, 0, z));
-                    else if (x == 4)
-                        setVines(last.getRelative(5, 0, z));
-                    else if (z == -4)
-                        setVines(last.getRelative(x, 0, -5));
-                    else if (z == 4)
-                        setVines(last.getRelative(x, 0, 5));
+        for (int x = 0; x <= 4; x++) {
+            for (int z = 0; z <= 4; z++) {
+                if (x <= 2 && z <= 2 && x + z < 3) {
+                    setLeaves(last.getRelative(x, 2, z));
+                    setLeaves(last.getRelative(x, -1, z));
+                    setLeaves(last.getRelative(-x, 2, z));
+                    setLeaves(last.getRelative(-x, -1, z));
+                    setLeaves(last.getRelative(x, 2, -z));
+                    setLeaves(last.getRelative(x, -1, -z));
+                    setLeaves(last.getRelative(-x, 2, -z));
+                    setLeaves(last.getRelative(-x, -1, -z));
+                }
+                if (x <= 3 && z <= 3 && x + z < 5) {
+                    setLeaves(last.getRelative(x, 1, z));
+                    setLeaves(last.getRelative(-x, 1, z));
+                    setLeaves(last.getRelative(x, 1, -z));
+                    setLeaves(last.getRelative(-x, 1, -z));
+                }
+                if (x + z < 7) {
+                    setLeaves(last.getRelative(x, 0, z));
+                    setLeaves(last.getRelative(-x, 0, z));
+                    setLeaves(last.getRelative(x, 0, -z));
+                    setLeaves(last.getRelative(-x, 0, -z));
+                }
+                // vines
+                if (StadtServer.RANDOM.nextInt(2) == 0 && x + z < 7) {
+                    if (x == 4) {
+                        setVines(last.getRelative(-5, 0, z), BlockFace.EAST);
+                        setVines(last.getRelative(5, 0, z), BlockFace.WEST);
+                    } else if (z == 4) {
+                        setVines(last.getRelative(x, 0, -5), BlockFace.SOUTH);
+                        setVines(last.getRelative(x, 0, 5), BlockFace.NORTH);
+                    }
                 }
             }
         }

@@ -172,18 +172,13 @@ public abstract class TreeGenerator {
         leaves.setType(leavesType);
     }
 
-    protected void setVines(Block target) {
+    protected void setVines(Block target, BlockFace face) {
         if (!target.isEmpty() || placedLeaves.contains(target))
             return;
         target.setType(Material.VINE);
         MultipleFacing vine = (MultipleFacing) Material.VINE.createBlockData();
-        for (BlockFace face : BlockFace.values()) {
-            if (vine.getAllowedFaces().contains(face) && target.getRelative(face).getType().isSolid()) {
-                vine.setFace(face, true);
-                target.setBlockData(vine);
-                break;
-            }
-        }
+        vine.setFace(face, true);
+        target.setBlockData(vine);
     }
 
     public abstract void generateTree();
