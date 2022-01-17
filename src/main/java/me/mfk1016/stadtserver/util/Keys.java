@@ -45,7 +45,7 @@ public class Keys {
 
     public static void initialize(StadtServer p) {
         p.getConfig().addDefault(CONFIG_PLAYER_MESSAGE, true);
-        p.getConfig().addDefault(CONFIG_MAX_LOGS, 1600);
+        p.getConfig().addDefault(CONFIG_MAX_LOGS, 2400);
         IS_WRENCHED = new NamespacedKey(p, IS_WRENCHED_s);
         IS_ANCIENT_TOME = new NamespacedKey(p, IS_ANCIENT_TOME_s);
     }

@@ -88,6 +88,7 @@ public class TreeChopper {
 
         if (leavesFound < 5)
             treeLogs.clear();
+        StadtServer.LOGGER.info("logs found: " + treeLogs.size());
 
         blocksToCheck.clear();
         checkedBlocks.clear();
