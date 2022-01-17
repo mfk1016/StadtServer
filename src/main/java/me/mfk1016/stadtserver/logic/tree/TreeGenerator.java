@@ -199,8 +199,6 @@ public abstract class TreeGenerator {
             case DARK_OAK_SAPLING -> {
                 if (size == 2 && planted)
                     return new EuropeanBuckeyeGenerator(root);
-                else if (size == 3)
-                    return new YggdrasilGenerator(root);
             }
             case ACACIA_SAPLING -> {
                 if (size == 2)

@@ -5,6 +5,7 @@ import me.mfk1016.stadtserver.listener.BossMobListener;
 import me.mfk1016.stadtserver.logic.AncientTome;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
 import me.mfk1016.stadtserver.util.BossName;
+import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,11 +32,19 @@ public class StadtServerCommand implements CommandExecutor {
             return false;
         String section = args[0];
         if (Objects.equals(section, "config")) {
-            String path = args[1];
-            boolean value = Boolean.parseBoolean(args[2]);
-            if (plugin.getConfig().contains(path)) {
-                plugin.getConfig().set(path, value);
-                return true;
+            if (sender instanceof Player player) {
+                String toDo = args[1];
+                if (toDo.equals("reload")) {
+                    plugin.reloadConfig();
+                    CategoryManager.initialize(plugin, false);
+                    player.sendMessage("Configuration + Sorting reloaded.");
+                    return true;
+                } else if (toDo.equals("reset")) {
+                    plugin.saveResource("config.yml", true);
+                    plugin.reloadConfig();
+                    player.sendMessage("Default configuration dumped.");
+                    return true;
+                }
             }
         } else if (Objects.equals(section, "book")) {
             if (sender instanceof Player player) {
@@ -48,11 +57,6 @@ public class StadtServerCommand implements CommandExecutor {
         } else if (Objects.equals(section, "ancient")) {
             if (sender instanceof Player player) {
                 return onCommandAncientTome(player);
-            }
-        } else if (Objects.equals(section, "sort")) {
-            boolean setDefault = args.length == 2 && args[1].equals("reset");
-            if (sender instanceof Player player) {
-                return onCommandSorting(setDefault);
             }
         }
         return false;
@@ -96,6 +100,7 @@ public class StadtServerCommand implements CommandExecutor {
         ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
         EnchantmentManager.enchantItem(book, enchantment, level);
         player.getWorld().dropItem(player.getLocation(), book);
+        player.sendMessage("Book of '" + enchStr + "' dropped.");
         return true;
     }
 
@@ -119,16 +124,13 @@ public class StadtServerCommand implements CommandExecutor {
 
         LivingEntity mob = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), targetType);
         BossMobListener.createBoss(plugin, mob, targetLevel, BossName.randomName(targetLevel));
+        player.sendMessage("Boss spawned.");
         return true;
     }
 
     private boolean onCommandAncientTome(Player player) {
         player.getWorld().dropItem(player.getLocation(), AncientTome.randomAncientTome());
-        return true;
-    }
-
-    private boolean onCommandSorting(boolean setDefault) {
-        CategoryManager.initialize(plugin, setDefault);
+        player.sendMessage("Ancient tome dropped.");
         return true;
     }
 }

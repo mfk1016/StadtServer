@@ -8,4 +8,4 @@ depend: [ ProtocolLib ]
 commands:
   stadtserver:
     description: Configuration and Debugging
-    usage: /stadtserver [config|book] [key|enchantment] [value|level]
+    usage: /stadtserver [ config reload/reset || book ench level || boss type level || ancient ]
