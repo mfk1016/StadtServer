@@ -50,9 +50,7 @@ public class StadtServerCommand implements CommandExecutor {
                 return onCommandAncientTome(player);
             }
         } else if (Objects.equals(section, "sort")) {
-            boolean setDefault = false;
-            if (args.length == 2 && args[1].equals("reset"))
-                setDefault = true;
+            boolean setDefault = args.length == 2 && args[1].equals("reset");
             if (sender instanceof Player player) {
                 return onCommandSorting(setDefault);
             }

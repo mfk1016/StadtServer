@@ -208,6 +208,10 @@ public abstract class TreeGenerator {
                 if (size == 3)
                     return new MerantiKingGenerator(root);
             }
+            case SPRUCE_SAPLING -> {
+                if (size == 3)
+                    return new CoastSequoiaGenerator(root);
+            }
         }
         return null;
     }

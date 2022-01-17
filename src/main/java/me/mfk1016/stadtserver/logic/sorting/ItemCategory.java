@@ -20,30 +20,6 @@ public class ItemCategory {
         this.materials = materials;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public boolean isLeaf() {
-        return subcategories.isEmpty();
-    }
-
-    public boolean isMatched(String fullName, Material mat) {
-        if (this.fullName == fullName) {
-            return isMember(mat);
-        }
-        if (fullName.startsWith(this.fullName))
-            for (var cat : subcategories) {
-                if (isMatched(fullName, mat))
-                    return true;
-            }
-        return false;
-    }
-
     public int cmp(Material a, Material b) {
         boolean memA, memB;
         for (var cat : subcategories) {

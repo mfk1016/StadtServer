@@ -27,6 +27,19 @@ public enum Branch {
         };
     }
 
+    public Branch twoForward() {
+        return switch (this) {
+            case S -> E;
+            case E -> N;
+            case N -> W;
+            case W -> S;
+            case SE -> NE;
+            case NE -> NW;
+            case NW -> SW;
+            case SW -> SE;
+        };
+    }
+
     public BlockFace toFace() {
         return switch (this) {
             case S -> BlockFace.SOUTH;
@@ -38,24 +51,6 @@ public enum Branch {
             case NW -> BlockFace.NORTH_WEST;
             case SW -> BlockFace.SOUTH_WEST;
         };
-    }
-
-    public Pair<Branch, Branch> neighbors() {
-        return switch (this) {
-            case S -> new Pair<>(SW, SE);
-            case E -> new Pair<>(SE, NE);
-            case N -> new Pair<>(NE, NW);
-            case W -> new Pair<>(NW, SW);
-            case SE -> new Pair<>(S, E);
-            case NE -> new Pair<>(E, N);
-            case NW -> new Pair<>(N, W);
-            case SW -> new Pair<>(W, S);
-        };
-    }
-
-    public boolean isNeighbor(Branch b) {
-        Pair<Branch, Branch> n = neighbors();
-        return b == this || n._1 == b || n._2 == b;
     }
 
     public Pair<Vector, Vector> getSphereQuadrant(double yAngleDown, double yAngleUp, double spread) {
@@ -85,9 +80,5 @@ public enum Branch {
 
     public static Branch[] cardinals() {
         return new Branch[]{S, E, N, W};
-    }
-
-    public static Branch[] nonCardinals() {
-        return new Branch[]{SE, NE, NW, SW};
     }
 }

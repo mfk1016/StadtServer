@@ -21,10 +21,6 @@ public class CategoryManager {
         return sortingRoot.cmp(a, b);
     }
 
-    public static boolean isMatched(String category, Material mat) {
-        return sortingRoot.isMatched(category, mat);
-    }
-
     public static void initialize(StadtServer plugin, boolean setDefault) {
         sortingRoot = new ItemCategory("", "", null);
         File sortingConfig = new File(plugin.getDataFolder(), "sorting.json");
