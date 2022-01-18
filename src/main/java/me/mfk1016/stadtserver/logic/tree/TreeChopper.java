@@ -21,7 +21,6 @@ import java.util.Objects;
 public class TreeChopper {
 
     private final Plugin plugin;
-    private final Player player;
     private final ItemStack axe;
 
     private final HashSet<Block> checkedBlocks = new HashSet<>();
@@ -29,17 +28,16 @@ public class TreeChopper {
     private final LinkedList<Block> treeLogs = new LinkedList<>();
     private final Material logType;
     private final int maxLogs;
+    private final boolean survivalMode;
     private Iterator<Block> tmpIterator;
     private int chopSpeed = 2;
-    private boolean survivalMode;
 
     public TreeChopper(Player player, ItemStack axe, Block init, StadtServer plugin) {
         this.plugin = plugin;
-        this.player = player;
         this.axe = axe;
         blocksToCheck.add(init);
         logType = init.getType();
-        maxLogs = plugin.getConfig().getInt(Keys.CONFIG_MAX_LOGS);
+        maxLogs = Math.min(Math.abs(plugin.getConfig().getInt(Keys.CONFIG_MAX_LOGS)), 10000);
         survivalMode = player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE;
     }
 
@@ -57,12 +55,12 @@ public class TreeChopper {
         // Damage the axe
         if (survivalMode) {
             Damageable itemdmg = Objects.requireNonNull((Damageable) axe.getItemMeta());
-            int durabilityLeft = axe.getType().getMaxDurability() - itemdmg.getDamage();
-            int durabilityUsed = treeLogs.size() / unbreakingFactor;
-            if (durabilityLeft <= 10 || durabilityUsed > 2 * durabilityLeft) {
+            int durRemain = axe.getType().getMaxDurability() - itemdmg.getDamage();
+            int durNeeded = treeLogs.size() / unbreakingFactor;
+            if (durRemain <= 10 || durNeeded > 2 * durRemain) {
                 treeLogs.clear();
             } else {
-                itemdmg.setDamage(Math.min(itemdmg.getDamage() + durabilityUsed, axe.getType().getMaxDurability() - 5));
+                itemdmg.setDamage(Math.min(itemdmg.getDamage() + durNeeded, axe.getType().getMaxDurability() - 5));
                 axe.setItemMeta(itemdmg);
             }
         }

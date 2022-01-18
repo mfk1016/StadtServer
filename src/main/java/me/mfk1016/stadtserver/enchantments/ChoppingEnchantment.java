@@ -104,13 +104,15 @@ public class ChoppingEnchantment extends CustomEnchantment {
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SPECTATOR)
             return;
+        if (player.getGameMode() != GameMode.CREATIVE && !player.isSneaking())
+            return;
         ItemStack axe = player.getInventory().getItemInMainHand();
         if (!EnchantmentManager.isEnchantedWith(axe, this, 1))
             return;
 
         // Calculate the logs to chop
         Block target = event.getBlock();
-        if (!PluginCategories.isLog(target.getType()))
+        if (!PluginCategories.isLog(target.getType()) && !PluginCategories.isWood(target.getType()))
             return;
         TreeChopper tc = new TreeChopper(player, axe, target, plugin);
         tc.chopTree();

@@ -197,7 +197,7 @@ public abstract class TreeGenerator {
                         return new HimalayaBirchGenerator(root);
             }
             case DARK_OAK_SAPLING -> {
-                if (size == 2 && planted)
+                if (size == 3)
                     return new ProperDarkOakGenerator(root);
             }
             case ACACIA_SAPLING -> {

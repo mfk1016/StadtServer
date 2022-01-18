@@ -18,8 +18,8 @@ import java.util.List;
 
 public class ProperDarkOakGenerator extends TreeGenerator {
 
-    private static final int MIN_HEIGHT = 35;
-    private static final int HEIGHT_RANGE = 5;
+    private static final int MIN_HEIGHT = 40;
+    private static final int HEIGHT_RANGE = 10;
     private static final double TRUNK_FACTOR = 0.75D;
 
     private int trunkHeight;
@@ -28,7 +28,7 @@ public class ProperDarkOakGenerator extends TreeGenerator {
     public ProperDarkOakGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
                 Material.DARK_OAK_LOG, Material.DARK_OAK_LEAVES, Material.DARK_OAK_SAPLING);
-        checkSquare = 6;
+        checkSquare = 11;
     }
 
     @Override
@@ -36,11 +36,11 @@ public class ProperDarkOakGenerator extends TreeGenerator {
         trunkHeight = (int) ((double) treeHeight * TRUNK_FACTOR);
         minBranch = Math.max(trunkHeight / 4, 6);
         int branchLength = treeHeight - trunkHeight;
-        // 2x2 Oak Tree; height = highest log
+        // 3x3 Dark Oak Tree; height = highest log
         // trunk
         for (int y = 0; y < trunkHeight; y++) {
-            for (int x = 0; x < 2; x++) {
-                for (int z = 0; z < 2; z++) {
+            for (int x = 0; x < 3; x++) {
+                for (int z = 0; z < 3; z++) {
                     setLog(nwBase.getRelative(x, y, z), Axis.Y);
                     if (y == trunkHeight - 1)
                         for (BlockFace face : BlockFace.values()) {
@@ -128,14 +128,14 @@ public class ProperDarkOakGenerator extends TreeGenerator {
     // pick a base inside the trunk for the branch for a given height
     private Block pickBranchRoot(Branch b, int height) {
         return switch (b) {
-            case S -> nwBase.getRelative(StadtServer.RANDOM.nextInt(2), height - 1, 1);
-            case SE -> nwBase.getRelative(1, height - 1, 1);
-            case E -> nwBase.getRelative(1, height - 1, StadtServer.RANDOM.nextInt(2));
-            case NE -> nwBase.getRelative(1, height - 1, 0);
-            case N -> nwBase.getRelative(StadtServer.RANDOM.nextInt(2), height - 1, 0);
+            case S -> nwBase.getRelative(1, height - 1, 2);
+            case SE -> nwBase.getRelative(2, height - 1, 2);
+            case E -> nwBase.getRelative(2, height - 1, 1);
+            case NE -> nwBase.getRelative(2, height - 1, 0);
+            case N -> nwBase.getRelative(1, height - 1, 0);
             case NW -> nwBase.getRelative(0, height - 1, 0);
-            case W -> nwBase.getRelative(0, height - 1, StadtServer.RANDOM.nextInt(2));
-            case SW -> nwBase.getRelative(0, height - 1, 1);
+            case W -> nwBase.getRelative(0, height - 1, 1);
+            case SW -> nwBase.getRelative(0, height - 1, 2);
         };
     }
 }
