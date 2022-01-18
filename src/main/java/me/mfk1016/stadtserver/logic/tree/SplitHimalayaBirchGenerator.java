@@ -61,7 +61,7 @@ public class SplitHimalayaBirchGenerator extends TreeGenerator {
         offTrunk.addAll(secondOffTrunk);
         // third part: 80-90 degree further
         Block thirdTrunkLast = randomBranchEnd(secondTrunkLast, trunkBranch, 80D, 90D, trunkSectionLength * 2, 0);
-        Block thirdOffTrunkLast = randomBranchEnd(secondOffTrunkLast, trunkBranch.invert(), 80D, 90D, trunkSectionLength, 0);
+        Block thirdOffTrunkLast = randomBranchEnd(secondOffTrunkLast, trunkBranch.invert(), 80D, 90D, trunkSectionLength * 2, 0);
         Block[] thirdAdditionalBases = {
                 secondTrunkLast.getRelative(1, 0, 0),
                 secondTrunkLast.getRelative(0, 0, 1),

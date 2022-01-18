@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class MerantiKingGenerator extends TreeGenerator {
+public class YellowMerantiGenerator extends TreeGenerator {
 
     private static final int MIN_HEIGHT = 60;
     private static final int HEIGHT_RANGE = 30;
@@ -23,7 +23,7 @@ public class MerantiKingGenerator extends TreeGenerator {
     private int trunkHeight;
     private int minBranch;
 
-    public MerantiKingGenerator(Block nwBase) {
+    public YellowMerantiGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
                 Material.JUNGLE_LOG, Material.JUNGLE_LEAVES, Material.JUNGLE_SAPLING);
         checkSquare = 9;

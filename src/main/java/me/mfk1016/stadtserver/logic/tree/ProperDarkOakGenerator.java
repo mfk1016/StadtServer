@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class EuropeanBuckeyeGenerator extends TreeGenerator {
+public class ProperDarkOakGenerator extends TreeGenerator {
 
     private static final int MIN_HEIGHT = 35;
     private static final int HEIGHT_RANGE = 5;
@@ -25,7 +25,7 @@ public class EuropeanBuckeyeGenerator extends TreeGenerator {
     private int trunkHeight;
     private int minBranch;
 
-    public EuropeanBuckeyeGenerator(Block nwBase) {
+    public ProperDarkOakGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
                 Material.DARK_OAK_LOG, Material.DARK_OAK_LEAVES, Material.DARK_OAK_SAPLING);
         checkSquare = 6;

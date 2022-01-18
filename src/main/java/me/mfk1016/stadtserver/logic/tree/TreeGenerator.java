@@ -198,15 +198,15 @@ public abstract class TreeGenerator {
             }
             case DARK_OAK_SAPLING -> {
                 if (size == 2 && planted)
-                    return new EuropeanBuckeyeGenerator(root);
+                    return new ProperDarkOakGenerator(root);
             }
             case ACACIA_SAPLING -> {
                 if (size == 2)
-                    return new BigAcaciaGenerator(root);
+                    return new ProperAcaciaGenerator(root);
             }
             case JUNGLE_SAPLING -> {
                 if (size == 3)
-                    return new MerantiKingGenerator(root);
+                    return new YellowMerantiGenerator(root);
             }
             case SPRUCE_SAPLING -> {
                 if (size == 3)

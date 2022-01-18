@@ -31,6 +31,7 @@ public class TreeChopper {
     private final int maxLogs;
     private Iterator<Block> tmpIterator;
     private int chopSpeed = 2;
+    private boolean survivalMode;
 
     public TreeChopper(Player player, ItemStack axe, Block init, StadtServer plugin) {
         this.plugin = plugin;
@@ -39,6 +40,7 @@ public class TreeChopper {
         blocksToCheck.add(init);
         logType = init.getType();
         maxLogs = plugin.getConfig().getInt(Keys.CONFIG_MAX_LOGS);
+        survivalMode = player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE;
     }
 
     public void chopTree() {
@@ -53,12 +55,15 @@ public class TreeChopper {
         }
 
         // Damage the axe
-        Damageable itemdmg = Objects.requireNonNull((Damageable) axe.getItemMeta());
-        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-            itemdmg.setDamage(itemdmg.getDamage() + (treeLogs.size() / unbreakingFactor));
-            axe.setItemMeta(itemdmg);
-            if (itemdmg.getDamage() > axe.getType().getMaxDurability()) {
-                player.getInventory().setItemInMainHand(null);
+        if (survivalMode) {
+            Damageable itemdmg = Objects.requireNonNull((Damageable) axe.getItemMeta());
+            int durabilityLeft = axe.getType().getMaxDurability() - itemdmg.getDamage();
+            int durabilityUsed = treeLogs.size() / unbreakingFactor;
+            if (durabilityLeft <= 10 || durabilityUsed > 2 * durabilityLeft) {
+                treeLogs.clear();
+            } else {
+                itemdmg.setDamage(Math.min(itemdmg.getDamage() + durabilityUsed, axe.getType().getMaxDurability() - 5));
+                axe.setItemMeta(itemdmg);
             }
         }
 
@@ -68,17 +73,20 @@ public class TreeChopper {
 
     private void collectLogs() {
 
-        int leavesFound = 0;
-        while (blocksToCheck.size() > 0 && treeLogs.size() < maxLogs) {
+        int validLeavesFound = 0;
+        boolean blocked = false;
+        while (blocksToCheck.size() > 0 && treeLogs.size() < (maxLogs + 10) && !blocked) {
             Block current = blocksToCheck.getFirst();
             for (Block relative : getUpwardRelatives(current)) {
                 if (relative != null && !checkedBlocks.contains(relative)) {
                     if (isLog(relative) || isWood(relative)) {
                         treeLogs.addLast(relative);
                         blocksToCheck.addLast(relative);
-                    } else if (leavesFound < 5 && isLeaves(relative) && relative.getBlockData() instanceof Leaves leaves) {
+                    } else if (validLeavesFound < 5 && isLeaves(relative) && relative.getBlockData() instanceof Leaves leaves) {
                         if (!leaves.isPersistent())
-                            leavesFound++;
+                            validLeavesFound++;
+                    } else if (relative.getType() == Material.BOOKSHELF) {
+                        blocked = true;
                     }
                     checkedBlocks.add(relative);
                 }
@@ -86,14 +94,13 @@ public class TreeChopper {
             blocksToCheck.removeFirst();
         }
 
-        if (leavesFound < 5)
+        if (validLeavesFound < 5 || blocked || treeLogs.size() > maxLogs)
             treeLogs.clear();
-        StadtServer.LOGGER.info("logs found: " + treeLogs.size());
 
         blocksToCheck.clear();
         checkedBlocks.clear();
         tmpIterator = treeLogs.iterator();
-        if (treeLogs.size() > 500)
+        if (treeLogs.size() > maxLogs / 2)
             chopSpeed = 4;
     }
 
@@ -106,7 +113,10 @@ public class TreeChopper {
                     this.cancel();
                 int broken = 0;
                 while (tmpIterator.hasNext() && broken < chopSpeed) {
-                    tmpIterator.next().breakNaturally(axe);
+                    if (survivalMode)
+                        tmpIterator.next().breakNaturally(axe);
+                    else
+                        tmpIterator.next().setType(Material.AIR);
                     broken++;
                     tmpIterator.remove();
                 }

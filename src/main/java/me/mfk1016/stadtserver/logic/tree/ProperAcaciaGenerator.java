@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class BigAcaciaGenerator extends TreeGenerator {
+public class ProperAcaciaGenerator extends TreeGenerator {
 
     private static final int MIN_HEIGHT = 12;
     private static final int HEIGHT_RANGE = 5;
@@ -20,7 +20,7 @@ public class BigAcaciaGenerator extends TreeGenerator {
 
     private int trunkHeight;
 
-    public BigAcaciaGenerator(Block nwBase) {
+    public ProperAcaciaGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
                 Material.ACACIA_LOG, Material.ACACIA_LEAVES, Material.ACACIA_SAPLING);
         checkSquare = 6;
