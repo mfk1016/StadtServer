@@ -183,7 +183,7 @@ public abstract class TreeGenerator {
 
     public abstract void generateTree();
 
-    public static TreeGenerator matchGenerator(Block root, Material saplingType, int size, boolean planted) {
+    public static TreeGenerator matchGenerator(Block root, Material saplingType, int size) {
         switch (saplingType) {
             case OAK_SAPLING -> {
                 if (size == 2)

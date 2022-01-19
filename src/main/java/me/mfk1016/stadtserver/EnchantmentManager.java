@@ -1,11 +1,9 @@
 package me.mfk1016.stadtserver;
 
-import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
 import me.mfk1016.stadtserver.enchantments.*;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.GrindstoneInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -50,9 +48,7 @@ public class EnchantmentManager {
         ALL_ENCHANTMENTS.add(SACRIFICIAL);
 
         // Registering
-        for (CustomEnchantment e : ALL_ENCHANTMENTS) {
-            registerEnchantment(e);
-        }
+        registerEnchantments();
 
         // Attach Listeners
         PluginManager pm = plugin.getServer().getPluginManager();
@@ -69,19 +65,17 @@ public class EnchantmentManager {
 
     /* --- REGISTRATION --- */
 
-    private static void registerEnchantment(CustomEnchantment enchantment) {
-        boolean registered = true;
+    private static void registerEnchantments() {
         try {
             Field f = Enchantment.class.getDeclaredField("acceptingNew");
             f.setAccessible(true);
             f.set(null, true);
-            Enchantment.registerEnchantment(enchantment);
+            for (CustomEnchantment enchantment : ALL_ENCHANTMENTS) {
+                Enchantment.registerEnchantment(enchantment);
+                registeredEnchantments.add(enchantment);
+            }
         } catch (Exception e) {
-            registered = false;
             e.printStackTrace();
-        }
-        if (registered) {
-            registeredEnchantments.add(enchantment);
         }
     }
 
@@ -176,35 +170,5 @@ public class EnchantmentManager {
                 item.setItemMeta(meta);
             }
         }
-    }
-
-    /* --- GRINDSTONE SUPPORT --- */
-
-    public static void fixGrindstoneResult(PrepareResultEvent event) {
-        if (!(event.getInventory() instanceof GrindstoneInventory))
-            return;
-        if (event.getResult() == null)
-            return;
-
-        // The result is technically correct, but there may be lore left
-        ItemStack result = event.getResult();
-        ItemMeta meta = result.getItemMeta();
-        if (meta == null || meta.getLore() == null)
-            return;
-        List<String> lore = meta.getLore();
-        ListIterator<String> loreIterator = lore.listIterator();
-        while (loreIterator.hasNext()) {
-            String entry = loreIterator.next();
-            for (CustomEnchantment enchantment : ALL_ENCHANTMENTS) {
-                String enchString = enchantment.getLoreEntry(1);
-                if (entry.startsWith(enchString)) {
-                    loreIterator.remove();
-                    break;
-                }
-            }
-        }
-        meta.setLore(lore);
-        result.setItemMeta(meta);
-        event.setResult(result);
     }
 }

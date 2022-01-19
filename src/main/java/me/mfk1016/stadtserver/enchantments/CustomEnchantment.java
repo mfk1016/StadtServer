@@ -1,28 +1,24 @@
 package me.mfk1016.stadtserver.enchantments;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.EntityCategory;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import static me.mfk1016.stadtserver.util.Functions.romanNumber;
 
 public abstract class CustomEnchantment extends Enchantment implements Listener {
 
-    private static final String CONFIG_PLAYER_MESSAGE = "send_player_message";
     protected final StadtServer plugin;
     private final String name;
 
@@ -47,6 +43,36 @@ public abstract class CustomEnchantment extends Enchantment implements Listener 
         return true;
     }
 
+    @Override
+    public @NotNull Component displayName(int i) {
+        return Component.text(getLoreEntry(i));
+    }
+
+    @Override
+    public boolean isTradeable() {
+        return false;
+    }
+
+    @Override
+    public boolean isDiscoverable() {
+        return false;
+    }
+
+    @Override
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.VERY_RARE;
+    }
+
+    @Override
+    public float getDamageIncrease(int i, @NotNull EntityCategory entityCategory) {
+        return 0;
+    }
+
+    @Override
+    public @NotNull Set<EquipmentSlot> getActiveSlots() {
+        return Set.of(EquipmentSlot.values());
+    }
+
     public String getLoreEntry(int level) {
         if (getMaxLevel() == 1)
             return ChatColor.GRAY + getName();
@@ -54,16 +80,8 @@ public abstract class CustomEnchantment extends Enchantment implements Listener 
             return ChatColor.GRAY + getName() + " " + romanNumber(level);
     }
 
-    protected void playerMessage(Player player, String string) {
-        if (plugin.getConfig().getBoolean(CONFIG_PLAYER_MESSAGE)) {
-            ProtocolManager pm = ProtocolLibrary.getProtocolManager();
-            PacketContainer packetContainer = new PacketContainer(PacketType.Play.Server.SET_ACTION_BAR_TEXT);
-            packetContainer.getChatComponents().write(0, WrappedChatComponent.fromText(string));
-            try {
-                pm.sendServerPacket(player, packetContainer);
-            } catch (InvocationTargetException e2) {
-                // ignore
-            }
-        }
+    @Override
+    public @NotNull String translationKey() {
+        return getKey().toString();
     }
 }

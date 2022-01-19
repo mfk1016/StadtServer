@@ -9,6 +9,7 @@ import me.mfk1016.stadtserver.rituals.RitualManager;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -69,6 +70,7 @@ public class StadtServer extends JavaPlugin {
     @Override
     public void onDisable() {
         RitualManager.onPluginDisable();
+        HandlerList.unregisterAll(this);
         ProtocolLibrary.getProtocolManager().removePacketListener(signPacketListener);
         EnchantmentManager.onPluginDisable();
         RecipeManager.unregisterBrewingRecipes();

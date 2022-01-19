@@ -25,7 +25,7 @@ public class TreeListener extends BasicListener {
         int size = sizebase._1;
         Block nwBase = sizebase._2;
         Material sapling = nwBase.getType();
-        TreeGenerator gen = TreeGenerator.matchGenerator(nwBase, sapling, size, event.isFromBonemeal());
+        TreeGenerator gen = TreeGenerator.matchGenerator(nwBase, sapling, size);
         if (gen != null && gen.isEnoughSpace()) {
             gen.generateTree();
             event.setCancelled(true);

@@ -5,6 +5,7 @@ import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.origin.enchantment.*;
 import me.mfk1016.stadtserver.rituals.RitualManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -118,7 +119,7 @@ public class SacrificialEnchantment extends CustomEnchantment {
         meta.setOwningPlayer(sacrifice);
         playerHead.setItemMeta(meta);
         event.getDrops().add(playerHead);
-        event.setDeathMessage(properDeathMessage(sacrifice, killer));
+        event.deathMessage(Component.text(properDeathMessage(sacrifice, killer)));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

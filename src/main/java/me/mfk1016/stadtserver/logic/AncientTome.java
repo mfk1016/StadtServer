@@ -3,6 +3,7 @@ package me.mfk1016.stadtserver.logic;
 import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Keys;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -69,7 +70,7 @@ public class AncientTome {
         meta.addStoredEnchant(enchantment, enchantment.getMaxLevel(), true);
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(Keys.IS_ANCIENT_TOME, PersistentDataType.INTEGER, 1);
-        meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Ancient Tome");
+        meta.displayName(Component.text(ChatColor.LIGHT_PURPLE + "Ancient Tome"));
         result.setItemMeta(meta);
         return result;
     }

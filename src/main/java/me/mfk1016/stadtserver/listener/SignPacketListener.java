@@ -7,6 +7,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import me.mfk1016.stadtserver.StadtServer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -42,7 +43,7 @@ public class SignPacketListener extends PacketAdapter {
 
                 String[] lines = packet.getStringArrays().read(0);
                 for (int i = 0; i < lines.length; i++) {
-                    sign.setLine(i, lines[i]);
+                    sign.line(i, Component.text(lines[i]));
                 }
                 sign.update();
                 signListener.signEdited(signPos);

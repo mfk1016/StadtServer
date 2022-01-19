@@ -126,11 +126,7 @@ public class EagleEyeEnchantment extends CustomEnchantment {
         double itemFactor = (projectile.isShotFromCrossbow() && effect > 0D) ? 1.25D : 1D;
         effect = Math.max(-25D, Math.min(effect, 100D)) * itemFactor / 50D;
         double damageEffect = Math.round(event.getDamage() * effect) / 2D;
-        double orig = event.getDamage();
         event.setDamage(event.getDamage() + damageEffect);
-        if (projectile.getShooter() instanceof Player shooter) {
-            playerMessage(shooter, "Eagle Eye: " + event.getDamage() + " original: " + orig);
-        }
     }
 
 

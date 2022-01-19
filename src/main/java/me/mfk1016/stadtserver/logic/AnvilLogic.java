@@ -1,27 +1,30 @@
 package me.mfk1016.stadtserver.logic;
 
+import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
+import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
+import me.mfk1016.stadtserver.enchantments.SmithingEnchantment;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.util.Pair;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.GrindstoneInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 import static me.mfk1016.stadtserver.EnchantmentManager.*;
+import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class AnvilLogic {
 
@@ -69,9 +72,74 @@ public class AnvilLogic {
         vanillaCosts.add(new Pair<>(Enchantment.WATER_WORKER, (isBook) -> (isBook ? 2 : 4)));
     }
 
+    public static void fixAnvilResult(PrepareAnvilEvent event) {
+        AnvilInventory anvil = event.getInventory();
+        ItemStack target = anvil.getFirstItem();
+        ItemStack sacrifice = anvil.getSecondItem();
+
+        if (stackEmpty(target))
+            // No action without a target
+            return;
+
+        boolean isRenamed = false;
+        boolean isRepaired = false;
+        boolean isEnchanted = false;
+        boolean isAncientTome = false;
+
+        String newName = anvil.getRenameText();
+        ItemMeta targetMeta = target.getItemMeta();
+        if (targetMeta != null) {
+            isRenamed = newName != null && !newName.isBlank();
+        }
+        if (targetMeta instanceof Repairable && targetMeta instanceof Damageable damageable && !stackEmpty(sacrifice)) {
+            isRepaired = damageable.hasDamage() && AnvilLogic.isRepairMaterial(target, sacrifice.getType());
+        }
+        if (!stackEmpty(sacrifice) && !EnchantmentManager.getItemEnchantments(sacrifice).isEmpty()) {
+            isEnchanted = sacrifice.getType() == target.getType() || sacrifice.getType() == Material.ENCHANTED_BOOK;
+            isAncientTome = target.getType() != Material.ENCHANTED_BOOK && AncientTome.isAncientTome(sacrifice);
+        }
+        if (!isRenamed && !isRepaired && !isEnchanted)
+            return;
+
+        anvil.setRepairCost(0);
+        event.setResult(target.clone());
+        if (isEnchanted) {
+            boolean validResult = doAnvilEnchant(event);
+            if (!validResult && !isRepaired && !isRenamed) {
+                event.setResult(null);
+                return;
+            }
+        }
+        if (isRepaired)
+            doAnvilRepair(event);
+        if (isRenamed)
+            doAnvilRename(event);
+
+        // Add base costs and increase anvil penalty
+        int baseCost = 0;
+        if (isEnchanted && !isAncientTome) {
+            Repairable targetRepairData = (Repairable) target.getItemMeta();
+            baseCost += targetRepairData.getRepairCost();
+            Repairable sacrificeRepairData = (Repairable) Objects.requireNonNull(sacrifice.getItemMeta());
+            baseCost += sacrificeRepairData.getRepairCost();
+        } else if (isRepaired) {
+            Repairable targetRepairData = (Repairable) target.getItemMeta();
+            baseCost += targetRepairData.getRepairCost();
+        }
+        anvil.setRepairCost(anvil.getRepairCost() + baseCost);
+        ItemStack result = Objects.requireNonNull(event.getResult());
+        if (!isAncientTome && (isEnchanted || isRepaired))
+            AnvilLogic.increaseAnvilUses(result);
+        event.setResult(result);
+
+        if (isRepaired && !isEnchanted)
+            SmithingEnchantment.tryApplySmithingEnchantment(event);
+        anvil.setMaximumRepairCost(100);
+    }
+
     public static boolean doAnvilEnchant(PrepareAnvilEvent event) {
         AnvilInventory anvil = event.getInventory();
-        ItemStack sacrifice = Objects.requireNonNull(anvil.getItem(1));
+        ItemStack sacrifice = Objects.requireNonNull(anvil.getSecondItem());
         ItemStack result = Objects.requireNonNull(event.getResult());
         int enchantCost = 0;
         boolean isAncientTome = result.getType() != Material.ENCHANTED_BOOK && AncientTome.isAncientTome(sacrifice);
@@ -124,7 +192,7 @@ public class AnvilLogic {
 
     public static void doAnvilRepair(PrepareAnvilEvent event) {
         AnvilInventory anvil = event.getInventory();
-        ItemStack sacrifice = Objects.requireNonNull(anvil.getItem(1));
+        ItemStack sacrifice = Objects.requireNonNull(anvil.getSecondItem());
         ItemStack result = Objects.requireNonNull(event.getResult());
         Damageable resultDamage = (Damageable) Objects.requireNonNull(result.getItemMeta());
         int toSub;
@@ -163,9 +231,9 @@ public class AnvilLogic {
         AnvilInventory anvil = event.getInventory();
         ItemStack result = Objects.requireNonNull(event.getResult());
 
-        String newName = anvil.getRenameText();
+        String newName = anvil.getRenameText() == null ? "" : anvil.getRenameText();
         ItemMeta resultMeta = Objects.requireNonNull(result.getItemMeta());
-        resultMeta.setDisplayName(newName);
+        resultMeta.displayName(Component.text(newName));
         result.setItemMeta(resultMeta);
 
         anvil.setRepairCost(anvil.getRepairCost() + 1);
@@ -218,5 +286,35 @@ public class AnvilLogic {
             case TRIDENT -> repair == Material.NAUTILUS_SHELL;
             default -> false;
         };
+    }
+
+    /* --- GRINDSTONE SUPPORT --- */
+
+    public static void fixGrindstoneResult(PrepareResultEvent event) {
+        if (!(event.getInventory() instanceof GrindstoneInventory))
+            return;
+        if (event.getResult() == null)
+            return;
+
+        // The result is technically correct, but there may be lore left
+        ItemStack result = event.getResult();
+        ItemMeta meta = result.getItemMeta();
+        if (meta == null || meta.getLore() == null)
+            return;
+        List<String> lore = meta.getLore();
+        ListIterator<String> loreIterator = lore.listIterator();
+        while (loreIterator.hasNext()) {
+            String entry = loreIterator.next();
+            for (CustomEnchantment enchantment : EnchantmentManager.ALL_ENCHANTMENTS) {
+                String enchString = enchantment.getLoreEntry(1);
+                if (entry.startsWith(enchString)) {
+                    loreIterator.remove();
+                    break;
+                }
+            }
+        }
+        meta.setLore(lore);
+        result.setItemMeta(meta);
+        event.setResult(result);
     }
 }
