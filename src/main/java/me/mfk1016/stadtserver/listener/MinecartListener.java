@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
 import org.bukkit.inventory.ItemStack;
@@ -39,6 +40,19 @@ public class MinecartListener extends BasicListener {
     public void onVehicleUpdate(VehicleUpdateEvent event) {
         if (event.getVehicle() instanceof Minecart cart) {
             MinecartLogic.adjustVelocity(cart);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onTrainMemberCollide(VehicleEntityCollisionEvent event) {
+        if (!(event.getVehicle() instanceof Minecart cart))
+            return;
+        if (!(event.getEntity() instanceof Minecart cart2))
+            return;
+        if (!MinecartLogic.hasMaster(cart) || !MinecartLogic.hasMaster(cart2))
+            return;
+        if (MinecartLogic.getMaster(cart) == MinecartLogic.getMaster(cart2)) {
+            event.setCollisionCancelled(true);
         }
     }
 

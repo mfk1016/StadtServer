@@ -2,6 +2,7 @@ package me.mfk1016.stadtserver.logic;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Keys;
+import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -25,9 +27,8 @@ public class MinecartLogic {
     public static final double MINECART_SPEED_LIMIT = 0.8D;
 
     // Train member deviation constants
-    private static final float CART_DIST = 2.25F;
-    private static final float MIN_CART_DIST = 2.2F;
-    private static final float MAX_CART_DIST = 2.3F;
+    private static final float MIN_CART_DIST = 2.3F;
+    private static final float MAX_CART_DIST = 2.4F;
 
     /* --- TRAIN LINKING AND MEMBERSHIP --- */
 
@@ -260,52 +261,49 @@ public class MinecartLogic {
 
     /* --- TRAIN MOVEMENT / COLLISION --- */
 
-    public static void adjustVelocity(Minecart cart) {
+    public static void adjustVelocity(@NotNull Minecart cart) {
         if (hasMaster(cart) && hasFollower(cart))
             adjustMinecartVelocity(cart, getFollower(cart));
     }
 
-    private static void adjustMinecartVelocity(Minecart cart, Minecart follower) {
+    private static void adjustMinecartVelocity(@NotNull Minecart cart, @NotNull Minecart follower) {
 
         // Act only if the angle between the cart yaws is 0 or 45 degree and both angles can be divided by 45
         // This means, that carts are adjusted, which run no 90 or 180 degree turn
         Vector cartLocation = cart.getLocation().toVector();
         Vector followerLocation = follower.getLocation().toVector();
-        Vector direction = followerLocation.clone().subtract(cartLocation).setY(0);
-        Vector directionInv = new Vector(-1, 1, -1).multiply(direction);
+        Vector directionToFollower = followerLocation.clone().subtract(cartLocation).setY(0);
+        Vector directionToMaster = new Vector(-1, 1, -1).multiply(directionToFollower);
 
         // Determine the leading cart and handle cases with no velocity
+        boolean cartStopped = cart.getVelocity().length() < 0.1;
+        boolean followerStopped = follower.getVelocity().length() < 0.1;
 
-        if (cart.getVelocity().equals(new Vector()) && follower.getVelocity().equals(new Vector())) {
+        if (cartStopped && followerStopped) {
             // Adjustments only if a cart is moving
             return;
-        } else if (cart.getVelocity().equals(new Vector())) {
-            if (isFollowingVelocity(direction, follower.getVelocity())) {
+        } else if (cartStopped) {
+            if (isLeadingVelocity(directionToFollower, follower.getVelocity())) {
                 // cart stopped -> stop follower
                 follower.setVelocity(new Vector());
             } else {
                 // follower is leading, cart not moved -> start cart
                 cart.setVelocity(follower.getVelocity().clone());
             }
-            return;
-        } else if (follower.getVelocity().equals(new Vector())) {
-            if (isFollowingVelocity(directionInv, cart.getVelocity())) {
+        } else if (followerStopped) {
+            if (isLeadingVelocity(directionToMaster, cart.getVelocity())) {
                 // follower is leading and has stopped -> stop cart
                 cart.setVelocity(new Vector());
             } else {
                 // cart is leading, follower not moved -> start follower
                 follower.setVelocity(cart.getVelocity().clone());
             }
-            return;
         } else {
             // Both carts are moving -> exchange cart and follower if necessary
-            if (!isFollowingVelocity(direction, follower.getVelocity())) {
+            if (!isLeadingVelocity(directionToFollower, follower.getVelocity())) {
                 Minecart tmp = cart;
                 cart = follower;
                 follower = tmp;
-                Vector tmpLocation = cartLocation;
-                cartLocation = followerLocation;
-                followerLocation = tmpLocation;
             }
         }
 
@@ -327,20 +325,6 @@ public class MinecartLogic {
 
         // Now it is known that the follower trails the cart and that both carts are moving
         // The cart determines the speed, while the follower has to adjust itself against the cart
-
-        // Adjust cart distance
-        // The directionInv vector contains the correct direction torwards the follower
-        // -> normalize and multiply with chain slack
-        // Only if both carts are on (nearly) the same y level and on w-e or n-s axis
-        if (Math.abs(cartLocation.getY() - followerLocation.getY()) < 0.3D && cartYaw == followerYaw && cartYaw % 90F == 0F) {
-            double distance = direction.length();
-            if (distance < MIN_CART_DIST || distance > MAX_CART_DIST) {
-                // Opposite to the cart velocity
-                Vector relativeFollowerPos = cart.getVelocity().clone().normalize().multiply(CART_DIST);
-                Location newFollowerPos = cart.getLocation().clone().subtract(relativeFollowerPos);
-                follower.teleport(newFollowerPos);
-            }
-        }
 
         if (cartYaw == followerYaw) {
 
@@ -418,50 +402,80 @@ public class MinecartLogic {
                     break;
             }
         }
+
+        // Adjust cart distance
+        double distance = directionToFollower.length();
+        if (distance < MIN_CART_DIST) {
+            follower.setVelocity(follower.getVelocity().multiply(0.9D));
+        } else if (distance > MAX_CART_DIST) {
+            follower.setVelocity(follower.getVelocity().multiply(1.1D));
+        }
     }
 
-    private static boolean isFollowingVelocity(Vector direction, Vector followingVelocity) {
-        double angle = followingVelocity.clone().setY(0).angle(direction);
+    private static boolean isLeadingVelocity(@NotNull Vector directionToPartner, @NotNull Vector cartVelocity) {
+        double angle = cartVelocity.clone().setY(0).angle(directionToPartner);
         angle = Math.toDegrees(angle);
         if (angle < 0) {
-            angle = angle + 360F;
+            angle = angle + 360D;
         }
 
         return angle > 90D && angle < 270D;
     }
 
-    private static void updateFollowerVelocity(Minecart follower, double x, double z) {
+    private static void updateFollowerVelocity(@NotNull Minecart follower, double x, double z) {
         follower.setVelocity(new Vector(x, follower.getVelocity().getY(), z));
+    }
+
+    public static void adjustMemberVelocityToMaster(@NotNull Minecart cart, double trainSpeed) {
+        if (!hasFollower(cart) || trainSpeed == 0)
+            return;
+        Minecart follower = getFollower(cart);
+        Vector direction = cart.getLocation().toVector().subtract(follower.getLocation().toVector());
+
+    }
+
+    public static Double trainSpeed(@NotNull Minecart cart) {
+        if (!hasMaster(cart))
+            return cart.getVelocity().length();
+        Minecart current = getMaster(cart);
+        double size = 1D;
+        double speedSum = current.getVelocity().length();
+        while (hasFollower(current)) {
+            current = getFollower(current);
+            size += 1D;
+            speedSum += current.getVelocity().length();
+        }
+        return speedSum / size;
     }
 
     // Helpers
 
-    public static boolean hasMaster(Minecart cart) {
+    public static boolean hasMaster(@NotNull Minecart cart) {
         return cart.hasMetadata(Keys.CART_MASTER) && getMaster(cart) != null;
     }
 
-    public static Minecart getMaster(Minecart cart) {
+    public static Minecart getMaster(@NotNull Minecart cart) {
         String metaCartID = cart.getMetadata(Keys.CART_MASTER).get(0).asString();
         return (Minecart) cart.getWorld().getEntity(UUID.fromString(metaCartID));
     }
 
-    public static void setMaster(Minecart cart, Minecart master) {
+    public static void setMaster(@NotNull Minecart cart, Minecart master) {
         if (master != null)
             cart.setMetadata(Keys.CART_MASTER, new FixedMetadataValue(StadtServer.getInstance(), master.getUniqueId().toString()));
         else
             cart.removeMetadata(Keys.CART_MASTER, StadtServer.getInstance());
     }
 
-    public static boolean hasFollower(Minecart cart) {
+    public static boolean hasFollower(@NotNull Minecart cart) {
         return cart.hasMetadata(Keys.CART_FOLLOWER) && getFollower(cart) != null;
     }
 
-    public static Minecart getFollower(Minecart cart) {
+    public static Minecart getFollower(@NotNull Minecart cart) {
         String metaCartID = cart.getMetadata(Keys.CART_FOLLOWER).get(0).asString();
         return (Minecart) cart.getWorld().getEntity(UUID.fromString(metaCartID));
     }
 
-    public static void setFollower(Minecart cart, Minecart follower) {
+    public static void setFollower(@NotNull Minecart cart, Minecart follower) {
         if (follower != null)
             cart.setMetadata(Keys.CART_FOLLOWER, new FixedMetadataValue(StadtServer.getInstance(), follower.getUniqueId().toString()));
         else
@@ -472,12 +486,10 @@ public class MinecartLogic {
         if (yaw < 0) {
             yaw = yaw + 360.0F;
         }
-
         // 0 = east / west
         // 45 = north-west / south-east
         // 90 = north / south
         // 135 = north-east / south-west
-
         return yaw % 180.0F;
     }
 }
