@@ -46,7 +46,7 @@ public class MinecartListener extends BasicListener {
     public void onVehicleDestroy(VehicleDestroyEvent event) {
         if (event.getVehicle() instanceof Minecart cart) {
             MinecartLogic.checkTrainMember(cart);
-            if (MinecartLogic.isTrainMember(cart)) {
+            if (MinecartLogic.hasMaster(cart)) {
                 MinecartLogic.unlinkCart(cart);
                 if (event.getAttacker() instanceof Player player) {
                     playDetachSound(cart);
@@ -94,7 +94,7 @@ public class MinecartListener extends BasicListener {
                         playerMessage(player, "Minecart already linked by another Minecart or cyclic linking");
                     }
                 } else {
-                    if (MinecartLogic.canBeLinked(cart)) {
+                    if (!MinecartLogic.hasFollower(cart)) {
                         attachCart(player, cart);
                         playAttachSound(cart);
                         playerMessage(player, "Minecart attached");
@@ -115,7 +115,7 @@ public class MinecartListener extends BasicListener {
             } else if (inHand.getType() == Material.SHEARS) {
 
                 // Unlinking
-                if (MinecartLogic.isTrainMember(cart)) {
+                if (MinecartLogic.hasMaster(cart)) {
                     MinecartLogic.unlinkCart(cart);
                     playDetachSound(cart);
                     playerMessage(player, "Minecart unlinked");
@@ -129,10 +129,12 @@ public class MinecartListener extends BasicListener {
     }
 
     private boolean hasCartAttached(Player player) {
-        return player.hasMetadata(Keys.CART_ATTACHED);
+        return player.hasMetadata(Keys.CART_ATTACHED) && getAttachedCart(player) != null;
     }
 
     private void attachCart(Player player, Minecart cart) {
+        if (player.hasMetadata(Keys.CART_ATTACHED))
+            player.removeMetadata(Keys.CART_ATTACHED, StadtServer.getInstance());
         player.setMetadata(Keys.CART_ATTACHED, new FixedMetadataValue(StadtServer.getInstance(), cart.getUniqueId().toString()));
     }
 
@@ -142,23 +144,19 @@ public class MinecartListener extends BasicListener {
     }
 
     private void playAttachSound(Minecart cart) {
-        Block target = cart.getLocation().getBlock();
-        target.getWorld().playSound(target.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 1f, 1f);
+        cart.getWorld().playSound(cart.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 1f, 1f);
     }
 
     private void playLinkSound(Minecart cart) {
-        Block target = cart.getLocation().getBlock();
-        target.getWorld().playSound(target.getLocation(), Sound.BLOCK_DISPENSER_LAUNCH, 1f, 1f);
+        cart.getWorld().playSound(cart.getLocation(), Sound.BLOCK_DISPENSER_LAUNCH, 1f, 1f);
     }
 
     private void playDetachSound(Minecart cart) {
-        Block target = cart.getLocation().getBlock();
-        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1f, 1f);
+        cart.getWorld().playSound(cart.getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1f, 1f);
     }
 
     private void playFailSound(Player player) {
-        Block target = player.getLocation().getBlock();
-        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
     }
 
 }
