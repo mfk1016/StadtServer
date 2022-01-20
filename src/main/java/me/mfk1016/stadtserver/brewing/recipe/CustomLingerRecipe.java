@@ -11,6 +11,10 @@ import java.util.Objects;
 
 public class CustomLingerRecipe extends BrewingRecipe {
 
+    public CustomLingerRecipe() {
+        super("custom_linger");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
 

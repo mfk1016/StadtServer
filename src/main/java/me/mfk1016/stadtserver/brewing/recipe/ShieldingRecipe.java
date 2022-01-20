@@ -10,6 +10,10 @@ import org.bukkit.potion.PotionType;
 
 public class ShieldingRecipe extends BrewingRecipe {
 
+    public ShieldingRecipe() {
+        super("shielding");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
         if (ingredient != Material.DIAMOND)

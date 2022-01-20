@@ -10,6 +10,10 @@ import java.util.Objects;
 
 public class DyePotionRecipe extends BrewingRecipe {
 
+    public DyePotionRecipe() {
+        super("dye_potion");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
         switch (ingredient) {

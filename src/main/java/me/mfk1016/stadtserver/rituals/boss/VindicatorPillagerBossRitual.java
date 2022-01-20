@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.rituals.boss;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.rituals.RitualState;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -14,8 +13,8 @@ public class VindicatorPillagerBossRitual extends BossRitual {
     private final Block[] grindstoneBlocks;
     private final Block[] bannerBlocks;
 
-    public VindicatorPillagerBossRitual(StadtServer plugin, Block focusBlock, EntityType bossType) {
-        super(plugin, focusBlock, 20, bossType);
+    public VindicatorPillagerBossRitual(Block focusBlock, EntityType bossType) {
+        super(focusBlock, 20, bossType);
         bannerBlocks = new Block[]{focusBlock.getRelative(-3, 0, -3),
                 focusBlock.getRelative(3, 0, -3),
                 focusBlock.getRelative(-3, 0, 3),
@@ -77,7 +76,7 @@ public class VindicatorPillagerBossRitual extends BossRitual {
         if (target != -1) {
             Block targetBanner = bannerBlocks[target].getRelative(0, 2, 0);
             targetBanner.setType(Material.AIR);
-            StadtServer.broadcastSound(targetBanner, Sound.BLOCK_FIRE_EXTINGUISH, 4, 1);
+            targetBanner.getWorld().playSound(targetBanner.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 4, 1);
         }
     }
 }

@@ -1,14 +1,11 @@
 package me.mfk1016.stadtserver.enchantments;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.logic.wrench.WrenchAction;
 import me.mfk1016.stadtserver.logic.wrench.WrenchActionStateChange;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
@@ -21,47 +18,25 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingInventory;
-import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class WrenchEnchantment extends CustomEnchantment {
 
-    private static final List<SmithingRecipe> wrenchRecipes = new ArrayList<>();
-
-    public WrenchEnchantment(StadtServer plugin) {
-        super(plugin, "Wrench", "wrench");
+    public WrenchEnchantment() {
+        super("Wrench", "wrench");
     }
 
     public static boolean isWrenched(TileState state) {
         PersistentDataContainer pdc = state.getPersistentDataContainer();
         int result = pdc.getOrDefault(Keys.IS_WRENCHED, PersistentDataType.INTEGER, 0);
         return result == 1;
-    }
-
-    public static List<SmithingRecipe> getWrenchRecipes(StadtServer plugin) {
-
-        if (wrenchRecipes.size() != 0)
-            return wrenchRecipes;
-
-        RecipeChoice additive = new RecipeChoice.ExactChoice(new ItemStack(Material.COPPER_INGOT));
-        for (Material shovelMaterial : Arrays.asList(Material.WOODEN_SHOVEL,
-                Material.STONE_SHOVEL,
-                Material.IRON_SHOVEL,
-                Material.GOLDEN_SHOVEL,
-                Material.DIAMOND_SHOVEL,
-                Material.NETHERITE_SHOVEL)) {
-            NamespacedKey recipeKey = new NamespacedKey(plugin, "wrenchRecipe_" + shovelMaterial.name());
-            ItemStack shovel = new ItemStack(shovelMaterial);
-            RecipeChoice base = new RecipeChoice.MaterialChoice(shovelMaterial);
-            wrenchRecipes.add(new SmithingRecipe(recipeKey, shovel, base, additive));
-        }
-        return wrenchRecipes;
     }
 
     @Override
@@ -113,9 +88,9 @@ public class WrenchEnchantment extends CustomEnchantment {
 
         Player player = event.getPlayer();
         Block target = Objects.requireNonNull(event.getClickedBlock());
-        WrenchAction action = WrenchAction.actionFactory(target, plugin);
+        WrenchAction action = WrenchAction.actionFactory(target);
         if (action instanceof WrenchActionStateChange)
-            StadtServer.broadcastSound(target, Sound.BLOCK_LEVER_CLICK, 0.5F, 1);
+            target.getWorld().playSound(target.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.5F, 1);
         action.onWrenchBlock(player, target, event);
     }
 

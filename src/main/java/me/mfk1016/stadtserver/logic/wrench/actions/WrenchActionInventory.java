@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.logic.wrench.actions;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.InventorySorter;
 import me.mfk1016.stadtserver.logic.wrench.WrenchAction;
 import org.bukkit.block.Block;
@@ -13,8 +12,7 @@ public class WrenchActionInventory extends WrenchAction {
 
     private String blockName;
 
-    public WrenchActionInventory(StadtServer plugin, String blockName) {
-        super(plugin);
+    public WrenchActionInventory(String blockName) {
         this.blockName = blockName;
     }
 

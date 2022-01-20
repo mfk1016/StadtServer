@@ -27,6 +27,10 @@ public class AmethystShardRecipe extends BrewingRecipe {
         CUSTOM_MAP.put(PotionLibrary.RESISTANCE_0_2, PotionLibrary.RESISTANCE_0_3);
     }
 
+    public AmethystShardRecipe() {
+        super("amethyst_shard");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
         if (ingredient != Material.AMETHYST_SHARD)

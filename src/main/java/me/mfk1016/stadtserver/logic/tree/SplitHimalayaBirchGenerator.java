@@ -20,11 +20,10 @@ public class SplitHimalayaBirchGenerator extends TreeGenerator {
     private static final int MIN_HEIGHT = 30;
     private static final int HEIGHT_RANGE = 15;
     private static final double TRUNK_FACTOR = 0.75D;
-
-    private int minBranch;
-    private Branch trunkBranch;
     private final List<Block> trunkBases = new ArrayList<>();
     private final List<Block> offTrunkBases = new ArrayList<>();
+    private int minBranch;
+    private Branch trunkBranch;
 
     public SplitHimalayaBirchGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,

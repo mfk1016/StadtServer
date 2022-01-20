@@ -11,6 +11,10 @@ import java.util.Objects;
 
 public class CustomSplashRecipe extends BrewingRecipe {
 
+    public CustomSplashRecipe() {
+        super("custom_splash");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
 

@@ -1,6 +1,6 @@
 package me.mfk1016.stadtserver.logic;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

@@ -21,14 +21,14 @@ public class CategoryManager {
         return sortingRoot.cmp(a, b);
     }
 
-    public static void initialize(StadtServer plugin, boolean setDefault) {
+    public static void initialize(boolean setDefault) {
         sortingRoot = new ItemCategory("", "", null);
-        File sortingConfig = new File(plugin.getDataFolder(), "sorting.json");
+        File sortingConfig = new File(StadtServer.getInstance().getDataFolder(), "sorting.json");
         if (!sortingConfig.exists()) {
-            plugin.saveResource(sortingConfig.getName(), false);
+            StadtServer.getInstance().saveResource(sortingConfig.getName(), false);
         } else if (setDefault) {
             if (sortingConfig.delete())
-                plugin.saveResource(sortingConfig.getName(), false);
+                StadtServer.getInstance().saveResource(sortingConfig.getName(), false);
         }
         Type empMapType = new TypeToken<Map<String, List<String>>>() {
         }.getType();

@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.rituals;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.rituals.boss.EvokerBossRitual;
 import me.mfk1016.stadtserver.rituals.boss.VindicatorPillagerBossRitual;
 import me.mfk1016.stadtserver.rituals.boss.WitchBossRitual;
@@ -16,18 +15,18 @@ public class RitualManager {
 
     private static final Set<BasicRitual> active_rituals = new HashSet<>();
 
-    public static boolean tryRitual(StadtServer plugin, LivingEntity sacrifice, Block focus) {
+    public static boolean tryRitual(LivingEntity sacrifice, Block focus) {
 
         BasicRitual ritual = null;
         if (focus.getType() == Material.LAPIS_BLOCK) {
             if (sacrifice.getType() == EntityType.SHEEP) {
-                ritual = new WitchBossRitual(plugin, focus);
+                ritual = new WitchBossRitual(focus);
             } else if (sacrifice.getType() == EntityType.PIG) {
-                ritual = new VindicatorPillagerBossRitual(plugin, focus, EntityType.VINDICATOR);
+                ritual = new VindicatorPillagerBossRitual(focus, EntityType.VINDICATOR);
             } else if (sacrifice.getType() == EntityType.COW) {
-                ritual = new VindicatorPillagerBossRitual(plugin, focus, EntityType.PILLAGER);
+                ritual = new VindicatorPillagerBossRitual(focus, EntityType.PILLAGER);
             } else if (sacrifice.getType() == EntityType.VILLAGER) {
-                ritual = new EvokerBossRitual(plugin, focus);
+                ritual = new EvokerBossRitual(focus);
             }
         }
 

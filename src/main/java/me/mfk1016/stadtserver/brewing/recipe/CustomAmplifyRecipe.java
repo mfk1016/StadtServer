@@ -19,6 +19,10 @@ public class CustomAmplifyRecipe extends BrewingRecipe {
         CUSTOM_MAP.put(PotionLibrary.RESISTANCE_1_1, PotionLibrary.RESISTANCE_0_2);
     }
 
+    public CustomAmplifyRecipe() {
+        super("custom_amplify");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
         return ingredient == Material.GLOWSTONE_DUST && PotionLibrary.matchCustomBrews(input, CUSTOM_MAP);

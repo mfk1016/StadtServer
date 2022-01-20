@@ -43,10 +43,10 @@ public class Keys {
     public static NamespacedKey IS_ANCIENT_TOME;
 
 
-    public static void initialize(StadtServer p) {
-        p.getConfig().addDefault(CONFIG_PLAYER_MESSAGE, true);
-        p.getConfig().addDefault(CONFIG_MAX_LOGS, 1600);
-        IS_WRENCHED = new NamespacedKey(p, IS_WRENCHED_s);
-        IS_ANCIENT_TOME = new NamespacedKey(p, IS_ANCIENT_TOME_s);
+    public static void initialize() {
+        StadtServer.getInstance().getConfig().addDefault(CONFIG_PLAYER_MESSAGE, true);
+        StadtServer.getInstance().getConfig().addDefault(CONFIG_MAX_LOGS, 1600);
+        IS_WRENCHED = new NamespacedKey(StadtServer.getInstance(), IS_WRENCHED_s);
+        IS_ANCIENT_TOME = new NamespacedKey(StadtServer.getInstance(), IS_ANCIENT_TOME_s);
     }
 }

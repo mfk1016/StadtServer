@@ -1,10 +1,8 @@
-package me.mfk1016.stadtserver.listener;
+package me.mfk1016.stadtserver.brewing;
 
 import me.mfk1016.stadtserver.RecipeManager;
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.brewing.BrewingRecipe;
-import me.mfk1016.stadtserver.brewing.BrewingWorker;
-import me.mfk1016.stadtserver.brewing.PotionLibrary;
+import me.mfk1016.stadtserver.listener.BasicListener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -26,24 +24,20 @@ import java.util.Objects;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
-public class BrewingListener extends BasicListener {
+public class BrewingManager extends BasicListener {
 
     private static final int INGREDIENT_SLOT = 3;
 
-    public BrewingListener(StadtServer plugin) {
-        super(plugin);
-    }
-
-    public static void tryBrewing(StadtServer plugin, Block brewingStandBlock) {
+    public static void tryBrewing(Block brewingStandBlock) {
         // 2 Ticks delay to respect a possible fuel refill
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+        StadtServer.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(StadtServer.getInstance(), () -> {
             BrewingStand stand = (BrewingStand) brewingStandBlock.getState();
             if (stand.getBrewingTime() != 0)
                 return;
             BrewerInventory inventory = stand.getInventory();
-            BrewingRecipe recipe = RecipeManager.matchBrewingRecipe(inventory);
+            BrewingRecipe recipe = RecipeManager.matchBrewingRecipe(inventory, false);
             if (stand.getFuelLevel() > 0 && recipe != null) {
-                BrewingWorker worker = new BrewingWorker(brewingStandBlock, recipe, plugin);
+                BrewingWorker worker = new BrewingWorker(brewingStandBlock.getLocation(), recipe);
                 worker.start();
             }
         }, 2);
@@ -55,7 +49,7 @@ public class BrewingListener extends BasicListener {
         List<ItemStack> results = event.getResults();
         BrewerInventory inventory = event.getContents();
         ItemStack ingredient = Objects.requireNonNull(inventory.getIngredient());
-        BrewingRecipe recipe = RecipeManager.matchBrewingRecipe(inventory);
+        BrewingRecipe recipe = RecipeManager.matchBrewingRecipe(inventory, true);
         if (recipe != null) {
             for (int i = 0; i < 3; i++) {
                 if (stackEmpty(inventory.getItem(i)))
@@ -74,7 +68,7 @@ public class BrewingListener extends BasicListener {
             return;
 
         boolean standClicked = event.getClickedInventory() instanceof BrewerInventory;
-        boolean isCustomBrewing = RecipeManager.matchBrewingRecipe(inventory) != null;
+        boolean isCustomBrewing = RecipeManager.matchBrewingRecipe(inventory, true) != null;
         boolean isIngredientSlot = standClicked && event.getSlotType() == InventoryType.SlotType.FUEL;
 
         Player player = (Player) event.getView().getPlayer();
@@ -161,7 +155,7 @@ public class BrewingListener extends BasicListener {
             return;
 
         Block brewingStandBlock = stand.getBlock();
-        tryBrewing(plugin, brewingStandBlock);
+        tryBrewing(brewingStandBlock);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -177,7 +171,7 @@ public class BrewingListener extends BasicListener {
         event.setCancelled(true);
         ItemStack item = event.getItem();
         BrewerInventory brewerInventory = target.getInventory();
-        boolean isCustomBrewing = RecipeManager.matchBrewingRecipe(brewerInventory) != null;
+        boolean isCustomBrewing = RecipeManager.matchBrewingRecipe(brewerInventory, true) != null;
         ItemStack ingredient = brewerInventory.getIngredient();
         boolean moved = false;
         if (stackEmpty(ingredient)) {
@@ -200,7 +194,7 @@ public class BrewingListener extends BasicListener {
             }
 
             if (!isCustomBrewing)
-                tryBrewing(plugin, target.getBlock());
+                tryBrewing(target.getBlock());
         }
     }
 

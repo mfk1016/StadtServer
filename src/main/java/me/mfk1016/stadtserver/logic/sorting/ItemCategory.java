@@ -11,8 +11,8 @@ public class ItemCategory {
 
     private final String name;
     private final String fullName;
-    private Material[] materials;
     private final List<ItemCategory> subcategories = new ArrayList<>();
+    private Material[] materials;
 
     public ItemCategory(@NotNull String name, @NotNull String namespace, @Nullable Material[] materials) {
         this.name = name;

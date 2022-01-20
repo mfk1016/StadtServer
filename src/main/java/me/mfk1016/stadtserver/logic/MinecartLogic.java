@@ -12,12 +12,10 @@ import org.bukkit.block.data.type.Stairs;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.Vector;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.UUID;
 
 public class MinecartLogic {
 
@@ -31,13 +29,6 @@ public class MinecartLogic {
     private static final float MIN_CART_DIST = 2.0F;
     private static final float MAX_CART_DIST = 2.5F;
 
-
-    private final StadtServer plugin;
-
-    public MinecartLogic(StadtServer instance) {
-        plugin = instance;
-    }
-
     /* --- TRAIN LINKING AND MEMBERSHIP --- */
 
     // A train is defined as:
@@ -47,15 +38,15 @@ public class MinecartLogic {
     // A train has at least 2 carts.
     // -> the master has always a follower
 
-    public boolean isTrainMember(Minecart cart) {
+    public static boolean isTrainMember(Minecart cart) {
         return cart.hasMetadata(Keys.CART_MASTER);
     }
 
-    public boolean canBeLinked(Minecart cart) {
+    public static boolean canBeLinked(Minecart cart) {
         return !cart.hasMetadata(Keys.CART_FOLLOWER);
     }
 
-    public boolean canBeFollower(Minecart cart, Minecart follower) {
+    public static boolean canBeFollower(Minecart cart, Minecart follower) {
         // A cart can be a follower if it is either not a member of a train or a master
         if (follower.hasMetadata(Keys.CART_MASTER)) {
             Minecart followerMaster = getMetaMinecart(follower, Keys.CART_MASTER);
@@ -72,15 +63,15 @@ public class MinecartLogic {
         return true;
     }
 
-    public void linkCarts(Minecart cart, Minecart follower) {
+    public static void linkCarts(Minecart cart, Minecart follower) {
         // Assumes that both carts can be linked together
         // assert canBeLinked(cart) && canBeFollower(cart, follower);
         // Link carts
         cart.setSlowWhenEmpty(false);
-        cart.setMetadata(Keys.CART_FOLLOWER, new FixedMetadataValue(plugin, new WeakReference<>(follower)));
+        cart.setMetadata(Keys.CART_FOLLOWER, new FixedMetadataValue(StadtServer.getInstance(), follower.getUniqueId().toString()));
         // Update master value of train
         if (!cart.hasMetadata(Keys.CART_MASTER)) {
-            cart.setMetadata(Keys.CART_MASTER, new FixedMetadataValue(plugin, new WeakReference<>(cart)));
+            cart.setMetadata(Keys.CART_MASTER, new FixedMetadataValue(StadtServer.getInstance(), cart.getUniqueId().toString()));
             updateMaster(cart, cart);
         } else {
             Minecart master = getMetaMinecart(cart, Keys.CART_MASTER);
@@ -88,21 +79,21 @@ public class MinecartLogic {
         }
     }
 
-    public void unlinkCart(Minecart cart) {
+    public static void unlinkCart(Minecart cart) {
         // Assumes that the cart is a proper member of a train
         // assert isTrainMember(cart);
 
         cart.setSlowWhenEmpty(true);
         Minecart master = getMetaMinecart(cart, Keys.CART_MASTER);
-        cart.removeMetadata(Keys.CART_MASTER, plugin);
+        cart.removeMetadata(Keys.CART_MASTER, StadtServer.getInstance());
 
         if (cart == master) {
             // In this case, the cart has a follower
             Minecart follower = getMetaMinecart(cart, Keys.CART_FOLLOWER);
-            cart.removeMetadata(Keys.CART_FOLLOWER, plugin);
+            cart.removeMetadata(Keys.CART_FOLLOWER, StadtServer.getInstance());
             if (canBeLinked(follower)) {
                 // The train consists of this master and a single follower -> reset the other cart too
-                follower.removeMetadata(Keys.CART_MASTER, plugin);
+                follower.removeMetadata(Keys.CART_MASTER, StadtServer.getInstance());
             } else {
                 // The train has more than 2 carts -> the subtrain remains with a new master
                 updateMaster(follower, follower);
@@ -114,17 +105,17 @@ public class MinecartLogic {
             if (canBeLinked(master)) {
                 // In this case, the cart was the second cart of the train -> reset master since its alone now
                 // Otherwise, the master's subtrain is a correct train, since the master is still correct
-                master.removeMetadata(Keys.CART_MASTER, plugin);
+                master.removeMetadata(Keys.CART_MASTER, StadtServer.getInstance());
             }
 
             // Check the followers subtrain
             if (cart.hasMetadata(Keys.CART_FOLLOWER)) {
                 // In this case, the minecart is not at either end of the train
                 Minecart follower = getMetaMinecart(cart, Keys.CART_FOLLOWER);
-                cart.removeMetadata(Keys.CART_FOLLOWER, plugin);
+                cart.removeMetadata(Keys.CART_FOLLOWER, StadtServer.getInstance());
                 if (canBeLinked(follower)) {
                     // The cart is next to the last one -> reset the last
-                    follower.removeMetadata(Keys.CART_MASTER, plugin);
+                    follower.removeMetadata(Keys.CART_MASTER, StadtServer.getInstance());
                 } else {
                     // The cart has a subtrain following the cart -> update master of subtrain
                     updateMaster(follower, follower);
@@ -133,21 +124,21 @@ public class MinecartLogic {
         }
     }
 
-    public void checkTrainMember(Minecart cart) {
+    public static void checkTrainMember(Minecart cart) {
         // Unlinks the cart if either the master or the follower of the cart is null
         // An illegal state is present if any of those is null
         if (cart.hasMetadata(Keys.CART_MASTER)) {
             Minecart master = getMetaMinecart(cart, Keys.CART_MASTER);
             if (master == null) {
-                cart.removeMetadata(Keys.CART_MASTER, plugin);
-                cart.removeMetadata(Keys.CART_FOLLOWER, plugin);
+                cart.removeMetadata(Keys.CART_MASTER, StadtServer.getInstance());
+                cart.removeMetadata(Keys.CART_FOLLOWER, StadtServer.getInstance());
                 return;
             }
             if (cart.hasMetadata(Keys.CART_FOLLOWER)) {
                 Minecart follower = getMetaMinecart(cart, Keys.CART_FOLLOWER);
                 if (follower == null) {
-                    cart.removeMetadata(Keys.CART_MASTER, plugin);
-                    cart.removeMetadata(Keys.CART_FOLLOWER, plugin);
+                    cart.removeMetadata(Keys.CART_MASTER, StadtServer.getInstance());
+                    cart.removeMetadata(Keys.CART_FOLLOWER, StadtServer.getInstance());
                 }
             }
         }
@@ -155,26 +146,26 @@ public class MinecartLogic {
 
     // Helper
 
-    private Minecart getMetaMinecart(Minecart cart, String metaSlot) {
-        MetadataValue val = cart.getMetadata(metaSlot).get(0);
-        return Objects.requireNonNull((WeakReference<Minecart>) val.value()).get();
+    private static Minecart getMetaMinecart(Minecart cart, String metaSlot) {
+        String metaCartID = cart.getMetadata(metaSlot).get(0).asString();
+        return (Minecart) cart.getWorld().getEntity(UUID.fromString(metaCartID));
     }
 
-    private void updateMaster(Minecart cart, Minecart master) {
+    private static void updateMaster(Minecart cart, Minecart master) {
         // Internally called to update the master of the entire train
-        cart.setMetadata(Keys.CART_MASTER, new FixedMetadataValue(plugin, new WeakReference<>(master)));
+        cart.setMetadata(Keys.CART_MASTER, new FixedMetadataValue(StadtServer.getInstance(), master.getUniqueId().toString()));
         if (cart.hasMetadata(Keys.CART_FOLLOWER)) {
             Minecart follower = getMetaMinecart(cart, Keys.CART_FOLLOWER);
             updateMaster(follower, master);
         }
     }
 
-    private void detachCart(Minecart cart, Minecart target) {
+    private static void detachCart(Minecart cart, Minecart target) {
         // Internally called to detach the given minecart from the master's train
         if (cart.hasMetadata(Keys.CART_FOLLOWER)) {
             Minecart follower = getMetaMinecart(cart, Keys.CART_FOLLOWER);
             if (follower == target) {
-                cart.removeMetadata(Keys.CART_FOLLOWER, plugin);
+                cart.removeMetadata(Keys.CART_FOLLOWER, StadtServer.getInstance());
             } else {
                 detachCart(follower, target);
             }
@@ -184,7 +175,7 @@ public class MinecartLogic {
 
     /* --- CART SPEEDUP --- */
 
-    public void speedupMinecart(Minecart cart) {
+    public static void speedupMinecart(Minecart cart) {
         Location cartLocation = cart.getLocation();
         Block rail = cart.getWorld().getBlockAt(cartLocation);
 
@@ -201,7 +192,7 @@ public class MinecartLogic {
 
     // Helper
 
-    private boolean adjustMinecartSpeed(Minecart cart, Block rail) {
+    private static boolean adjustMinecartSpeed(Minecart cart, Block rail) {
         if (isTrainMember(cart)) {
             Minecart master = getMetaMinecart(cart, Keys.CART_MASTER);
             return adjustTrainSpeed(master, rail);
@@ -210,7 +201,7 @@ public class MinecartLogic {
         }
     }
 
-    private boolean adjustTrainSpeed(Minecart cart, Block rail) {
+    private static boolean adjustTrainSpeed(Minecart cart, Block rail) {
         if (cart.hasMetadata(Keys.CART_FOLLOWER)) {
             Minecart follower = getMetaMinecart(cart, Keys.CART_FOLLOWER);
             adjustTrainSpeed(follower, rail);
@@ -218,7 +209,7 @@ public class MinecartLogic {
         return adjustSingleMinecartSpeed(cart, rail);
     }
 
-    private boolean adjustSingleMinecartSpeed(Minecart cart, Block rail) {
+    private static boolean adjustSingleMinecartSpeed(Minecart cart, Block rail) {
         Material railMat = rail.getType();
         Block foundation = rail.getRelative(0, -1, 0);
         Material foundationMat = foundation.getType();
@@ -234,8 +225,8 @@ public class MinecartLogic {
                 }
                 // Lapis Block: Increase max speed by 25%
                 cart.setMaxSpeed(cart.getMaxSpeed() + MINECART_SPEED_FACTOR);
-                cart.setMetadata(Keys.LAST_RAIL_X, new FixedMetadataValue(plugin, rail.getLocation().getBlockX()));
-                cart.setMetadata(Keys.LAST_RAIL_Z, new FixedMetadataValue(plugin, rail.getLocation().getBlockZ()));
+                cart.setMetadata(Keys.LAST_RAIL_X, new FixedMetadataValue(StadtServer.getInstance(), rail.getLocation().getBlockX()));
+                cart.setMetadata(Keys.LAST_RAIL_Z, new FixedMetadataValue(StadtServer.getInstance(), rail.getLocation().getBlockZ()));
                 return true;
             } else if (foundationMat == Material.COAL_BLOCK && cart.getMaxSpeed() > MINECART_SPEED_VANILLA) {
                 // Retrieve the last location at which the cart was boosted (to prevent double boosting)
@@ -247,14 +238,14 @@ public class MinecartLogic {
                 }
                 // Coal Block: Decrease max speed by 25%
                 cart.setMaxSpeed(cart.getMaxSpeed() - MINECART_SPEED_FACTOR);
-                cart.setMetadata(Keys.LAST_RAIL_X, new FixedMetadataValue(plugin, rail.getLocation().getBlockX()));
-                cart.setMetadata(Keys.LAST_RAIL_Z, new FixedMetadataValue(plugin, rail.getLocation().getBlockZ()));
+                cart.setMetadata(Keys.LAST_RAIL_X, new FixedMetadataValue(StadtServer.getInstance(), rail.getLocation().getBlockX()));
+                cart.setMetadata(Keys.LAST_RAIL_Z, new FixedMetadataValue(StadtServer.getInstance(), rail.getLocation().getBlockZ()));
                 return true;
             } else if (foundationMat == Material.EMERALD_BLOCK) {
                 // Emerald Block: Reset to 0.4
                 cart.setMaxSpeed(MINECART_SPEED_VANILLA);
-                cart.removeMetadata(Keys.LAST_RAIL_X, plugin);
-                cart.removeMetadata(Keys.LAST_RAIL_Z, plugin);
+                cart.removeMetadata(Keys.LAST_RAIL_X, StadtServer.getInstance());
+                cart.removeMetadata(Keys.LAST_RAIL_Z, StadtServer.getInstance());
                 return true;
             }
         }
@@ -263,7 +254,7 @@ public class MinecartLogic {
 
     /* --- CART STAIR PUSHING --- */
 
-    public void pushMinecarts(Block rail) {
+    public static void pushMinecarts(Block rail) {
         Block foundation = rail.getRelative(0, -1, 0);
 
         // Push the cart based on the direction of the stairs (the open side points to the direction)
@@ -285,7 +276,7 @@ public class MinecartLogic {
         }
     }
 
-    private void pushMinecartsVelocity(Block rail, double boxX, double boxZ, Vector velocity) {
+    private static void pushMinecartsVelocity(Block rail, double boxX, double boxZ, Vector velocity) {
         Collection<Entity> entities = rail.getWorld().getNearbyEntities(rail.getLocation(), boxX, 1D, boxZ);
         for (Entity e : entities)
             if (e instanceof Minecart && e.getVelocity().equals(new Vector())) {
@@ -295,7 +286,7 @@ public class MinecartLogic {
 
     /* --- TRAIN MOVEMENT / COLLISION --- */
 
-    public void adjustVelocity(Minecart cart) {
+    public static void adjustVelocity(Minecart cart) {
         if (isTrainMember(cart)) {
             if (cart.hasMetadata(Keys.CART_FOLLOWER)) {
                 Minecart follower = getMetaMinecart(cart, Keys.CART_FOLLOWER);
@@ -305,7 +296,7 @@ public class MinecartLogic {
         }
     }
 
-    private void adjustMinecartVelocity(Minecart cart, Minecart follower) {
+    private static void adjustMinecartVelocity(Minecart cart, Minecart follower) {
 
         // Act only if the angle between the cart yaws is 0 or 45 degree and both angles can be divided by 45
         // This means, that carts are adjusted, which run no 90 or 180 degree turn
@@ -462,7 +453,7 @@ public class MinecartLogic {
 
     // Helpers
 
-    private float normalizeYaw(float yaw) {
+    private static float normalizeYaw(float yaw) {
         if (yaw < 0) {
             yaw = yaw + 360.0F;
         }
@@ -475,7 +466,7 @@ public class MinecartLogic {
         return yaw % 180.0F;
     }
 
-    private boolean isFollowingVelocity(Vector direction, Vector followingVelocity) {
+    private static boolean isFollowingVelocity(Vector direction, Vector followingVelocity) {
         double angle = followingVelocity.angle(direction);
         angle = Math.toDegrees(angle);
         if (angle < 0) {
@@ -485,7 +476,7 @@ public class MinecartLogic {
         return angle > 90D && angle < 270D;
     }
 
-    private void updateFollowerVelocity(Minecart follower, double x, double z) {
+    private static void updateFollowerVelocity(Minecart follower, double x, double z) {
         follower.setVelocity(new Vector(x, follower.getVelocity().getY(), z));
     }
 }

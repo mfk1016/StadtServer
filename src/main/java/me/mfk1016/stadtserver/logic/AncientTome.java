@@ -1,7 +1,7 @@
 package me.mfk1016.stadtserver.logic;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.util.Keys;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;

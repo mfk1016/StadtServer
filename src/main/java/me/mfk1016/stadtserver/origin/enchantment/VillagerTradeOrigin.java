@@ -1,8 +1,8 @@
 package me.mfk1016.stadtserver.origin.enchantment;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.entity.Villager;
 

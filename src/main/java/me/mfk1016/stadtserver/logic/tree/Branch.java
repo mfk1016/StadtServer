@@ -14,6 +14,10 @@ public enum Branch {
     W,
     SW;
 
+    public static Branch[] cardinals() {
+        return new Branch[]{S, E, N, W};
+    }
+
     public Branch invert() {
         return switch (this) {
             case S -> N;
@@ -76,9 +80,5 @@ public enum Branch {
         Vector a = new Vector(Math.cos(angleA) * Math.sin(yd), Math.cos(yd), Math.sin(angleA) * Math.sin(yd));
         Vector b = new Vector(Math.cos(angleB) * Math.sin(yu), Math.cos(yu), Math.sin(angleB) * Math.sin(yu));
         return new Pair<>(a, b);
-    }
-
-    public static Branch[] cardinals() {
-        return new Branch[]{S, E, N, W};
     }
 }

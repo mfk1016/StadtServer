@@ -14,14 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public abstract class BasicListener implements Listener {
 
-    protected final StadtServer plugin;
-
-    public BasicListener(StadtServer plugin) {
-        this.plugin = plugin;
-    }
-
     protected void playerMessage(Player player, String string) {
-        if (plugin.getConfig().getBoolean(Keys.CONFIG_PLAYER_MESSAGE)) {
+        if (StadtServer.getInstance().getConfig().getBoolean(Keys.CONFIG_PLAYER_MESSAGE)) {
             ProtocolManager pm = ProtocolLibrary.getProtocolManager();
             PacketContainer packetContainer = new PacketContainer(PacketType.Play.Server.SET_ACTION_BAR_TEXT);
             packetContainer.getChatComponents().write(0, WrappedChatComponent.fromText(string));

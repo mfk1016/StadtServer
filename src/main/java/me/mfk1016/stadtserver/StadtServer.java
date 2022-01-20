@@ -1,14 +1,12 @@
 package me.mfk1016.stadtserver;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import me.mfk1016.stadtserver.brewing.BrewingManager;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.*;
-import me.mfk1016.stadtserver.logic.DispenserDropperLogic;
-import me.mfk1016.stadtserver.logic.MinecartLogic;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
 import me.mfk1016.stadtserver.rituals.RitualManager;
 import me.mfk1016.stadtserver.util.Keys;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,49 +19,42 @@ public class StadtServer extends JavaPlugin {
 
     public static final Logger LOGGER = Logger.getLogger("Minecraft");
     public static final Random RANDOM = new Random();
+    private static StadtServer plugin = null;
+    private SignPacketListener signPacketListener;
 
-    private final MinecartLogic minecartLogic = new MinecartLogic(this);
-    private final DispenserDropperLogic dispenserDropperLogic = new DispenserDropperLogic(this);
-
-    private final MinecartListener minecartListener = new MinecartListener(this, minecartLogic);
-    private final SmallFunctionsListener smallFunctionsListener = new SmallFunctionsListener(this, dispenserDropperLogic);
-    private final SignPacketListener signPacketListener = new SignPacketListener(this, smallFunctionsListener);
-    private final EnchantmentListener enchantmentListener = new EnchantmentListener(this);
-    private final BossMobListener bossMobListener = new BossMobListener(this);
-    private final DoorListener doorListener = new DoorListener(this);
-    private final BrewingListener brewingListener = new BrewingListener(this);
-    private final TreeListener treeListener = new TreeListener(this);
-
-    public static void broadcastSound(Block block, Sound sound, float volume, float pitch) {
-        block.getWorld().playSound(block.getLocation(), sound, volume, pitch);
+    public static StadtServer getInstance() {
+        return plugin;
     }
 
     @Override
     public void onEnable() {
 
+        plugin = this;
         LOGGER.info(getDescription().getName() + ": check configuration...");
         saveDefaultConfig();
-        Keys.initialize(this);
-        CategoryManager.initialize(this, false);
+        Keys.initialize();
+        CategoryManager.initialize(false);
 
         LOGGER.info(getDescription().getName() + ": register enchantments...");
-        EnchantmentManager.onPluginEnable(this);
+        EnchantmentManager.onPluginEnable();
 
         LOGGER.info(getDescription().getName() + ": enable listeners...");
+        SmallFunctionsListener smallFunctionsListener = new SmallFunctionsListener();
+        signPacketListener = new SignPacketListener(smallFunctionsListener);
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(this.minecartListener, this);
-        pm.registerEvents(this.smallFunctionsListener, this);
-        pm.registerEvents(this.enchantmentListener, this);
-        pm.registerEvents(this.bossMobListener, this);
-        pm.registerEvents(this.doorListener, this);
-        pm.registerEvents(this.brewingListener, this);
-        pm.registerEvents(this.treeListener, this);
+        pm.registerEvents(new MinecartListener(), this);
+        pm.registerEvents(smallFunctionsListener, this);
+        pm.registerEvents(new EnchantmentListener(), this);
+        pm.registerEvents(new BossMobListener(), this);
+        pm.registerEvents(new DoorListener(), this);
+        pm.registerEvents(new BrewingManager(), this);
+        pm.registerEvents(new TreeListener(), this);
         ProtocolLibrary.getProtocolManager().addPacketListener(signPacketListener);
 
         LOGGER.info(getDescription().getName() + ": register recipes...");
-        RecipeManager.registerRecipes(this);
+        RecipeManager.registerRecipes();
 
-        Objects.requireNonNull(getCommand("stadtserver")).setExecutor(new StadtServerCommand(this));
+        Objects.requireNonNull(getCommand("stadtserver")).setExecutor(new StadtServerCommand());
         LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " started.");
     }
 
@@ -72,6 +63,7 @@ public class StadtServer extends JavaPlugin {
         RitualManager.onPluginDisable();
         HandlerList.unregisterAll(this);
         ProtocolLibrary.getProtocolManager().removePacketListener(signPacketListener);
+        signPacketListener = null;
         EnchantmentManager.onPluginDisable();
         RecipeManager.unregisterBrewingRecipes();
         saveConfig();

@@ -16,12 +16,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class SignPacketListener extends PacketAdapter {
 
-    private final StadtServer plugin;
     private final SmallFunctionsListener signListener;
 
-    public SignPacketListener(StadtServer plugin, SmallFunctionsListener signListener) {
-        super(plugin, ListenerPriority.NORMAL, PacketType.Play.Client.UPDATE_SIGN);
-        this.plugin = plugin;
+    public SignPacketListener(SmallFunctionsListener signListener) {
+        super(StadtServer.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Client.UPDATE_SIGN);
         this.signListener = signListener;
     }
 

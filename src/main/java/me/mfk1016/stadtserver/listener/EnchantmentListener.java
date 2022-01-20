@@ -1,8 +1,8 @@
 package me.mfk1016.stadtserver.listener;
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
-import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.SmithingEnchantment;
 import me.mfk1016.stadtserver.logic.AncientTome;
 import me.mfk1016.stadtserver.logic.AnvilLogic;
@@ -11,7 +11,6 @@ import me.mfk1016.stadtserver.origin.enchantment.LootChestOrigin;
 import me.mfk1016.stadtserver.origin.enchantment.PiglinTradeOrigin;
 import me.mfk1016.stadtserver.origin.enchantment.VillagerTradeOrigin;
 import me.mfk1016.stadtserver.util.Pair;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -32,17 +31,12 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class EnchantmentListener extends BasicListener {
-
-    public EnchantmentListener(StadtServer p) {
-        super(p);
-    }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPrepareAnvil(PrepareAnvilEvent event) {
@@ -56,16 +50,15 @@ public class EnchantmentListener extends BasicListener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onFishing(PlayerFishEvent event) {
-        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
-            ItemStack catchedItem = ((Item) Objects.requireNonNull(event.getCaught())).getItemStack();
+        if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH)
+            return;
+        ItemStack catchedItem = ((Item) Objects.requireNonNull(event.getCaught())).getItemStack();
+        SmithingEnchantment.replaceMending(catchedItem, 4, 3);
+        if (!(catchedItem.getItemMeta() instanceof EnchantmentStorageMeta))
+            return;
 
-            SmithingEnchantment.replaceMending(catchedItem, 4, 3);
-
-            if (!(catchedItem.getItemMeta() instanceof EnchantmentStorageMeta))
-                return;
-            FishBookOrigin.matchOrigins().forEach((origin, level) ->
-                    EnchantmentManager.enchantItem(catchedItem, origin.getEnchantment(), level));
-        }
+        FishBookOrigin.matchOrigins().forEach((origin, level) ->
+                EnchantmentManager.enchantItem(catchedItem, origin.getEnchantment(), level));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -118,13 +111,10 @@ public class EnchantmentListener extends BasicListener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onLootGenerate(LootGenerateEvent event) {
-
-        // This is for chests and minecarts with chests
         if (!(event.getInventoryHolder() instanceof Chest || event.getEntity() instanceof Minecart))
             return;
 
         for (ItemStack item : event.getLoot()) {
-            // Replace Mending with smithing 4 on items and books
             SmithingEnchantment.replaceMending(item, 4, 4);
         }
 
@@ -133,8 +123,6 @@ public class EnchantmentListener extends BasicListener {
             EnchantmentManager.enchantItem(toAdd, origin.getEnchantment(), level);
             event.getLoot().add(toAdd);
         });
-
-        // Ancient Tome: 5% Chance in the Nether, 25% Chance in the End
         switch (event.getWorld().getEnvironment()) {
             case NETHER:
                 if (StadtServer.RANDOM.nextInt(100) < 5)
@@ -151,18 +139,14 @@ public class EnchantmentListener extends BasicListener {
     public void onPlayerHitEntityWithBane(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player player))
             return;
-
-        // Bane of the athropods should work on creepers and phantoms
         if (!(event.getEntity() instanceof Creeper) && !(event.getEntity() instanceof Phantom))
             return;
-
         ItemStack weapon = player.getInventory().getItemInMainHand();
         if (!weapon.containsEnchantment(Enchantment.DAMAGE_ARTHROPODS))
             return;
 
         int level = weapon.getEnchantments().get(Enchantment.DAMAGE_ARTHROPODS);
         event.setDamage(event.getDamage() + (level * 2.5));
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -182,21 +166,11 @@ public class EnchantmentListener extends BasicListener {
             return;
 
         result = target.clone();
-        String possibleNewName = anvil.getRenameText();
-        ItemMeta bucketMeta = Objects.requireNonNull(result.getItemMeta());
-        // Fix a possible rename
-        int renameCost = 0;
-        if (possibleNewName != null && !possibleNewName.isBlank()) {
-            bucketMeta.displayName(Component.text(possibleNewName));
-            renameCost++;
-        }
-        result.setItemMeta(bucketMeta);
-        // Enchant the bucket
         result.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
         event.setResult(result);
-
-        // Set the repair cost
-        anvil.setRepairCost(5 + renameCost);
+        anvil.setRepairCost(5);
+        AnvilLogic.doAnvilRename(event);
+        anvil.setMaximumRepairCost(100);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

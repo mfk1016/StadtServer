@@ -19,6 +19,10 @@ public class CustomExtendRecipe extends BrewingRecipe {
         CUSTOM_MAP.put(PotionLibrary.RESISTANCE_1_1, PotionLibrary.RESISTANCE_2_1);
     }
 
+    public CustomExtendRecipe() {
+        super("custom_extend");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
         return ingredient == Material.REDSTONE && PotionLibrary.matchCustomBrews(input, CUSTOM_MAP);

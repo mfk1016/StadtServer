@@ -19,6 +19,10 @@ public class CustomCorruptRecipe extends BrewingRecipe {
         CUSTOM_MAP.put(PotionLibrary.HASTE_0_2, PotionLibrary.FATIGUE_0_2);
     }
 
+    public CustomCorruptRecipe() {
+        super("custom_corrupt");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
         return ingredient == Material.FERMENTED_SPIDER_EYE && PotionLibrary.matchCustomBrews(input, CUSTOM_MAP);

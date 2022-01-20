@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.listener;
 
-import me.mfk1016.stadtserver.StadtServer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -12,10 +11,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class DoorListener extends BasicListener {
-
-    public DoorListener(StadtServer plugin) {
-        super(plugin);
-    }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInteractDoor(PlayerInteractEvent event) {

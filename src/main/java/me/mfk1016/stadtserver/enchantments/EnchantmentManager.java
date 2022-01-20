@@ -1,6 +1,6 @@
-package me.mfk1016.stadtserver;
+package me.mfk1016.stadtserver.enchantments;
 
-import me.mfk1016.stadtserver.enchantments.*;
+import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -29,15 +29,15 @@ public class EnchantmentManager {
 
     /* --- INIT + STOP --- */
 
-    public static void onPluginEnable(StadtServer plugin) {
+    public static void onPluginEnable() {
 
         // Initialize them here
-        CHOPPING = new ChoppingEnchantment(plugin);
-        SMITHING = new SmithingEnchantment(plugin);
-        WRENCH = new WrenchEnchantment(plugin);
-        EAGLE_EYE = new EagleEyeEnchantment(plugin);
-        FARMING = new FarmingEnchantment(plugin);
-        SACRIFICIAL = new SacrificialEnchantment(plugin);
+        CHOPPING = new ChoppingEnchantment();
+        SMITHING = new SmithingEnchantment();
+        WRENCH = new WrenchEnchantment();
+        EAGLE_EYE = new EagleEyeEnchantment();
+        FARMING = new FarmingEnchantment();
+        SACRIFICIAL = new SacrificialEnchantment();
 
         // Add them here
         ALL_ENCHANTMENTS.add(CHOPPING);
@@ -51,9 +51,9 @@ public class EnchantmentManager {
         registerEnchantments();
 
         // Attach Listeners
-        PluginManager pm = plugin.getServer().getPluginManager();
+        PluginManager pm = StadtServer.getInstance().getServer().getPluginManager();
         for (CustomEnchantment e : ALL_ENCHANTMENTS) {
-            pm.registerEvents(e, plugin);
+            pm.registerEvents(e, StadtServer.getInstance());
             ORIGINS.addAll(e.getOrigins());
         }
     }

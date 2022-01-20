@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.logic.wrench;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
@@ -12,8 +11,7 @@ public class WrenchActionStateChange extends WrenchAction {
 
     private final String blockName, wrenchedName;
 
-    public WrenchActionStateChange(StadtServer plugin, String blockName, String wrenchedName) {
-        super(plugin);
+    public WrenchActionStateChange(String blockName, String wrenchedName) {
         this.blockName = blockName;
         this.wrenchedName = wrenchedName;
     }

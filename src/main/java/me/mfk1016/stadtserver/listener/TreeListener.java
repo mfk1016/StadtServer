@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.listener;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.logic.tree.TreeGenerator;
 import me.mfk1016.stadtserver.util.Pair;
@@ -12,10 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.world.StructureGrowEvent;
 
 public class TreeListener extends BasicListener {
-
-    public TreeListener(StadtServer plugin) {
-        super(plugin);
-    }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onTreeGrow(StructureGrowEvent event) {

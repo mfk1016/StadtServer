@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.logic.wrench.actions;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.wrench.WrenchAction;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,10 +7,6 @@ import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Player;
 
 public class WrenchActionRedstoneLamp extends WrenchAction {
-
-    public WrenchActionRedstoneLamp(StadtServer plugin) {
-        super(plugin);
-    }
 
     @Override
     protected Result wrenchBlock(Player player, Block target) {

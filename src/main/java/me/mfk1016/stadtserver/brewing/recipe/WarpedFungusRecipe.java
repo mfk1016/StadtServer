@@ -29,6 +29,10 @@ public class WarpedFungusRecipe extends BrewingRecipe {
         CUSTOM_MAP.put(PotionLibrary.RESISTANCE_0_2, PotionLibrary.RESISTANCE_1_2);
     }
 
+    public WarpedFungusRecipe() {
+        super("warped_fungus");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
         if (ingredient != Material.WARPED_FUNGUS)

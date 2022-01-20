@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.enchantments;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.origin.enchantment.*;
@@ -30,8 +29,8 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class SacrificialEnchantment extends CustomEnchantment {
 
-    public SacrificialEnchantment(StadtServer plugin) {
-        super(plugin, "Sacrificial", "sacrificial");
+    public SacrificialEnchantment() {
+        super("Sacrificial", "sacrificial");
     }
 
     @Override
@@ -168,7 +167,7 @@ public class SacrificialEnchantment extends CustomEnchantment {
         while (block.isEmpty() && block.getLocation().getBlockY() > 0) {
             block = block.getRelative(BlockFace.DOWN);
         }
-        if (RitualManager.tryRitual(plugin, sacrifice, block)) {
+        if (RitualManager.tryRitual(sacrifice, block)) {
             sacrifice.remove();
             event.setCancelled(true);
         }

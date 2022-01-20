@@ -1,14 +1,14 @@
 package me.mfk1016.stadtserver.brewing;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.listener.BrewingListener;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -16,40 +16,35 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class BrewingWorker extends BukkitRunnable {
 
-    private final StadtServer plugin;
-
     private final BrewingRecipe recipe;
-    private final Block brewingStandBlock;
+    private final Location brewingStandLocation;
 
     private int brewTimer = 400;
 
-    public BrewingWorker(Block brewingStandBlock, BrewingRecipe recipe, StadtServer plugin) {
-        this.plugin = plugin;
+    public BrewingWorker(@NotNull Location brewingStandLocation, BrewingRecipe recipe) {
         this.recipe = recipe;
-        this.brewingStandBlock = brewingStandBlock;
+        this.brewingStandLocation = brewingStandLocation;
     }
 
     public void start() {
-        BrewingStand stand = (BrewingStand) brewingStandBlock.getState();
+        BrewingStand stand = (BrewingStand) brewingStandLocation.getBlock().getState();
         stand.setFuelLevel(stand.getFuelLevel() - 1);
         stand.update();
-        runTaskTimer(plugin, 0, 1);
+        runTaskTimer(StadtServer.getInstance(), 0, 1);
     }
 
     @Override
     public void run() {
-
-        if (!(brewingStandBlock.getState() instanceof BrewingStand stand)) {
+        if (!brewingStandLocation.getChunk().isLoaded()) {
+            return;
+        }
+        if (!(brewingStandLocation.getBlock().getState() instanceof BrewingStand stand)) {
             cancel();
             return;
         }
         BrewerInventory inventory = stand.getSnapshotInventory();
 
-        if (stand.getBrewingTime() != 0) {
-            stand.setFuelLevel(stand.getFuelLevel() + 1);
-            stand.update();
-            cancel();
-        } else if (illegalState(inventory)) {
+        if (illegalState(inventory)) {
             stand.update(true);
             cancel();
         } else if (brewTimer == 0) {
@@ -69,9 +64,9 @@ public class BrewingWorker extends BukkitRunnable {
                     inventory.setItem(i, result);
                 }
             }
-            StadtServer.broadcastSound(stand.getBlock(), Sound.BLOCK_BREWING_STAND_BREW, 1f, 1f);
+            stand.getWorld().playSound(stand.getLocation(), Sound.BLOCK_BREWING_STAND_BREW, 1f, 1f);
             stand.update(true);
-            BrewingListener.tryBrewing(plugin, brewingStandBlock);
+            BrewingManager.tryBrewing(brewingStandLocation.getBlock());
             cancel();
         } else {
             stand.setBrewingTime(brewTimer);

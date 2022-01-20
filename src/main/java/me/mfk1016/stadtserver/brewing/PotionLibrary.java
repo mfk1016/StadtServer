@@ -140,7 +140,7 @@ public class PotionLibrary {
     public static boolean isCustomBrew(ItemStack input) {
         if (!(input.getItemMeta() instanceof PotionMeta potion))
             return false;
-        return potion.getBasePotionData().getType() == PotionType.WATER && !potion.getCustomEffects().isEmpty();
+        return potion.getBasePotionData().getType() == PotionType.THICK && !potion.getCustomEffects().isEmpty();
     }
 
     private static boolean matchCustomBrew(ItemStack input, PotionEffect definition) {
@@ -167,7 +167,7 @@ public class PotionLibrary {
     public static ItemStack buildCustomBrew(BottleType bottleType, PotionEffect definition) {
         ItemStack result = bottleType.asItemStack();
         PotionMeta potion = (PotionMeta) Objects.requireNonNull(result.getItemMeta());
-        potion.setBasePotionData(new PotionData(PotionType.WATER));
+        potion.setBasePotionData(new PotionData(PotionType.THICK));
         potion.addCustomEffect(definition, true);
         String finalName = switch (bottleType) {
             case NORMAL -> "Potion of " + potionNames.get(definition.getType());
@@ -182,7 +182,7 @@ public class PotionLibrary {
     public static ItemStack buildCustomBrew(BottleType bottleType, String name, PotionEffect... definitions) {
         ItemStack result = bottleType.asItemStack();
         PotionMeta potion = (PotionMeta) Objects.requireNonNull(result.getItemMeta());
-        potion.setBasePotionData(new PotionData(PotionType.WATER));
+        potion.setBasePotionData(new PotionData(PotionType.THICK));
         for (var definition : definitions)
             potion.addCustomEffect(definition, true);
         String finalName = switch (bottleType) {

@@ -34,12 +34,12 @@ public abstract class BossRitual extends BasicRitual {
     private BossBar bossBar;
     private double bossMaxHealth;
 
-    public BossRitual(StadtServer plugin, Block focusBlock, int spawnTime, EntityType bossType) {
-        super(plugin, focusBlock);
+    public BossRitual(Block focusBlock, int spawnTime, EntityType bossType) {
+        super(focusBlock);
         this.spawnTime = spawnTime;
         this.bossType = bossType;
         bossName = BossName.randomName(4);
-        bossBarKey = new NamespacedKey(plugin, UUID.randomUUID().toString());
+        bossBarKey = new NamespacedKey(StadtServer.getInstance(), UUID.randomUUID().toString());
     }
 
     @Override
@@ -51,9 +51,8 @@ public abstract class BossRitual extends BasicRitual {
         }
         bossSpawnLocation = sacrifice.getLocation();
         bossBar = Bukkit.createBossBar(bossBarKey, bossName, BarColor.PINK, BarStyle.SOLID);
-        for (Player player : sacrifice.getWorld().getPlayers()) {
-            if (player.getLocation().distance(sacrifice.getLocation()) < 64)
-                bossBar.addPlayer(player);
+        for (Player player : sacrifice.getWorld().getNearbyPlayers(sacrifice.getLocation(), 64)) {
+            bossBar.addPlayer(player);
         }
         bossBar.setProgress(0D);
         bossBar.setVisible(true);
@@ -66,7 +65,7 @@ public abstract class BossRitual extends BasicRitual {
             bossBar.setProgress((double) (timer + 1) / (double) spawnTime);
         } else if (timer == spawnTime) {
             boss = (LivingEntity) Objects.requireNonNull(bossSpawnLocation.getWorld()).spawnEntity(bossSpawnLocation, bossType);
-            BossMobListener.createBoss(plugin, boss, 4, bossName);
+            BossMobListener.createBoss(boss, 4, bossName);
             bossSpawnLocation.getWorld().strikeLightningEffect(bossSpawnLocation);
             AttributeInstance maxHealth = Objects.requireNonNull(boss.getAttribute(Attribute.GENERIC_MAX_HEALTH));
             bossMaxHealth = maxHealth.getBaseValue();

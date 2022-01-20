@@ -1,7 +1,5 @@
 package me.mfk1016.stadtserver.enchantments;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.*;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -31,8 +29,8 @@ import java.util.Set;
  */
 public class SmithingEnchantment extends CustomEnchantment {
 
-    public SmithingEnchantment(StadtServer plugin) {
-        super(plugin, "Smithing", "smithing");
+    public SmithingEnchantment() {
+        super("Smithing", "smithing");
     }
 
     public static int repairCostLimit(int enchantmentLevel) {

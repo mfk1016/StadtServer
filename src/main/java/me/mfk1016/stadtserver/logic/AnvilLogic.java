@@ -1,8 +1,8 @@
 package me.mfk1016.stadtserver.logic;
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
-import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.SmithingEnchantment;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.util.Pair;
@@ -23,7 +23,7 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.function.Function;
 
-import static me.mfk1016.stadtserver.EnchantmentManager.*;
+import static me.mfk1016.stadtserver.enchantments.EnchantmentManager.*;
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class AnvilLogic {

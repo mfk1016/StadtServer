@@ -1,7 +1,7 @@
 package me.mfk1016.stadtserver.origin.enchantment;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 
 import java.util.HashMap;
 import java.util.Map;

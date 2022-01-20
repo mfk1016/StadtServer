@@ -17,13 +17,13 @@ import java.util.*;
 public abstract class TreeGenerator {
 
     protected final Block nwBase;
-    protected int treeHeight;
     protected final int minHeight;
     protected final Material logType;
     protected final Material leavesType;
     protected final Material saplingType;
-    protected int checkSquare = 3;
     private final Set<Block> placedLeaves = new HashSet<>();
+    protected int treeHeight;
+    protected int checkSquare = 3;
 
     public TreeGenerator(Block nwBase, int treeHeight, int minHeight, Material log, Material leaves, Material sapling) {
         this.nwBase = nwBase;
@@ -32,6 +32,39 @@ public abstract class TreeGenerator {
         this.logType = log;
         this.leavesType = leaves;
         this.saplingType = sapling;
+    }
+
+    public static TreeGenerator matchGenerator(Block root, Material saplingType, int size) {
+        switch (saplingType) {
+            case OAK_SAPLING -> {
+                if (size == 2)
+                    return new GermanOakGenerator(root);
+            }
+            case BIRCH_SAPLING -> {
+                if (size == 2)
+                    if (StadtServer.RANDOM.nextInt(4) == 0)
+                        return new SplitHimalayaBirchGenerator(root);
+                    else
+                        return new HimalayaBirchGenerator(root);
+            }
+            case DARK_OAK_SAPLING -> {
+                if (size == 3)
+                    return new ProperDarkOakGenerator(root);
+            }
+            case ACACIA_SAPLING -> {
+                if (size == 2)
+                    return new ProperAcaciaGenerator(root);
+            }
+            case JUNGLE_SAPLING -> {
+                if (size == 3)
+                    return new YellowMerantiGenerator(root);
+            }
+            case SPRUCE_SAPLING -> {
+                if (size == 3)
+                    return new CoastSequoiaGenerator(root);
+            }
+        }
+        return null;
     }
 
     public boolean isEnoughSpace() {
@@ -182,37 +215,4 @@ public abstract class TreeGenerator {
     }
 
     public abstract void generateTree();
-
-    public static TreeGenerator matchGenerator(Block root, Material saplingType, int size) {
-        switch (saplingType) {
-            case OAK_SAPLING -> {
-                if (size == 2)
-                    return new GermanOakGenerator(root);
-            }
-            case BIRCH_SAPLING -> {
-                if (size == 2)
-                    if (StadtServer.RANDOM.nextInt(4) == 0)
-                        return new SplitHimalayaBirchGenerator(root);
-                    else
-                        return new HimalayaBirchGenerator(root);
-            }
-            case DARK_OAK_SAPLING -> {
-                if (size == 3)
-                    return new ProperDarkOakGenerator(root);
-            }
-            case ACACIA_SAPLING -> {
-                if (size == 2)
-                    return new ProperAcaciaGenerator(root);
-            }
-            case JUNGLE_SAPLING -> {
-                if (size == 3)
-                    return new YellowMerantiGenerator(root);
-            }
-            case SPRUCE_SAPLING -> {
-                if (size == 3)
-                    return new CoastSequoiaGenerator(root);
-            }
-        }
-        return null;
-    }
 }

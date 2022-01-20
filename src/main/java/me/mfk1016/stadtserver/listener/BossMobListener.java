@@ -1,7 +1,7 @@
 package me.mfk1016.stadtserver.listener;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.logic.AncientTome;
 import me.mfk1016.stadtserver.origin.BossMobRareLootOrigin;
 import me.mfk1016.stadtserver.origin.enchantment.BossMobBookOrigin;
@@ -27,10 +27,6 @@ import java.util.Objects;
 
 public class BossMobListener extends BasicListener {
 
-    public BossMobListener(StadtServer plugin) {
-        super(plugin);
-    }
-
     public static boolean isValidBossMobType(EntityType type) {
         return switch (type) {
             case BLAZE, CREEPER, DROWNED, ENDERMAN, EVOKER, GUARDIAN, HUSK, PIGLIN, PIGLIN_BRUTE, PILLAGER, SHULKER,
@@ -40,8 +36,8 @@ public class BossMobListener extends BasicListener {
         };
     }
 
-    public static void createBoss(StadtServer plugin, LivingEntity mob, int level, String bossName) {
-        mob.setMetadata(Keys.IS_BOSS, new FixedMetadataValue(plugin, level));
+    public static void createBoss(LivingEntity mob, int level, String bossName) {
+        mob.setMetadata(Keys.IS_BOSS, new FixedMetadataValue(StadtServer.getInstance(), level));
 
         // Boss health (in base max health): 2 / 3 / 4 / 5
         AttributeInstance maxHealth = Objects.requireNonNull(mob.getAttribute(Attribute.GENERIC_MAX_HEALTH));
@@ -86,7 +82,7 @@ public class BossMobListener extends BasicListener {
         // Boss level: 50% / 35% / 15% chance for level 1 - 3
         int rand = StadtServer.RANDOM.nextInt(100);
         int bossLevel = rand < 15 ? 3 : (rand < 50 ? 2 : 1);
-        createBoss(plugin, mob, bossLevel, BossName.randomName(bossLevel));
+        createBoss(mob, bossLevel, BossName.randomName(bossLevel));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

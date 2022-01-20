@@ -1,6 +1,7 @@
 package me.mfk1016.stadtserver;
 
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.BossMobListener;
 import me.mfk1016.stadtserver.logic.AncientTome;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
@@ -19,12 +20,6 @@ import java.util.Objects;
 
 public class StadtServerCommand implements CommandExecutor {
 
-    private final StadtServer plugin;
-
-    public StadtServerCommand(StadtServer p) {
-        plugin = p;
-    }
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 0)
@@ -34,13 +29,13 @@ public class StadtServerCommand implements CommandExecutor {
             if (sender instanceof Player player) {
                 String toDo = args[1];
                 if (toDo.equals("reload")) {
-                    plugin.reloadConfig();
-                    CategoryManager.initialize(plugin, false);
+                    StadtServer.getInstance().reloadConfig();
+                    CategoryManager.initialize(false);
                     player.sendMessage("Configuration + Sorting reloaded.");
                     return true;
                 } else if (toDo.equals("reset")) {
-                    plugin.saveResource("config.yml", true);
-                    plugin.reloadConfig();
+                    StadtServer.getInstance().saveResource("config.yml", true);
+                    StadtServer.getInstance().reloadConfig();
                     player.sendMessage("Default configuration dumped.");
                     return true;
                 }
@@ -122,7 +117,7 @@ public class StadtServerCommand implements CommandExecutor {
             return false;
 
         LivingEntity mob = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), targetType);
-        BossMobListener.createBoss(plugin, mob, targetLevel, BossName.randomName(targetLevel));
+        BossMobListener.createBoss(mob, targetLevel, BossName.randomName(targetLevel));
         player.sendMessage("Boss spawned.");
         return true;
     }

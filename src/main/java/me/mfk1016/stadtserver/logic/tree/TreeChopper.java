@@ -10,7 +10,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
@@ -20,7 +19,6 @@ import java.util.Objects;
 
 public class TreeChopper {
 
-    private final Plugin plugin;
     private final ItemStack axe;
 
     private final HashSet<Block> checkedBlocks = new HashSet<>();
@@ -32,12 +30,11 @@ public class TreeChopper {
     private Iterator<Block> tmpIterator;
     private int chopSpeed = 2;
 
-    public TreeChopper(Player player, ItemStack axe, Block init, StadtServer plugin) {
-        this.plugin = plugin;
+    public TreeChopper(Player player, ItemStack axe, Block init) {
         this.axe = axe;
         blocksToCheck.add(init);
         logType = init.getType();
-        maxLogs = Math.min(Math.abs(plugin.getConfig().getInt(Keys.CONFIG_MAX_LOGS)), 10000);
+        maxLogs = Math.min(Math.abs(StadtServer.getInstance().getConfig().getInt(Keys.CONFIG_MAX_LOGS)), 10000);
         survivalMode = player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE;
     }
 
@@ -120,7 +117,7 @@ public class TreeChopper {
                 }
             }
         };
-        runner.runTaskTimer(plugin, 1, 1);
+        runner.runTaskTimer(StadtServer.getInstance(), 1, 1);
     }
 
     private Block[] getUpwardRelatives(Block block) {

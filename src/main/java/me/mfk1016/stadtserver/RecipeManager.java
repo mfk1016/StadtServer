@@ -2,13 +2,13 @@ package me.mfk1016.stadtserver;
 
 import me.mfk1016.stadtserver.brewing.BrewingRecipe;
 import me.mfk1016.stadtserver.brewing.recipe.*;
-import me.mfk1016.stadtserver.enchantments.WrenchEnchantment;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
@@ -21,22 +21,22 @@ public class RecipeManager {
     private static final int BLAST = 2;
 
 
-    public static void registerRecipes(StadtServer plugin) {
+    public static void registerRecipes() {
         for (SmeltingRecipes recipe : SmeltingRecipes.values()) {
-            Bukkit.addRecipe(recipe.toRecipe(plugin));
+            Bukkit.addRecipe(recipe.toRecipe());
         }
         for (SlabToBlockRecipes recipe : SlabToBlockRecipes.values()) {
-            Bukkit.addRecipe(recipe.toRecipe(plugin));
+            Bukkit.addRecipe(recipe.toRecipe());
         }
         for (StoneCutterRecipes recipe : StoneCutterRecipes.values()) {
-            Bukkit.addRecipe(recipe.toRecipe(plugin));
+            Bukkit.addRecipe(recipe.toRecipe());
         }
-        for (SmithingRecipe wrenchRecipe : WrenchEnchantment.getWrenchRecipes(plugin)) {
+        for (SmithingRecipe wrenchRecipe : getWrenchRecipes()) {
             Bukkit.addRecipe(wrenchRecipe);
         }
 
         // Clay block to clay ball
-        var clayBlockToBall = new ShapelessRecipe(new NamespacedKey(plugin, "clay_block_to_ball"), new ItemStack(Material.CLAY_BALL, 4));
+        var clayBlockToBall = new ShapelessRecipe(new NamespacedKey(StadtServer.getInstance(), "clay_block_to_ball"), new ItemStack(Material.CLAY_BALL, 4));
         clayBlockToBall.addIngredient(1, Material.CLAY);
         Bukkit.addRecipe(clayBlockToBall);
 
@@ -60,7 +60,14 @@ public class RecipeManager {
         ALL_BREWING_RECIPES.clear();
     }
 
-    public static BrewingRecipe matchBrewingRecipe(BrewerInventory inventory) {
+    public static BrewingRecipe byID(String id) {
+        for (var recipe : ALL_BREWING_RECIPES)
+            if (recipe.getRecipeID().equals(id))
+                return recipe;
+        return null;
+    }
+
+    public static BrewingRecipe matchBrewingRecipe(BrewerInventory inventory, boolean weakMatch) {
 
         ItemStack ingredient = inventory.getIngredient();
         if (ingredient == null)
@@ -78,11 +85,28 @@ public class RecipeManager {
                     matchCount++;
                 }
             }
-            if (match && matchCount == 3) {
+            if (match && (weakMatch || matchCount == 3)) {
                 return recipe;
             }
         }
         return null;
+    }
+
+    private static List<SmithingRecipe> getWrenchRecipes() {
+        List<SmithingRecipe> wrenchRecipes = new ArrayList<>();
+        RecipeChoice additive = new RecipeChoice.ExactChoice(new ItemStack(Material.COPPER_INGOT));
+        for (Material shovelMaterial : Arrays.asList(Material.WOODEN_SHOVEL,
+                Material.STONE_SHOVEL,
+                Material.IRON_SHOVEL,
+                Material.GOLDEN_SHOVEL,
+                Material.DIAMOND_SHOVEL,
+                Material.NETHERITE_SHOVEL)) {
+            NamespacedKey recipeKey = new NamespacedKey(StadtServer.getInstance(), "wrenchRecipe_" + shovelMaterial.name());
+            ItemStack shovel = new ItemStack(shovelMaterial);
+            RecipeChoice base = new RecipeChoice.MaterialChoice(shovelMaterial);
+            wrenchRecipes.add(new SmithingRecipe(recipeKey, shovel, base, additive));
+        }
+        return wrenchRecipes;
     }
 
     private enum SmeltingRecipes {
@@ -106,12 +130,12 @@ public class RecipeManager {
             this.time = time;
         }
 
-        public Recipe toRecipe(StadtServer plugin) {
+        public Recipe toRecipe() {
             ItemStack out = new ItemStack(result);
             return switch (type) {
-                case FURNACE -> new FurnaceRecipe(new NamespacedKey(plugin, "smelt_" + name), out, source, exp, time);
-                case SMOKER -> new SmokingRecipe(new NamespacedKey(plugin, "smoke_" + name), out, source, exp, time);
-                case BLAST -> new BlastingRecipe(new NamespacedKey(plugin, "blast_" + name), out, source, exp, time);
+                case FURNACE -> new FurnaceRecipe(new NamespacedKey(StadtServer.getInstance(), "smelt_" + name), out, source, exp, time);
+                case SMOKER -> new SmokingRecipe(new NamespacedKey(StadtServer.getInstance(), "smoke_" + name), out, source, exp, time);
+                case BLAST -> new BlastingRecipe(new NamespacedKey(StadtServer.getInstance(), "blast_" + name), out, source, exp, time);
                 default -> null;
             };
         }
@@ -185,9 +209,9 @@ public class RecipeManager {
             this.block = block;
         }
 
-        public ShapedRecipe toRecipe(StadtServer plugin) {
+        public ShapedRecipe toRecipe() {
             ItemStack result = new ItemStack(block);
-            ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, name), result);
+            ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(StadtServer.getInstance(), name), result);
             recipe.shape("S", "S");
             recipe.setIngredient('S', slab);
             return recipe;
@@ -214,8 +238,8 @@ public class RecipeManager {
             this.result = result;
         }
 
-        public StonecuttingRecipe toRecipe(StadtServer plugin) {
-            return new StonecuttingRecipe(new NamespacedKey(plugin, name), result, input);
+        public StonecuttingRecipe toRecipe() {
+            return new StonecuttingRecipe(new NamespacedKey(StadtServer.getInstance(), name), result, input);
         }
     }
 }

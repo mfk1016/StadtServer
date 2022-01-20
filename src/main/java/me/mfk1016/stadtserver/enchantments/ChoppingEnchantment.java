@@ -1,7 +1,5 @@
 package me.mfk1016.stadtserver.enchantments;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.logic.tree.TreeChopper;
 import me.mfk1016.stadtserver.origin.enchantment.*;
@@ -32,8 +30,8 @@ import java.util.Set;
  */
 public class ChoppingEnchantment extends CustomEnchantment {
 
-    public ChoppingEnchantment(StadtServer plugin) {
-        super(plugin, "Chopping", "chopping");
+    public ChoppingEnchantment() {
+        super("Chopping", "chopping");
     }
 
     @Override
@@ -114,7 +112,7 @@ public class ChoppingEnchantment extends CustomEnchantment {
         Block target = event.getBlock();
         if (!PluginCategories.isLog(target.getType()) && !PluginCategories.isWood(target.getType()))
             return;
-        TreeChopper tc = new TreeChopper(player, axe, target, plugin);
+        TreeChopper tc = new TreeChopper(player, axe, target);
         tc.chopTree();
     }
 }

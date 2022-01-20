@@ -10,6 +10,10 @@ import org.bukkit.potion.PotionType;
 
 public class StaminaRecipe extends BrewingRecipe {
 
+    public StaminaRecipe() {
+        super("stamina");
+    }
+
     @Override
     public boolean isApplicable(ItemStack input, Material ingredient) {
         if (ingredient != Material.GLOW_BERRIES)

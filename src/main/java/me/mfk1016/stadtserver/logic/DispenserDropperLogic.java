@@ -18,18 +18,12 @@ public class DispenserDropperLogic {
 
     private static final Vector TO_BLOCK_CENTER = new Vector(0.5, 0.1, 0.5);
 
-    private final StadtServer plugin;
-
-    public DispenserDropperLogic(StadtServer p) {
-        plugin = p;
-    }
-
-    public boolean tryAllDispenseActions(Block dispenserBlock, ItemStack item) {
+    public static boolean tryAllDispenseActions(Block dispenserBlock, ItemStack item) {
         return tryPlacerAction(dispenserBlock, item) ||
                 tryPlanting(dispenserBlock, item);
     }
 
-    public void tryChuteAction(Dropper dropperState, ItemStack item) {
+    public static void tryChuteAction(Dropper dropperState, ItemStack item) {
         if (!WrenchEnchantment.isWrenched(dropperState))
             return;
 
@@ -45,10 +39,10 @@ public class DispenserDropperLogic {
                 //dropperState.drop();
             }
         };
-        runnable.runTaskLater(plugin, 1L);
+        runnable.runTaskLater(StadtServer.getInstance(), 1L);
     }
 
-    public boolean tryPlacerAction(Block dispenserBlock, ItemStack item) {
+    public static boolean tryPlacerAction(Block dispenserBlock, ItemStack item) {
         org.bukkit.block.Dispenser dispenserState = (org.bukkit.block.Dispenser) dispenserBlock.getState();
         if (!WrenchEnchantment.isWrenched(dispenserState))
             return false;
@@ -60,11 +54,11 @@ public class DispenserDropperLogic {
             return true;
 
         target.setType(item.getType());
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> dispenserState.update(true));
+        StadtServer.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(StadtServer.getInstance(), () -> dispenserState.update(true));
         return true;
     }
 
-    private boolean tryPlanting(Block dispenserBlock, ItemStack item) {
+    private static boolean tryPlanting(Block dispenserBlock, ItemStack item) {
         if (CropData.isPlantable(item.getType())) {
             // Check target and plant crop
             Material seed = item.getType();
@@ -76,7 +70,7 @@ public class DispenserDropperLogic {
                 target.setType(CropData.cropOfSeed(seed));
                 // Remove item from dispenser
                 org.bukkit.block.Dispenser disp = ((org.bukkit.block.Dispenser) dispenserBlock.getState());
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                StadtServer.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(StadtServer.getInstance(), () -> {
                     // MERKEN: block dispense event: inventory has state WITHOUT the dispensed item
                     // -> cancel + update with this state removes exactly that item.
                     disp.update(true);

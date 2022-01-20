@@ -8,14 +8,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class BasicRitual {
 
-    protected final StadtServer plugin;
     protected final Block focusBlock;
     private final BukkitRunnable ritualWorker;
     protected RitualState state;
     private int timer = 0;
 
-    public BasicRitual(StadtServer plugin, Block focusBlock) {
-        this.plugin = plugin;
+    public BasicRitual(Block focusBlock) {
         this.focusBlock = focusBlock;
         this.state = RitualState.INIT;
         BasicRitual instance = this;
@@ -40,7 +38,7 @@ public abstract class BasicRitual {
     }
 
     protected void performRitual() {
-        ritualWorker.runTaskTimer(plugin, 10, 10);
+        ritualWorker.runTaskTimer(StadtServer.getInstance(), 10, 10);
     }
 
     public void cancelRitual() {

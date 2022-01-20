@@ -19,14 +19,12 @@ import static me.mfk1016.stadtserver.util.Functions.romanNumber;
 
 public abstract class CustomEnchantment extends Enchantment implements Listener {
 
-    protected final StadtServer plugin;
     private final String name;
 
 
-    public CustomEnchantment(StadtServer plugin, String name, String namespace) {
-        super(new NamespacedKey(plugin, namespace));
+    public CustomEnchantment(String name, String namespace) {
+        super(new NamespacedKey(StadtServer.getInstance(), namespace));
         this.name = name;
-        this.plugin = plugin;
     }
 
     public abstract int getAnvilCost(ItemStack sacrifice, int level);

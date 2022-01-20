@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.enchantments;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.origin.enchantment.*;
 import me.mfk1016.stadtserver.util.CropData;
@@ -31,8 +30,8 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class FarmingEnchantment extends CustomEnchantment {
 
-    public FarmingEnchantment(StadtServer plugin) {
-        super(plugin, "Farming", "farming");
+    public FarmingEnchantment() {
+        super("Farming", "farming");
     }
 
     @Override
@@ -140,7 +139,7 @@ public class FarmingEnchantment extends CustomEnchantment {
             else
                 player.getInventory().setItemInMainHand(null);
         }
-        StadtServer.broadcastSound(target, Sound.ITEM_HOE_TILL, 1f, 1f);
+        target.getWorld().playSound(target.getLocation(), Sound.ITEM_HOE_TILL, 1f, 1f);
         return true;
     }
 
@@ -167,7 +166,7 @@ public class FarmingEnchantment extends CustomEnchantment {
                 player.getInventory().setItemInMainHand(null);
         }
         if (replanted != 0)
-            StadtServer.broadcastSound(target, Sound.BLOCK_CROP_BREAK, 1f, 1f);
+            target.getWorld().playSound(target.getLocation(), Sound.BLOCK_CROP_BREAK, 1f, 1f);
         return replanted != 0;
     }
 
@@ -207,7 +206,7 @@ public class FarmingEnchantment extends CustomEnchantment {
                 player.getInventory().setItemInMainHand(null);
         }
         if (planted != 0)
-            StadtServer.broadcastSound(target, Sound.ITEM_CROP_PLANT, 1f, 1f);
+            target.getWorld().playSound(target.getLocation(), Sound.ITEM_CROP_PLANT, 1f, 1f);
         return planted != 0;
     }
 

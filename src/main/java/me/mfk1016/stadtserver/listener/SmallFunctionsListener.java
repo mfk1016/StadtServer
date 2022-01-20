@@ -5,7 +5,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.DispenserDropperLogic;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import org.bukkit.GameMode;
@@ -50,19 +49,13 @@ public class SmallFunctionsListener extends BasicListener {
 
     private static final ItemStack fakePick = new ItemStack(Material.NETHERITE_PICKAXE);
     private final Set<BlockPosition> editedSigns = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    private final DispenserDropperLogic action;
-
-    public SmallFunctionsListener(StadtServer p, DispenserDropperLogic a) {
-        super(p);
-        action = a;
-    }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockDispense(BlockDispenseEvent event) {
         if (event.getBlock().getType() == Material.DISPENSER) {
             Block dispenserBlock = event.getBlock();
             ItemStack item = event.getItem();
-            if (action.tryAllDispenseActions(dispenserBlock, item)) {
+            if (DispenserDropperLogic.tryAllDispenseActions(dispenserBlock, item)) {
                 event.setCancelled(true);
             }
         }
@@ -73,7 +66,7 @@ public class SmallFunctionsListener extends BasicListener {
         if (!(event.getDestination().getHolder() instanceof Dropper dropperState))
             return;
 
-        action.tryChuteAction(dropperState, event.getItem());
+        DispenserDropperLogic.tryChuteAction(dropperState, event.getItem());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -85,7 +78,7 @@ public class SmallFunctionsListener extends BasicListener {
             return;
 
         dirt.setType(Material.DIRT_PATH);
-        StadtServer.broadcastSound(dirt, Sound.ITEM_HOE_TILL, 1f, 1f);
+        dirt.getWorld().playSound(dirt.getLocation(), Sound.ITEM_HOE_TILL, 1f, 1f);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -172,7 +165,7 @@ public class SmallFunctionsListener extends BasicListener {
             ItemStack item = event.getItem();
             item.setAmount(item.getAmount() - 1);
         }
-        StadtServer.broadcastSound(targetBlock, Sound.BLOCK_LADDER_PLACE, 1f, 1f);
+        targetBlock.getWorld().playSound(targetBlock.getLocation(), Sound.BLOCK_LADDER_PLACE, 1f, 1f);
     }
 
     private Block getLadderTargetBlock(Block ladderBlock) {

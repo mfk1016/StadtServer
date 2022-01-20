@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.rituals.boss;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.rituals.RitualState;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,8 +15,8 @@ public class EvokerBossRitual extends BossRitual {
     private final Block[] edgeBlocks;
     private final ItemFrame[] frames = {null, null, null, null};
 
-    public EvokerBossRitual(StadtServer plugin, Block focusBlock) {
-        super(plugin, focusBlock, 20, EntityType.EVOKER);
+    public EvokerBossRitual(Block focusBlock) {
+        super(focusBlock, 20, EntityType.EVOKER);
         lineBlocks = new Block[]{focusBlock.getRelative(-4, 0, 0),
                 focusBlock.getRelative(4, 0, 0),
                 focusBlock.getRelative(0, 0, -4),

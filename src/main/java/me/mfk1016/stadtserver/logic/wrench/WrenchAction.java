@@ -9,6 +9,7 @@ import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionInventory;
 import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionNoteBlock;
 import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionRedstoneLamp;
+import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -17,23 +18,15 @@ import java.lang.reflect.InvocationTargetException;
 
 public abstract class WrenchAction {
 
-    private static final String CONFIG_PLAYER_MESSAGE = "send_player_message";
-
-    protected final StadtServer plugin;
-
-    public WrenchAction(StadtServer plugin) {
-        this.plugin = plugin;
-    }
-
-    public static WrenchAction actionFactory(Block block, StadtServer plugin) {
+    public static WrenchAction actionFactory(Block block) {
         return switch (block.getType()) {
-            case DROPPER -> new WrenchActionStateChange(plugin, "Dropper", "Chute");
-            case DISPENSER -> new WrenchActionStateChange(plugin, "Dispenser", "Block Placer");
-            case REDSTONE_LAMP -> new WrenchActionRedstoneLamp(plugin);
-            case NOTE_BLOCK -> new WrenchActionNoteBlock(plugin);
-            case CHEST -> new WrenchActionInventory(plugin, "Chest");
-            case BARREL -> new WrenchActionInventory(plugin, "Barrel");
-            default -> new WrenchActionNothing(plugin);
+            case DROPPER -> new WrenchActionStateChange("Dropper", "Chute");
+            case DISPENSER -> new WrenchActionStateChange("Dispenser", "Block Placer");
+            case REDSTONE_LAMP -> new WrenchActionRedstoneLamp();
+            case NOTE_BLOCK -> new WrenchActionNoteBlock();
+            case CHEST -> new WrenchActionInventory("Chest");
+            case BARREL -> new WrenchActionInventory("Barrel");
+            default -> new WrenchActionNothing();
         };
     }
 
@@ -47,7 +40,7 @@ public abstract class WrenchAction {
 
         Result result = wrenchBlock(player, target);
 
-        if (plugin.getConfig().getBoolean(CONFIG_PLAYER_MESSAGE)) {
+        if (StadtServer.getInstance().getConfig().getBoolean(Keys.CONFIG_PLAYER_MESSAGE)) {
             String message = wrenchMessage(result);
             if (message != null) {
                 ProtocolManager pm = ProtocolLibrary.getProtocolManager();

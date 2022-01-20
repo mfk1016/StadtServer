@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.enchantments;
 
-import me.mfk1016.stadtserver.EnchantmentManager;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.*;
 import me.mfk1016.stadtserver.util.Keys;
@@ -24,8 +23,8 @@ import java.util.Set;
 
 public class EagleEyeEnchantment extends CustomEnchantment {
 
-    public EagleEyeEnchantment(StadtServer plugin) {
-        super(plugin, "Eagle Eye", "eagle_eye");
+    public EagleEyeEnchantment() {
+        super("Eagle Eye", "eagle_eye");
     }
 
     @Override
@@ -105,9 +104,9 @@ public class EagleEyeEnchantment extends CustomEnchantment {
 
         int level = bow.getEnchantmentLevel(this);
         Entity projectile = event.getProjectile();
-        projectile.setMetadata(Keys.EAGLE_EYE_LEVEL, new FixedMetadataValue(plugin, level));
+        projectile.setMetadata(Keys.EAGLE_EYE_LEVEL, new FixedMetadataValue(StadtServer.getInstance(), level));
         Entity shooter = event.getEntity();
-        projectile.setMetadata(Keys.EAGLE_EYE_VECTOR, new FixedMetadataValue(plugin, shooter.getLocation().toVector()));
+        projectile.setMetadata(Keys.EAGLE_EYE_VECTOR, new FixedMetadataValue(StadtServer.getInstance(), shooter.getLocation().toVector()));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
