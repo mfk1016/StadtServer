@@ -2,7 +2,6 @@ package me.mfk1016.stadtserver.logic;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Keys;
-import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -424,28 +423,6 @@ public class MinecartLogic {
 
     private static void updateFollowerVelocity(@NotNull Minecart follower, double x, double z) {
         follower.setVelocity(new Vector(x, follower.getVelocity().getY(), z));
-    }
-
-    public static void adjustMemberVelocityToMaster(@NotNull Minecart cart, double trainSpeed) {
-        if (!hasFollower(cart) || trainSpeed == 0)
-            return;
-        Minecart follower = getFollower(cart);
-        Vector direction = cart.getLocation().toVector().subtract(follower.getLocation().toVector());
-
-    }
-
-    public static Double trainSpeed(@NotNull Minecart cart) {
-        if (!hasMaster(cart))
-            return cart.getVelocity().length();
-        Minecart current = getMaster(cart);
-        double size = 1D;
-        double speedSum = current.getVelocity().length();
-        while (hasFollower(current)) {
-            current = getFollower(current);
-            size += 1D;
-            speedSum += current.getVelocity().length();
-        }
-        return speedSum / size;
     }
 
     // Helpers

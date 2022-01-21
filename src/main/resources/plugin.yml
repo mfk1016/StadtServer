@@ -1,9 +1,10 @@
-name: StadtServer
-version: 1.10.7
+name: ${name}
+version: ${version}
 author: mfk1016
 main: me.mfk1016.stadtserver.StadtServer
 api-version: 1.18
 depend: [ ProtocolLib ]
+load: STARTUP
 
 commands:
   stadtserver:

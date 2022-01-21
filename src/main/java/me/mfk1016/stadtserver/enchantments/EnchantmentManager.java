@@ -2,6 +2,7 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
+import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -124,51 +125,37 @@ public class EnchantmentManager {
     }
 
     public static void enchantItem(ItemStack item, Enchantment enchantment, int level) {
-        ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
-        if (meta instanceof EnchantmentStorageMeta enchStore) {
+        if (Objects.requireNonNull(item.getItemMeta()) instanceof EnchantmentStorageMeta enchStore) {
             enchStore.addStoredEnchant(enchantment, level, true);
+            item.setItemMeta(enchStore);
         } else {
-            meta.addEnchant(enchantment, level, true);
+            item.addUnsafeEnchantment(enchantment, level);
         }
-        if (enchantment instanceof CustomEnchantment customEnchantment) {
-            String ceString = customEnchantment.getLoreEntry(level);
-            List<String> lore;
-            if (meta.hasLore()) {
-                lore = Objects.requireNonNull(meta.getLore());
-                if (!lore.contains(ceString)) {
-                    lore.add(ceString);
-                }
-            } else {
-                lore = new ArrayList<>();
-                lore.add(ceString);
-            }
-            meta.setLore(lore);
-        }
-        item.setItemMeta(meta);
+        updateLore(item);
     }
 
     public static void disenchantItem(ItemStack item, Enchantment enchantment) {
         if (item.getEnchantments().containsKey(enchantment)) {
-            if (enchantment instanceof CustomEnchantment customEnchantment) {
-                ItemMeta meta = item.getItemMeta();
-                int level = item.getEnchantmentLevel(enchantment);
-                List<String> lore = Objects.requireNonNull(meta).getLore();
-                Objects.requireNonNull(lore).remove(customEnchantment.getLoreEntry(level));
-                meta.setLore(lore);
-                item.setItemMeta(meta);
-            }
             item.removeEnchantment(enchantment);
         } else if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
             if (meta.hasStoredEnchant(enchantment)) {
-                if (enchantment instanceof CustomEnchantment customEnchantment) {
-                    int level = meta.getStoredEnchantLevel(enchantment);
-                    List<String> lore = meta.getLore();
-                    Objects.requireNonNull(lore).remove(customEnchantment.getLoreEntry(level));
-                    meta.setLore(lore);
-                }
                 meta.removeStoredEnchant(enchantment);
                 item.setItemMeta(meta);
             }
         }
+        updateLore(item);
+    }
+
+    private static void updateLore(ItemStack item) {
+        Map<Enchantment, Integer> enchantments = getItemEnchantments(item);
+        ItemMeta meta = item.getItemMeta();
+        List<Component> newLore = new ArrayList<>();
+        for (var entry : enchantments.entrySet()) {
+            if (entry.getKey() instanceof CustomEnchantment customEnchantment) {
+                newLore.add(customEnchantment.displayName(entry.getValue()));
+            }
+        }
+        meta.lore(newLore);
+        item.setItemMeta(meta);
     }
 }

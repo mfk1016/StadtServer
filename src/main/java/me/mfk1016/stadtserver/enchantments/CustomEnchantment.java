@@ -4,6 +4,7 @@ import io.papermc.paper.enchantments.EnchantmentRarity;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -43,7 +44,10 @@ public abstract class CustomEnchantment extends Enchantment implements Listener 
 
     @Override
     public @NotNull Component displayName(int i) {
-        return Component.text(getLoreEntry(i));
+        if (getMaxLevel() == 1)
+            return Component.text(getName()).color(NamedTextColor.GRAY);
+        else
+            return Component.text(getName() + " " + romanNumber(i)).color(NamedTextColor.GRAY);
     }
 
     @Override
@@ -69,13 +73,6 @@ public abstract class CustomEnchantment extends Enchantment implements Listener 
     @Override
     public @NotNull Set<EquipmentSlot> getActiveSlots() {
         return Set.of(EquipmentSlot.values());
-    }
-
-    public String getLoreEntry(int level) {
-        if (getMaxLevel() == 1)
-            return ChatColor.GRAY + getName();
-        else
-            return ChatColor.GRAY + getName() + " " + romanNumber(level);
     }
 
     @Override

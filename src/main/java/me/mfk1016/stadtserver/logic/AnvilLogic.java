@@ -20,7 +20,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static me.mfk1016.stadtserver.enchantments.EnchantmentManager.*;
@@ -299,21 +302,9 @@ public class AnvilLogic {
         // The result is technically correct, but there may be lore left
         ItemStack result = event.getResult();
         ItemMeta meta = result.getItemMeta();
-        if (meta == null || meta.getLore() == null)
+        if (meta == null || !meta.hasLore())
             return;
-        List<String> lore = meta.getLore();
-        ListIterator<String> loreIterator = lore.listIterator();
-        while (loreIterator.hasNext()) {
-            String entry = loreIterator.next();
-            for (CustomEnchantment enchantment : EnchantmentManager.ALL_ENCHANTMENTS) {
-                String enchString = enchantment.getLoreEntry(1);
-                if (entry.startsWith(enchString)) {
-                    loreIterator.remove();
-                    break;
-                }
-            }
-        }
-        meta.setLore(lore);
+        meta.lore(null);
         result.setItemMeta(meta);
         event.setResult(result);
     }
