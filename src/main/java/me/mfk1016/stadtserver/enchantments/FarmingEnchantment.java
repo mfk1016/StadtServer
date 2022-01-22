@@ -18,6 +18,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -102,6 +103,39 @@ public class FarmingEnchantment extends CustomEnchantment {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
+    public void onHarvestMushroomBlock(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        Block target = event.getBlock();
+        if (!PluginCategories.isMushroomBlock(target.getType()))
+            return;
+        ItemStack hoe = player.getInventory().getItemInMainHand();
+        if (stackEmpty(hoe) || !PluginCategories.isHoe(hoe.getType()))
+            return;
+        int farmingLevel = hoe.getEnchantments().getOrDefault(this, 0);
+        if (farmingLevel == 0)
+            return;
+        if (event.getPlayer().isSneaking())
+            farmingLevel = 1;
+
+        int unbreakingFactor = hoe.getEnchantments().getOrDefault(Enchantment.DURABILITY, 0) + 1;
+        List<Block> toHarvest = mushroomTargets(target, farmingLevel - 1);
+        for (Block block : toHarvest) {
+            block.breakNaturally(hoe);
+        }
+        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+            int damage = toHarvest.size() / unbreakingFactor;
+            Damageable hoeData = (Damageable) Objects.requireNonNull(hoe.getItemMeta());
+            hoeData.setDamage(hoeData.getDamage() + damage);
+            if (hoeData.getDamage() < hoe.getType().getMaxDurability())
+                hoe.setItemMeta(hoeData);
+            else
+                player.getInventory().setItemInMainHand(null);
+        }
+        target.getWorld().playSound(target.getLocation(), Sound.BLOCK_WART_BLOCK_BREAK, 1f, 1f);
+        event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onHoeUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack hoe = player.getInventory().getItemInMainHand();
@@ -116,7 +150,7 @@ public class FarmingEnchantment extends CustomEnchantment {
             farmingLevel = 1;
         boolean result = switch (target.getType()) {
             case GRASS_BLOCK, DIRT, DIRT_PATH -> onTillFarmland(player, hoe, target, farmingLevel);
-            case WHEAT, POTATOES, CARROTS, BEETROOTS -> onReplantNormalCrop(player, hoe, target, farmingLevel);
+            case WHEAT, POTATOES, CARROTS, BEETROOTS, NETHER_WART -> onReplantNormalCrop(player, hoe, target, farmingLevel);
             case FARMLAND, SOUL_SAND -> onPlantNormalCrop(player, hoe, target, farmingLevel);
             default -> false;
         };
@@ -220,6 +254,24 @@ public class FarmingEnchantment extends CustomEnchantment {
                 Block toAdd = clicked.getRelative(x, 0, z);
                 if (toAdd.getType() == clicked.getType() && (!belowAir || toAdd.getRelative(BlockFace.UP).getType().isAir()))
                     result.add(toAdd);
+            }
+        }
+        return result;
+    }
+
+    private List<Block> mushroomTargets(Block target, int farmingLevel) {
+        List<Block> result = new ArrayList<>();
+        int yLimit = farmingLevel * 2 + 1;
+        result.add(target);
+        for (int x = -farmingLevel; x <= farmingLevel; x++) {
+            for (int y = 0; y < yLimit; y++) {
+                for (int z = -farmingLevel; z <= farmingLevel; z++) {
+                    if (x == 0 && y == 0 && z == 0)
+                        continue;
+                    Block toAdd = target.getRelative(x, y, z);
+                    if (PluginCategories.isMushroomBlock(toAdd.getType()))
+                        result.add(toAdd);
+                }
             }
         }
         return result;

@@ -73,4 +73,12 @@ public class PluginCategories {
             default -> false;
         };
     }
+
+    public static boolean isMushroomBlock(Material material) {
+        return switch (material) {
+            case NETHER_WART_BLOCK, WARPED_WART_BLOCK, SHROOMLIGHT, MUSHROOM_STEM,
+                    BROWN_MUSHROOM_BLOCK, RED_MUSHROOM_BLOCK -> true;
+            default -> false;
+        };
+    }
 }
