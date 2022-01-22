@@ -49,6 +49,12 @@ public class PotionLibrary {
     public static final PotionEffect RESISTANCE_2_1 = effectDef(DAMAGE_RESISTANCE, 4, 0, 1);
     public static final PotionEffect RESISTANCE_0_2 = effectDef(DAMAGE_RESISTANCE, 0, 45, 2);
 
+    // Levitation
+
+    public static final PotionEffect LEVITATION_1_1 = effectDef(LEVITATION, 1, 30, 1);
+    public static final PotionEffect LEVITATION_2_1 = effectDef(LEVITATION, 4, 0, 1);
+    public static final PotionEffect LEVITATION_0_2 = effectDef(LEVITATION, 0, 45, 2);
+
     // Level 1 Duration 3 -> extended + warped fungus
 
     public static final PotionEffect FIRE_RESISTANCE_3_1 = effectDef(FIRE_RESISTANCE, 15, 0, 1);
@@ -65,6 +71,7 @@ public class PotionLibrary {
     public static final PotionEffect WEAKNESS_3_1 = effectDef(WEAKNESS, 7, 30, 1);
     public static final PotionEffect FATIGUE_3_1 = effectDef(SLOW_DIGGING, 7, 30, 1);
     public static final PotionEffect RESISTANCE_3_1 = effectDef(DAMAGE_RESISTANCE, 7, 30, 1);
+    public static final PotionEffect LEVITATION_3_1 = effectDef(LEVITATION, 7, 30, 1);
 
     public static final PotionEffect POISON_3_1 = effectDef(POISON, 3, 45, 1);
     public static final PotionEffect REGENERATION_3_1 = effectDef(REGENERATION, 3, 45, 1);
@@ -79,6 +86,7 @@ public class PotionLibrary {
     public static final PotionEffect SLOW_1_2 = effectDef(SLOW, 1, 30, 4);
     public static final PotionEffect FATIGUE_1_2 = effectDef(SLOW_DIGGING, 1, 30, 4);
     public static final PotionEffect RESISTANCE_1_2 = effectDef(DAMAGE_RESISTANCE, 1, 30, 2);
+    public static final PotionEffect LEVITATION_1_2 = effectDef(LEVITATION, 1, 30, 2);
 
     public static final PotionEffect POISON_1_2 = effectDef(POISON, 0, 45, 2);
     public static final PotionEffect REGENERATION_1_2 = effectDef(REGENERATION, 0, 45, 2);
@@ -93,6 +101,7 @@ public class PotionLibrary {
     public static final PotionEffect SLOW_0_3 = effectDef(SLOW, 0, 45, 6);
     public static final PotionEffect FATIGUE_0_3 = effectDef(SLOW_DIGGING, 0, 45, 6);
     public static final PotionEffect RESISTANCE_0_3 = effectDef(DAMAGE_RESISTANCE, 0, 45, 3);
+    public static final PotionEffect LEVITATION_0_3 = effectDef(LEVITATION, 0, 45, 3);
 
     public static final PotionEffect POISON_0_3 = effectDef(POISON, 0, 22, 3);
     public static final PotionEffect REGENERATION_0_3 = effectDef(REGENERATION, 0, 22, 3);
@@ -117,12 +126,12 @@ public class PotionLibrary {
         potionNames.put(HARM, "Harming");
         potionNames.put(HEAL, "Healing");
         potionNames.put(HEALTH_BOOST, "Health Boost");
-        potionNames.put(HERO_OF_THE_VILLAGE, "Hero of the Village");
+        potionNames.put(HERO_OF_THE_VILLAGE, "Heroism");
         potionNames.put(HUNGER, "Hunger");
         potionNames.put(INCREASE_DAMAGE, "Strength");
         potionNames.put(INVISIBILITY, "Invisibility");
         potionNames.put(JUMP, "Leaping");
-        potionNames.put(LEVITATION, "Levitation");
+        potionNames.put(LEVITATION, "Heavenly Height");
         potionNames.put(LUCK, "Luck");
         potionNames.put(NIGHT_VISION, "Night Vision");
         potionNames.put(POISON, "Poison");
@@ -199,9 +208,9 @@ public class PotionLibrary {
     public static ItemStack mapCustomBrew(ItemStack input, Map<PotionEffect, PotionEffect> mapping) {
         for (var mapEntry : mapping.entrySet()) {
             if (matchCustomBrew(input, mapEntry.getKey()))
-                return buildCustomBrew(BottleType.fromItemStack(input), mapEntry.getValue());
+                return buildCustomBrew(BottleType.ofStack(input), mapEntry.getValue());
         }
-        return failedBrew(BottleType.fromItemStack(input));
+        return failedBrew(BottleType.ofStack(input));
     }
 
     public static boolean brewFailed(int failChance) {

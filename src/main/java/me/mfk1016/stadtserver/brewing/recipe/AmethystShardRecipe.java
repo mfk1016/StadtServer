@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,8 @@ public class AmethystShardRecipe extends BrewingRecipe {
         CUSTOM_MAP.put(PotionLibrary.FATIGUE_0_2, PotionLibrary.FATIGUE_0_3);
         CUSTOM_MAP.put(PotionLibrary.RESISTANCE_2_1, PotionLibrary.RESISTANCE_1_2);
         CUSTOM_MAP.put(PotionLibrary.RESISTANCE_0_2, PotionLibrary.RESISTANCE_0_3);
+        CUSTOM_MAP.put(PotionLibrary.LEVITATION_2_1, PotionLibrary.LEVITATION_1_2);
+        CUSTOM_MAP.put(PotionLibrary.LEVITATION_0_2, PotionLibrary.LEVITATION_0_3);
     }
 
     public AmethystShardRecipe() {
@@ -32,7 +35,7 @@ public class AmethystShardRecipe extends BrewingRecipe {
     }
 
     @Override
-    public boolean isApplicable(ItemStack input, Material ingredient) {
+    public boolean isApplicable(@NotNull ItemStack input, Material ingredient) {
         if (ingredient != Material.AMETHYST_SHARD)
             return false;
 
@@ -53,9 +56,9 @@ public class AmethystShardRecipe extends BrewingRecipe {
     }
 
     @Override
-    public ItemStack brewPotion(ItemStack input, Material ingredient) {
+    public ItemStack brewPotion(@NotNull ItemStack input, Material ingredient) {
         if (PotionLibrary.brewFailed(FAIL_CHANCE))
-            return PotionLibrary.failedBrew(BottleType.fromItemStack(input));
+            return PotionLibrary.failedBrew(BottleType.ofStack(input));
         if (PotionLibrary.isCustomBrew(input))
             return PotionLibrary.mapCustomBrew(input, CUSTOM_MAP);
 
@@ -72,6 +75,6 @@ public class AmethystShardRecipe extends BrewingRecipe {
             case STRENGTH -> extended ? PotionLibrary.STRENGTH_1_2 : PotionLibrary.STRENGTH_0_3;
             default -> null;
         };
-        return PotionLibrary.buildCustomBrew(BottleType.fromItemStack(input), targetDefinition);
+        return PotionLibrary.buildCustomBrew(BottleType.ofStack(input), targetDefinition);
     }
 }

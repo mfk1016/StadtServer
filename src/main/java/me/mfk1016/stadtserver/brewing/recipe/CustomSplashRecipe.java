@@ -6,6 +6,7 @@ import me.mfk1016.stadtserver.brewing.PotionLibrary;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ public class CustomSplashRecipe extends BrewingRecipe {
     }
 
     @Override
-    public boolean isApplicable(ItemStack input, Material ingredient) {
+    public boolean isApplicable(@NotNull ItemStack input, Material ingredient) {
 
         if (ingredient != Material.GUNPOWDER)
             return false;
@@ -25,7 +26,7 @@ public class CustomSplashRecipe extends BrewingRecipe {
     }
 
     @Override
-    public ItemStack brewPotion(ItemStack input, Material ingredient) {
+    public ItemStack brewPotion(@NotNull ItemStack input, Material ingredient) {
         PotionMeta potion = (PotionMeta) Objects.requireNonNull(input.getItemMeta());
         ItemStack result = BottleType.SPLASH.asItemStack();
         result.setItemMeta(potion.clone());

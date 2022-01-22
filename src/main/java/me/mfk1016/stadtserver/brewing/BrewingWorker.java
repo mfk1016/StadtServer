@@ -84,9 +84,7 @@ public class BrewingWorker extends BukkitRunnable {
         // At least one slot must be valid
         for (int i = 0; i < 3; i++) {
             ItemStack input = inventory.getItem(i);
-            if (stackEmpty(input))
-                continue;
-            if (!recipe.isApplicable(input, ingredient.getType()))
+            if (stackEmpty(input) || !recipe.isApplicable(input, ingredient.getType()))
                 continue;
             return false;
         }

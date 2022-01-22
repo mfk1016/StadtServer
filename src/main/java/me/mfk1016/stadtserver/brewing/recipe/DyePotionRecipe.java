@@ -5,6 +5,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ public class DyePotionRecipe extends BrewingRecipe {
     }
 
     @Override
-    public boolean isApplicable(ItemStack input, Material ingredient) {
+    public boolean isApplicable(@NotNull ItemStack input, Material ingredient) {
         switch (ingredient) {
             case WHITE_DYE, ORANGE_DYE, MAGENTA_DYE, LIGHT_BLUE_DYE, YELLOW_DYE,
                     LIME_DYE, PINK_DYE, GRAY_DYE, LIGHT_GRAY_DYE, CYAN_DYE, PURPLE_DYE,
@@ -29,7 +30,7 @@ public class DyePotionRecipe extends BrewingRecipe {
     }
 
     @Override
-    public ItemStack brewPotion(ItemStack input, Material ingredient) {
+    public ItemStack brewPotion(@NotNull ItemStack input, Material ingredient) {
         ItemStack result = input.clone();
         PotionMeta potion = (PotionMeta) Objects.requireNonNull(input.getItemMeta());
         switch (ingredient) {

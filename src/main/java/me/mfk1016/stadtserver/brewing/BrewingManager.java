@@ -54,8 +54,8 @@ public class BrewingManager extends BasicListener {
             for (int i = 0; i < 3; i++) {
                 if (stackEmpty(inventory.getItem(i)))
                     continue;
-                if (recipe.isApplicable(inventory.getItem(i), ingredient.getType()))
-                    results.set(i, recipe.brewPotion(inventory.getItem(i), ingredient.getType()));
+                if (recipe.isApplicable(Objects.requireNonNull(inventory.getItem(i)), ingredient.getType()))
+                    results.set(i, recipe.brewPotion(Objects.requireNonNull(inventory.getItem(i)), ingredient.getType()));
             }
         }
     }

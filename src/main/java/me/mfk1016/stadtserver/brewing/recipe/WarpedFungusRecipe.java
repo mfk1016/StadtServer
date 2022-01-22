@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class WarpedFungusRecipe extends BrewingRecipe {
         CUSTOM_MAP.put(PotionLibrary.FATIGUE_0_2, PotionLibrary.FATIGUE_1_2);
         CUSTOM_MAP.put(PotionLibrary.RESISTANCE_2_1, PotionLibrary.RESISTANCE_3_1);
         CUSTOM_MAP.put(PotionLibrary.RESISTANCE_0_2, PotionLibrary.RESISTANCE_1_2);
+        CUSTOM_MAP.put(PotionLibrary.LEVITATION_2_1, PotionLibrary.LEVITATION_3_1);
+        CUSTOM_MAP.put(PotionLibrary.LEVITATION_0_2, PotionLibrary.LEVITATION_1_2);
     }
 
     public WarpedFungusRecipe() {
@@ -34,7 +37,7 @@ public class WarpedFungusRecipe extends BrewingRecipe {
     }
 
     @Override
-    public boolean isApplicable(ItemStack input, Material ingredient) {
+    public boolean isApplicable(@NotNull ItemStack input, Material ingredient) {
         if (ingredient != Material.WARPED_FUNGUS)
             return false;
 
@@ -55,9 +58,9 @@ public class WarpedFungusRecipe extends BrewingRecipe {
     }
 
     @Override
-    public ItemStack brewPotion(ItemStack input, Material ingredient) {
+    public ItemStack brewPotion(@NotNull ItemStack input, Material ingredient) {
         if (PotionLibrary.brewFailed(FAIL_CHANCE))
-            return PotionLibrary.failedBrew(BottleType.fromItemStack(input));
+            return PotionLibrary.failedBrew(BottleType.ofStack(input));
         if (PotionLibrary.isCustomBrew(input))
             return PotionLibrary.mapCustomBrew(input, CUSTOM_MAP);
 
@@ -80,12 +83,12 @@ public class WarpedFungusRecipe extends BrewingRecipe {
             case SLOW_FALLING -> PotionLibrary.SLOW_FALLING_3_1;
             default -> null;
         };
-        return PotionLibrary.buildCustomBrew(BottleType.fromItemStack(input), targetDefinition);
+        return PotionLibrary.buildCustomBrew(BottleType.ofStack(input), targetDefinition);
     }
 
     private ItemStack brewTurtleMaster(ItemStack input, boolean amplified) {
         PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, amplified ? 800 : 1600, amplified ? 5 : 3);
         PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, amplified ? 800 : 1600, amplified ? 3 : 2);
-        return PotionLibrary.buildCustomBrew(BottleType.fromItemStack(input), "the Turtle Master", slowness, resistance);
+        return PotionLibrary.buildCustomBrew(BottleType.ofStack(input), "the Turtle Master", slowness, resistance);
     }
 }

@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
 
 public class StaminaRecipe extends BrewingRecipe {
 
@@ -15,7 +16,7 @@ public class StaminaRecipe extends BrewingRecipe {
     }
 
     @Override
-    public boolean isApplicable(ItemStack input, Material ingredient) {
+    public boolean isApplicable(@NotNull ItemStack input, Material ingredient) {
         if (ingredient != Material.GLOW_BERRIES)
             return false;
 
@@ -26,7 +27,7 @@ public class StaminaRecipe extends BrewingRecipe {
     }
 
     @Override
-    public ItemStack brewPotion(ItemStack input, Material ingredient) {
-        return PotionLibrary.buildCustomBrew(BottleType.fromItemStack(input), PotionLibrary.HASTE_1_1);
+    public ItemStack brewPotion(@NotNull ItemStack input, Material ingredient) {
+        return PotionLibrary.buildCustomBrew(BottleType.ofStack(input), PotionLibrary.HASTE_1_1);
     }
 }

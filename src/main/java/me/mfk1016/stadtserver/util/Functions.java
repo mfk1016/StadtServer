@@ -2,9 +2,11 @@ package me.mfk1016.stadtserver.util;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Contract;
 
 public class Functions {
 
+    @Contract("null -> true")
     public static boolean stackEmpty(ItemStack stack) {
         return stack == null || stack.getType() == Material.AIR;
     }

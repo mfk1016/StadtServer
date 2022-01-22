@@ -14,7 +14,7 @@ public enum BottleType {
         this.mat = mat;
     }
 
-    public static BottleType fromItemStack(ItemStack stack) {
+    public static BottleType ofStack(ItemStack stack) {
         return switch (stack.getType()) {
             case POTION -> BottleType.NORMAL;
             case SPLASH_POTION -> BottleType.SPLASH;
