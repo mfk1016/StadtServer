@@ -2,6 +2,7 @@ package me.mfk1016.stadtserver.brewing;
 
 import me.mfk1016.stadtserver.StadtServer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -174,7 +175,7 @@ public class PotionLibrary {
             case SPLASH -> "Splash Potion of " + potionNames.get(definition.getType());
             case LINGER -> "Lingering Potion of " + potionNames.get(definition.getType());
         };
-        potion.displayName(Component.text(finalName));
+        potion.displayName(Component.text(finalName).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
         result.setItemMeta(potion);
         return result;
     }
@@ -190,7 +191,7 @@ public class PotionLibrary {
             case SPLASH -> "Splash Potion of " + name;
             case LINGER -> "Lingering Potion of " + name;
         };
-        potion.displayName(Component.text(finalName));
+        potion.displayName(Component.text(finalName).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
         result.setItemMeta(potion);
         return result;
     }
