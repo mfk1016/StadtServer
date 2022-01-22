@@ -120,7 +120,7 @@ public class MinecartLogic {
     }
 
     public static void checkTrainMember(Minecart cart) {
-        // Unlinks the cart if either the master or the follower of the cart is null
+        // Unlinks the cart if the master of the cart is null
         // An illegal state is present if any of those is null
         if (!hasMaster(cart)) {
             setMaster(cart, null);
@@ -316,11 +316,11 @@ public class MinecartLogic {
         cartYaw = normalizeYaw(cartYaw);
         followerYaw = normalizeYaw(followerYaw);
 
-        if (Math.abs(cartYaw - followerYaw) == 90F) {
-            // HACK: Occurs only at train start
-            follower.setVelocity(cart.getVelocity().clone().setY(follower.getVelocity().getY()));
-            return;
-        }
+        //if (Math.abs(cartYaw - followerYaw) == 90F) {
+        //    // HACK: Occurs only at train start
+        //    follower.setVelocity(cart.getVelocity().clone().setY(follower.getVelocity().getY()));
+        //    return;
+        //}
 
         // Now it is known that the follower trails the cart and that both carts are moving
         // The cart determines the speed, while the follower has to adjust itself against the cart
@@ -409,6 +409,12 @@ public class MinecartLogic {
         } else if (distance > MAX_CART_DIST) {
             follower.setVelocity(follower.getVelocity().multiply(1.1D));
         }
+
+        // Cart inhabitant ? adjust velocity too
+        for (var entity : cart.getPassengers())
+            entity.setVelocity(cart.getVelocity());
+        for (var entity : follower.getPassengers())
+            entity.setVelocity(follower.getVelocity());
     }
 
     private static boolean isLeadingVelocity(@NotNull Vector directionToPartner, @NotNull Vector cartVelocity) {
