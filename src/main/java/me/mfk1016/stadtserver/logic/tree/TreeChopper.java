@@ -163,7 +163,9 @@ public class TreeChopper {
             case ACACIA_LOG -> block.getType() == Material.ACACIA_LEAVES;
             case BIRCH_LOG -> block.getType() == Material.BIRCH_LEAVES;
             case DARK_OAK_LOG -> block.getType() == Material.DARK_OAK_LEAVES;
-            case OAK_LOG -> block.getType() == Material.OAK_LEAVES;
+            case OAK_LOG -> block.getType() == Material.OAK_LEAVES ||
+                    block.getType() == Material.AZALEA_LEAVES ||
+                    block.getType() == Material.FLOWERING_AZALEA_LEAVES;
             case JUNGLE_LOG -> block.getType() == Material.JUNGLE_LEAVES;
             case SPRUCE_LOG -> block.getType() == Material.SPRUCE_LEAVES;
             default -> false;
