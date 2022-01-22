@@ -6,16 +6,32 @@ import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.world.StructureGrowEvent;
 
+import java.util.HashSet;
+import java.util.UUID;
+
 public class TreeListener extends BasicListener {
+
+    private static final HashSet<UUID> growingPlayers = new HashSet<>();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onTreeGrow(StructureGrowEvent event) {
+        Player player = event.getPlayer();
+        if (player != null) {
+            if (growingPlayers.contains(player.getUniqueId())) {
+                event.setCancelled(true);
+                return;
+            } else {
+                growingPlayers.add(player.getUniqueId());
+            }
+        }
         Pair<Integer, Block> sizebase = getTreeShape(event.getLocation().getBlock());
         if (sizebase == null)
+            // not grown from a sapling -> no player involved
             return;
         int size = sizebase._1;
         Block nwBase = sizebase._2;
@@ -25,6 +41,8 @@ public class TreeListener extends BasicListener {
             gen.generateTree();
             event.setCancelled(true);
         }
+        if (player != null)
+            growingPlayers.remove(event.getPlayer().getUniqueId());
     }
 
     private Pair<Integer, Block> getTreeShape(Block test) {

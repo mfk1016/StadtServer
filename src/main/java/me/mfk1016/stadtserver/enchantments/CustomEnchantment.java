@@ -5,7 +5,7 @@ import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityCategory;
@@ -44,10 +44,8 @@ public abstract class CustomEnchantment extends Enchantment implements Listener 
 
     @Override
     public @NotNull Component displayName(int i) {
-        if (getMaxLevel() == 1)
-            return Component.text(getName()).color(NamedTextColor.GRAY);
-        else
-            return Component.text(getName() + " " + romanNumber(i)).color(NamedTextColor.GRAY);
+        String content = getMaxLevel() == 1 ? getName() : getName() + " " + romanNumber(i);
+        return Component.text(content).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
     @Override

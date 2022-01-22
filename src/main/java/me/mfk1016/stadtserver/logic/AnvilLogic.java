@@ -5,6 +5,7 @@ import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.SmithingEnchantment;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
+import me.mfk1016.stadtserver.nms.v1_18_R1.AnvilFix;
 import me.mfk1016.stadtserver.util.Pair;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -212,12 +213,14 @@ public class AnvilLogic {
             int neededItems = (int) Math.ceil((double) resultDamage.getDamage() / (double) durabilityPerItem);
             int usedItems = Math.min(neededItems, sacrifice.getAmount());
             if (usedItems < sacrifice.getAmount() && !anvil.getViewers().isEmpty()) {
-                ItemStack toDrop = new ItemStack(sacrifice.getType(), sacrifice.getAmount() - usedItems);
-                Location targetLocation = Objects.requireNonNull(anvil.getLocation()).add(0, 1, 0).add(TO_BLOCK_CENTER);
-                Item dropped = anvil.getViewers().get(0).getWorld().dropItem(targetLocation, toDrop);
-                dropped.setVelocity(new Vector());
-                sacrifice.setAmount(usedItems);
-                anvil.setItem(1, sacrifice);
+                if (!AnvilFix.fixAnvilSacrificeUsage(anvil, usedItems)) {
+                    ItemStack toDrop = new ItemStack(sacrifice.getType(), sacrifice.getAmount() - usedItems);
+                    Location targetLocation = Objects.requireNonNull(anvil.getLocation()).add(0, 1, 0).add(TO_BLOCK_CENTER);
+                    Item dropped = anvil.getViewers().get(0).getWorld().dropItem(targetLocation, toDrop);
+                    dropped.setVelocity(new Vector());
+                    sacrifice.setAmount(usedItems);
+                    anvil.setItem(1, sacrifice);
+                }
             }
 
             toSub = usedItems * durabilityPerItem;

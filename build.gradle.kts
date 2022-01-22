@@ -50,12 +50,12 @@ tasks {
     processResources {
         from(sourceSets.main.get().resources.srcDirs) {
             filesMatching("plugin.yml") {
-                expand (
+                expand(
                     "name" to rootProject.name,
                     "version" to version
-                        )
+                )
             }
-            duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
         }
         filteringCharset = Charsets.UTF_8.name()
     }
@@ -74,5 +74,6 @@ tasks {
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
         minecraftVersion("1.18.1")
+        paperBuild(167)
     }
 }

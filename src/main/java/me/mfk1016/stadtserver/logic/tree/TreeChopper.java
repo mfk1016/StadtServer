@@ -77,9 +77,11 @@ public class TreeChopper {
                     if (isLog(relative) || isWood(relative)) {
                         treeLogs.addLast(relative);
                         blocksToCheck.addLast(relative);
-                    } else if (validLeavesFound < 5 && isLeaves(relative) && relative.getBlockData() instanceof Leaves leaves) {
+                    } else if (validLeavesFound < 5 && relative.getBlockData() instanceof Leaves leaves) {
                         if (!leaves.isPersistent())
                             validLeavesFound++;
+                    } else if (isSpecialLeaves(relative)) {
+                        validLeavesFound++;
                     } else if (relative.getType() == Material.BOOKSHELF) {
                         blocked = true;
                     }
@@ -140,31 +142,24 @@ public class TreeChopper {
         return block.getType() == logType;
     }
 
-    private boolean isLeaves(Block block) {
-        Material toCheck = block.getType();
-        return switch (logType) {
-            case ACACIA_LOG -> toCheck == Material.ACACIA_LEAVES;
-            case BIRCH_LOG -> toCheck == Material.BIRCH_LEAVES;
-            case CRIMSON_STEM -> toCheck == Material.NETHER_WART_BLOCK;
-            case WARPED_STEM -> toCheck == Material.WARPED_WART_BLOCK;
-            case DARK_OAK_LOG -> toCheck == Material.DARK_OAK_LEAVES;
-            case OAK_LOG -> toCheck == Material.OAK_LEAVES || toCheck == Material.AZALEA_LEAVES;
-            case JUNGLE_LOG -> toCheck == Material.JUNGLE_LEAVES;
-            case SPRUCE_LOG -> toCheck == Material.SPRUCE_LEAVES;
-            default -> toCheck == Material.DIAMOND_BLOCK;
-        };
-    }
-
     private boolean isWood(Block block) {
         return switch (logType) {
             case ACACIA_LOG -> block.getType() == Material.ACACIA_WOOD;
             case BIRCH_LOG -> block.getType() == Material.BIRCH_WOOD;
-            case CRIMSON_STEM -> block.getType() == Material.CRIMSON_HYPHAE;
-            case WARPED_STEM -> block.getType() == Material.WARPED_HYPHAE;
             case DARK_OAK_LOG -> block.getType() == Material.DARK_OAK_WOOD;
             case OAK_LOG -> block.getType() == Material.OAK_WOOD;
             case JUNGLE_LOG -> block.getType() == Material.JUNGLE_WOOD;
             case SPRUCE_LOG -> block.getType() == Material.SPRUCE_WOOD;
+            case CRIMSON_STEM -> block.getType() == Material.CRIMSON_HYPHAE || block.getType() == Material.SHROOMLIGHT;
+            case WARPED_STEM -> block.getType() == Material.WARPED_HYPHAE || block.getType() == Material.SHROOMLIGHT;
+            default -> false;
+        };
+    }
+
+    private boolean isSpecialLeaves(Block block) {
+        return switch (logType) {
+            case CRIMSON_STEM -> block.getType() == Material.NETHER_WART_BLOCK;
+            case WARPED_STEM -> block.getType() == Material.WARPED_WART_BLOCK;
             default -> false;
         };
     }

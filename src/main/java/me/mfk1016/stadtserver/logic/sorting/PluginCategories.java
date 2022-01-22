@@ -45,7 +45,7 @@ public class PluginCategories {
     public static boolean isWood(Material material) {
         return switch (material) {
             case ACACIA_WOOD, BIRCH_WOOD, DARK_OAK_WOOD, JUNGLE_WOOD,
-                    OAK_WOOD, SPRUCE_WOOD, CRIMSON_HYPHAE, WARPED_HYPHAE -> true;
+                    OAK_WOOD, SPRUCE_WOOD, CRIMSON_HYPHAE, WARPED_HYPHAE, SHROOMLIGHT -> true;
             default -> false;
         };
     }
@@ -69,7 +69,7 @@ public class PluginCategories {
     public static boolean isSapling(Material material) {
         return switch (material) {
             case BIRCH_SAPLING, ACACIA_SAPLING, OAK_SAPLING, JUNGLE_SAPLING, DARK_OAK_SAPLING, SPRUCE_SAPLING,
-                    WARPED_FUNGUS, CRIMSON_FUNGUS -> true;
+                    WARPED_FUNGUS, CRIMSON_FUNGUS, RED_MUSHROOM, BROWN_MUSHROOM -> true;
             default -> false;
         };
     }

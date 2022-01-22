@@ -91,8 +91,6 @@ public abstract class TreeGenerator {
         }
         if (validHeight < minHeight)
             return false;
-        else if (validHeight == treeHeight)
-            return true;
         treeHeight = validHeight;
         return true;
     }

@@ -49,6 +49,7 @@ public class StadtServer extends JavaPlugin {
         pm.registerEvents(new DoorListener(), this);
         pm.registerEvents(new BrewingManager(), this);
         pm.registerEvents(new TreeListener(), this);
+        pm.registerEvents(new VineListener(), this);
         ProtocolLibrary.getProtocolManager().addPacketListener(signPacketListener);
 
         LOGGER.info(getDescription().getName() + ": register recipes...");

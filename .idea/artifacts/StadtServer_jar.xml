@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="StadtServer:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/StadtServer_jar</output-path>
-    <root id="archive" name="StadtServer.jar">
-      <element id="module-output" name="StadtServer" />
-    </root>
-  </artifact>
-</component>
