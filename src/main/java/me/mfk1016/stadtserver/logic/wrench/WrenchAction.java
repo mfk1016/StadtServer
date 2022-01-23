@@ -16,6 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.lang.reflect.InvocationTargetException;
 
+import static me.mfk1016.stadtserver.util.Functions.playerMessage;
+
 public abstract class WrenchAction {
 
     public static WrenchAction actionFactory(Block block) {
@@ -37,22 +39,10 @@ public abstract class WrenchAction {
     protected abstract boolean isEventCancelled(Result result);
 
     public void onWrenchBlock(Player player, Block target, PlayerInteractEvent event) {
-
         Result result = wrenchBlock(player, target);
-
-        if (StadtServer.getInstance().getConfig().getBoolean(Keys.CONFIG_PLAYER_MESSAGE)) {
-            String message = wrenchMessage(result);
-            if (message != null) {
-                ProtocolManager pm = ProtocolLibrary.getProtocolManager();
-                PacketContainer packetContainer = new PacketContainer(PacketType.Play.Server.SET_ACTION_BAR_TEXT);
-                packetContainer.getChatComponents().write(0, WrappedChatComponent.fromText(message));
-                try {
-                    pm.sendServerPacket(player, packetContainer);
-                } catch (InvocationTargetException e2) {
-                    // ignore
-                }
-            }
-        }
+        String message = wrenchMessage(result);
+        if (message != null)
+            playerMessage(player, message);
         if (isEventCancelled(result))
             event.setCancelled(true);
     }

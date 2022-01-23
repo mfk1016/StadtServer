@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 import static me.mfk1016.stadtserver.util.Functions.romanNumber;
+import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 public abstract class CustomEnchantment extends Enchantment implements Listener {
 
@@ -45,7 +46,7 @@ public abstract class CustomEnchantment extends Enchantment implements Listener 
     @Override
     public @NotNull Component displayName(int i) {
         String content = getMaxLevel() == 1 ? getName() : getName() + " " + romanNumber(i);
-        return Component.text(content).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+        return undecoratedText(content).color(NamedTextColor.GRAY);
     }
 
     @Override

@@ -5,7 +5,7 @@ import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.SmithingEnchantment;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
-import me.mfk1016.stadtserver.nms.v1_18_R1.AnvilFix;
+import me.mfk1016.stadtserver.nms.v1_18_1.AnvilFix;
 import me.mfk1016.stadtserver.util.Pair;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;

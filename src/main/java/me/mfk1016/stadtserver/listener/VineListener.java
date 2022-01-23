@@ -8,6 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -16,7 +17,9 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Objects;
 
-public class VineListener extends BasicListener {
+import static me.mfk1016.stadtserver.util.Functions.playerMessage;
+
+public class VineListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerShearVine(PlayerInteractEvent event) {

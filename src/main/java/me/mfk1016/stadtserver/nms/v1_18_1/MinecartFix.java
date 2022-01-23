@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.nms.v1_18_R1;
+package me.mfk1016.stadtserver.nms.v1_18_1;
 
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftMinecart;

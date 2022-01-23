@@ -9,12 +9,13 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.HashSet;
 import java.util.UUID;
 
-public class TreeListener extends BasicListener {
+public class TreeListener implements Listener {
 
     private static final HashSet<UUID> growingPlayers = new HashSet<>();
 

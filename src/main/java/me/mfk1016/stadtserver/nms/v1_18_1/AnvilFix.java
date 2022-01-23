@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.nms.v1_18_R1;
+package me.mfk1016.stadtserver.nms.v1_18_1;
 
 import net.minecraft.world.inventory.AnvilMenu;
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftInventoryAnvil;
@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 
 public class AnvilFix {
 
+    // TODO: obsolet mit nächstem spigot update
     @SuppressWarnings("JavaReflectionMemberAccess")
     public static boolean fixAnvilSacrificeUsage(AnvilInventory inventory, int sacrificeCount) {
         CraftInventoryAnvil craftAnvil = (CraftInventoryAnvil) inventory;

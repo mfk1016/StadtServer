@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 import static org.bukkit.potion.PotionEffectType.*;
 
 /*
@@ -184,7 +185,7 @@ public class PotionLibrary {
             case SPLASH -> "Splash Potion of " + potionNames.get(definition.getType());
             case LINGER -> "Lingering Potion of " + potionNames.get(definition.getType());
         };
-        potion.displayName(Component.text(finalName).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+        potion.displayName(undecoratedText(finalName));
         result.setItemMeta(potion);
         return result;
     }
@@ -200,7 +201,7 @@ public class PotionLibrary {
             case SPLASH -> "Splash Potion of " + name;
             case LINGER -> "Lingering Potion of " + name;
         };
-        potion.displayName(Component.text(finalName).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+        potion.displayName(undecoratedText(finalName));
         result.setItemMeta(potion);
         return result;
     }

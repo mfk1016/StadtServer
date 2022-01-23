@@ -18,6 +18,7 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +26,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Objects;
 
-public class BossMobListener extends BasicListener {
+public class BossMobListener implements Listener {
 
     public static boolean isValidBossMobType(EntityType type) {
         return switch (type) {

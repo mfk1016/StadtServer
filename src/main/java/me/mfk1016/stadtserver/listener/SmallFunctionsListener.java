@@ -18,6 +18,7 @@ import org.bukkit.block.data.type.Piston;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -45,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
     - Ladder placement helper
  */
-public class SmallFunctionsListener extends BasicListener {
+public class SmallFunctionsListener implements Listener {
 
     private static final ItemStack fakePick = new ItemStack(Material.NETHERITE_PICKAXE);
     private final Set<BlockPosition> editedSigns = Collections.newSetFromMap(new ConcurrentHashMap<>());

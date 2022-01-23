@@ -2,7 +2,6 @@ package me.mfk1016.stadtserver.brewing;
 
 import me.mfk1016.stadtserver.RecipeManager;
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.listener.BasicListener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -11,6 +10,7 @@ import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.BrewerInventory;
@@ -24,7 +24,7 @@ import java.util.Objects;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
-public class BrewingManager extends BasicListener {
+public class BrewingManager implements Listener {
 
     private static final int INGREDIENT_SLOT = 3;
 

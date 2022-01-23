@@ -2,7 +2,7 @@ package me.mfk1016.stadtserver.listener;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.MinecartLogic;
-import me.mfk1016.stadtserver.nms.v1_18_R1.MinecartFix;
+import me.mfk1016.stadtserver.nms.v1_18_1.MinecartFix;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -12,6 +12,7 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.vehicle.*;
@@ -20,12 +21,14 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.UUID;
 
+import static me.mfk1016.stadtserver.util.Functions.playerMessage;
+
 /*
     - Minecarts have increased top speed when running over a powered rail with a lapis block
     - Minecarts have decreased top speed when running over a powered rail with a coal block
     - Minecarts get pushed into the direction of underlying stairs, when a golden rail is powered
  */
-public class MinecartListener extends BasicListener {
+public class MinecartListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onMinecartCreate(VehicleCreateEvent event) {
