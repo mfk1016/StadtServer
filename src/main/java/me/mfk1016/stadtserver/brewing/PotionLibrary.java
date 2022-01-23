@@ -1,8 +1,6 @@
 package me.mfk1016.stadtserver.brewing;
 
 import me.mfk1016.stadtserver.StadtServer;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;

@@ -20,12 +20,10 @@ import java.util.Objects;
 import java.util.Set;
 
 /*
-    Repair items with a maximum level cost
-    - The level cost limit depends on the enchantment level (1: 25 ... 5: 5)
+    Repair items with a limited level cost
+    - The level cost limit depends on the enchantment level (1: 25 ... 5: 5, (ancient) 6: 3)
     - Works only for repairing; repairing and enchanting costs the normal amount of levels
-
-    Repair netherite tools/armor with netherite scrap; tools require up to 2 pieces, armor pieces require up to 3
-    - TO FIX: ignores the stack size of netherite scrap
+    - Completely replaces Mending
  */
 public class SmithingEnchantment extends CustomEnchantment {
 
@@ -129,19 +127,22 @@ public class SmithingEnchantment extends CustomEnchantment {
         result.add(new VillagerTradeOrigin(this, 7, levelChancesSmith, Villager.Profession.WEAPONSMITH, 3, baseCosts));
         result.add(new VillagerTradeOrigin(this, 3, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
 
-        // Piglin: 4% chance for Smithing III / IV with 2/1 distribution
+        // Piglin: 3% chance for Smithing III / IV with 2/1 distribution
         int[] levelChancesPiglin = {0, 0, 2, 1, 0};
-        result.add(new PiglinTradeOrigin(this, 4, levelChancesPiglin));
+        result.add(new PiglinTradeOrigin(this, 3, levelChancesPiglin));
 
-        // Loot chest: 10%/20%/25% chance for Smithing IV in overworld/nether/end
+        // Loot chest: 5%/25%/25% chance for Smithing IV in overworld/nether/end
         int[] levelChancesLoot = {0, 0, 0, 1, 0};
-        result.add(new LootChestOrigin(this, 10, levelChancesLoot, World.Environment.NORMAL));
-        result.add(new LootChestOrigin(this, 20, levelChancesLoot, World.Environment.NETHER));
+        result.add(new LootChestOrigin(this, 5, levelChancesLoot, World.Environment.NORMAL));
+        result.add(new LootChestOrigin(this, 25, levelChancesLoot, World.Environment.NETHER));
         result.add(new LootChestOrigin(this, 25, levelChancesLoot, World.Environment.THE_END));
 
         // Boss Piglin Brute: 50% chance for Smithing V in nether
         int[] levelChancesBoss = {0, 0, 0, 0, 1};
         result.add(new BossMobBookOrigin(this, 50, levelChancesBoss, EntityType.PIGLIN_BRUTE, 1, World.Environment.NETHER));
+
+        // Level 4 Boss Vindicator: 100% chance for Smithing V
+        result.add(new BossMobBookOrigin(this, 100, levelChancesBoss, EntityType.VINDICATOR, 4, World.Environment.NORMAL));
 
         return result;
     }

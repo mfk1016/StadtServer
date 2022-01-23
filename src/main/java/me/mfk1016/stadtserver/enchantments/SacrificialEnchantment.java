@@ -82,13 +82,13 @@ public class SacrificialEnchantment extends CustomEnchantment {
         int[] baseCosts = {30};
         result.add(new VillagerTradeOrigin(this, 3, levelChances, Villager.Profession.CLERIC, 5, baseCosts));
 
-        // Piglin: 5% chance for Sacrificial
-        result.add(new PiglinTradeOrigin(this, 5, levelChances));
+        // Piglin: 3% chance for Sacrificial
+        result.add(new PiglinTradeOrigin(this, 3, levelChances));
 
-        // Loot chest: 10% chance in the overworld, 20% the nether/end for Sacrificial
-        result.add(new LootChestOrigin(this, 10, levelChances, World.Environment.NORMAL));
-        result.add(new LootChestOrigin(this, 20, levelChances, World.Environment.NETHER));
-        result.add(new LootChestOrigin(this, 20, levelChances, World.Environment.THE_END));
+        // Loot chest: 3% chance in the overworld, 15% the nether/end for Sacrificial
+        result.add(new LootChestOrigin(this, 3, levelChances, World.Environment.NORMAL));
+        result.add(new LootChestOrigin(this, 15, levelChances, World.Environment.NETHER));
+        result.add(new LootChestOrigin(this, 15, levelChances, World.Environment.THE_END));
 
         // Boss Witch/Evoker: 50% chance for Sacrificial
         result.add(new BossMobBookOrigin(this, 50, levelChances, EntityType.WITCH, 1, World.Environment.NORMAL));

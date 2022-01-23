@@ -1,7 +1,10 @@
 package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.origin.enchantment.*;
+import me.mfk1016.stadtserver.origin.enchantment.BossMobBookOrigin;
+import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
+import me.mfk1016.stadtserver.origin.enchantment.LootChestOrigin;
+import me.mfk1016.stadtserver.origin.enchantment.VillagerTradeOrigin;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -79,10 +82,6 @@ public class EagleEyeEnchantment extends CustomEnchantment {
         result.add(new VillagerTradeOrigin(this, 3, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
         result.add(new VillagerTradeOrigin(this, 7, levelChancesFletcher, Villager.Profession.FLETCHER, 3, baseCosts));
 
-        // Piglin: 3% chance for Eagle Eye III
-        int[] levelChancesPiglin = {0, 0, 1, 0, 0};
-        result.add(new PiglinTradeOrigin(this, 3, levelChancesPiglin));
-
         // Loot chest: 10% chance in the nether/end for Eagle Eye IV
         int[] levelChancesLoot = {0, 0, 0, 1, 0};
         result.add(new LootChestOrigin(this, 10, levelChancesLoot, World.Environment.NETHER));
@@ -92,6 +91,10 @@ public class EagleEyeEnchantment extends CustomEnchantment {
         int[] levelChancesBoss = {0, 0, 2, 1, 0};
         result.add(new BossMobBookOrigin(this, 10, levelChancesBoss, EntityType.SKELETON, 2, World.Environment.NORMAL));
         result.add(new BossMobBookOrigin(this, 10, levelChancesBoss, EntityType.SKELETON, 2, World.Environment.NETHER));
+
+        // Level 4 Boss Pillager: 100% chance for Eagle Eye V
+        int[] levelChancesPillager = {0, 0, 0, 0, 1};
+        result.add(new BossMobBookOrigin(this, 100, levelChancesPillager, EntityType.PILLAGER, 4, World.Environment.NORMAL));
 
         return result;
     }

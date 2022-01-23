@@ -1,20 +1,11 @@
 package me.mfk1016.stadtserver.logic.wrench;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionInventory;
 import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionNoteBlock;
 import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionRedstoneLamp;
-import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import java.lang.reflect.InvocationTargetException;
 
 import static me.mfk1016.stadtserver.util.Functions.playerMessage;
 

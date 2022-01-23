@@ -78,8 +78,8 @@ public class FarmingEnchantment extends CustomEnchantment {
     public Set<EnchantmentOrigin> getOrigins() {
         Set<EnchantmentOrigin> result = new HashSet<>();
 
-        // Fishing: 15% for Farming I / II, distributed 3/2 when getting an enchanted book
-        int[] levelChancesFish = {3, 2, 0};
+        // Fishing: 15% for Farming II when getting an enchanted book
+        int[] levelChancesFish = {0, 1, 0};
         result.add(new FishBookOrigin(this, 15, levelChancesFish));
 
         // Librarian: 3% at villager level 1+ for Farming I / II with 3/2 distribution
@@ -94,10 +94,10 @@ public class FarmingEnchantment extends CustomEnchantment {
         int[] levelChancesLoot = {0, 2, 1};
         result.add(new LootChestOrigin(this, 5, levelChancesLoot, World.Environment.NORMAL));
 
-        // Boss Zombie: 10% chance in the overworld for Farming III
+        // Boss Zombie (Villager): 10% (20%) chance in the overworld for Farming III
         int[] levelChancesBoss = {0, 0, 1};
         result.add(new BossMobBookOrigin(this, 10, levelChancesBoss, EntityType.ZOMBIE, 1, World.Environment.NORMAL));
-        result.add(new BossMobBookOrigin(this, 10, levelChancesBoss, EntityType.ZOMBIE_VILLAGER, 1, World.Environment.NORMAL));
+        result.add(new BossMobBookOrigin(this, 20, levelChancesBoss, EntityType.ZOMBIE_VILLAGER, 1, World.Environment.NORMAL));
 
         return result;
     }
