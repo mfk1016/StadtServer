@@ -175,7 +175,7 @@ public class RecipeManager {
         CUT_RED_SANDSTONE("cut_red_sandstone", Material.CUT_RED_SANDSTONE_SLAB, Material.CUT_RED_SANDSTONE),
         PURPUR("purpur", Material.PURPUR_SLAB, Material.PURPUR_BLOCK),
         DEEPSLATE_BRICKS("deepslate_bricks", Material.DEEPSLATE_BRICK_SLAB, Material.DEEPSLATE_BRICKS),
-        NETHER_BRICK("nether_brick", Material.NETHER_BRICK_SLAB, Material.NETHER_BRICK),
+        NETHER_BRICKS("nether_brick", Material.NETHER_BRICK_SLAB, Material.NETHER_BRICKS),
         RED_NETHER_BRICK("red_nether_brick", Material.RED_NETHER_BRICK_SLAB, Material.RED_NETHER_BRICKS),
         PRISMARINE_BRICKS("prismarine_bricks", Material.PRISMARINE_BRICK_SLAB, Material.PRISMARINE_BRICKS),
         DARK_PRISMARINE("dark_prismarine", Material.DARK_PRISMARINE_SLAB, Material.DARK_PRISMARINE),
