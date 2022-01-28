@@ -6,7 +6,7 @@
 
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "1.3.3"
+    id("io.papermc.paperweight.userdev") version "1.3.4"
     id("xyz.jpenilla.run-paper") version "1.0.6" // Adds runServer and runMojangMappedServer tasks for testing
 }
 
@@ -33,7 +33,7 @@ dependencies {
 }
 
 group = "me.mfk1016"
-version = "1.10.9"
+version = "1.10.10"
 description = "StadtServer"
 
 java {
@@ -74,6 +74,6 @@ tasks {
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
         minecraftVersion("1.18.1")
-        paperBuild(167)
+        paperBuild(177)
     }
 }

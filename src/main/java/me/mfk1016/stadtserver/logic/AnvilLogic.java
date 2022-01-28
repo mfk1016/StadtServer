@@ -5,13 +5,10 @@ import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.SmithingEnchantment;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
-import me.mfk1016.stadtserver.nms.v1_18_1.AnvilFix;
 import me.mfk1016.stadtserver.util.Pair;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.GrindstoneInventory;
@@ -19,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +29,6 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 public class AnvilLogic {
 
     private static final List<Pair<Enchantment, Function<Boolean, Integer>>> vanillaCosts = new ArrayList<>();
-    private static final org.bukkit.util.Vector TO_BLOCK_CENTER = new Vector(0.5, 0.1, 0.5);
 
     static {
         vanillaCosts.add(new Pair<>(Enchantment.ARROW_DAMAGE, (isBook) -> (1)));
@@ -212,17 +207,8 @@ public class AnvilLogic {
             int durabilityPerItem = (int) Math.ceil((double) result.getType().getMaxDurability() / 4D);
             int neededItems = (int) Math.ceil((double) resultDamage.getDamage() / (double) durabilityPerItem);
             int usedItems = Math.min(neededItems, sacrifice.getAmount());
-            if (usedItems < sacrifice.getAmount() && !anvil.getViewers().isEmpty()) {
-                if (!AnvilFix.fixAnvilSacrificeUsage(anvil, usedItems)) {
-                    ItemStack toDrop = new ItemStack(sacrifice.getType(), sacrifice.getAmount() - usedItems);
-                    Location targetLocation = Objects.requireNonNull(anvil.getLocation()).add(0, 1, 0).add(TO_BLOCK_CENTER);
-                    Item dropped = anvil.getViewers().get(0).getWorld().dropItem(targetLocation, toDrop);
-                    dropped.setVelocity(new Vector());
-                    sacrifice.setAmount(usedItems);
-                    anvil.setItem(1, sacrifice);
-                }
-            }
-
+            if (!anvil.getViewers().isEmpty())
+                anvil.setRepairCostAmount(usedItems);
             toSub = usedItems * durabilityPerItem;
             repairCost += usedItems;
         }
@@ -250,7 +236,7 @@ public class AnvilLogic {
         Repairable meta = (Repairable) Objects.requireNonNull(item.getItemMeta());
         int penalty = meta.getRepairCost() + 1;
         meta.setRepairCost((penalty * 2) - 1);
-        item.setItemMeta((ItemMeta) meta);
+        item.setItemMeta(meta);
     }
 
     public static int sacrificeAnvilCost(Enchantment enchantment, int level, ItemStack sacrifice) {
