@@ -6,9 +6,7 @@ import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.World;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LootChestOrigin extends EnchantmentOrigin {
 
