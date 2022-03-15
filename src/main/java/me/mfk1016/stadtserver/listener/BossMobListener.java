@@ -158,9 +158,9 @@ public class BossMobListener implements Listener {
                 drop.setAmount(drop.getAmount() * (bossLevel + 1));
         }
         event.getDrops().addAll(BossMobRareLootOrigin.matchOrigins(event.getEntity()));
-        BossMobBookOrigin.matchOrigins(event.getEntity(), event.getEntity().getWorld()).forEach((origin, level) -> {
+        BossMobBookOrigin.matchOrigins(event.getEntity(), event.getEntity().getWorld()).forEach((elem) -> {
             ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
-            EnchantmentManager.enchantItem(book, origin.getEnchantment(), level);
+            EnchantmentManager.enchantItem(book, elem._1.getEnchantment(), elem._2);
             event.getDrops().add(book);
         });
 

@@ -3,11 +3,14 @@ package me.mfk1016.stadtserver.origin.enchantment;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.util.Keys;
+import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BossMobBookOrigin extends EnchantmentOrigin {
@@ -23,8 +26,8 @@ public class BossMobBookOrigin extends EnchantmentOrigin {
         this.environment = environment;
     }
 
-    public static Map<BossMobBookOrigin, Integer> matchOrigins(Entity entity, World world) {
-        Map<BossMobBookOrigin, Integer> result = new HashMap<>();
+    public static List<Pair<BossMobBookOrigin, Integer>> matchOrigins(Entity entity, World world) {
+        List<Pair<BossMobBookOrigin, Integer>> result = new ArrayList<>();
         int level = entity.getMetadata(Keys.IS_BOSS).get(0).asInt();
         for (EnchantmentOrigin origin : EnchantmentManager.ORIGINS) {
             if (origin instanceof BossMobBookOrigin obj) {
@@ -42,7 +45,7 @@ public class BossMobBookOrigin extends EnchantmentOrigin {
                 }
 
                 if (enchlevel > 0)
-                    result.put(obj, enchlevel);
+                    result.add(new Pair<>(obj, enchlevel));
             }
         }
         return result;

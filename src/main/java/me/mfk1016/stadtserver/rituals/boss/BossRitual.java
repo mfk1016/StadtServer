@@ -19,6 +19,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -70,6 +72,8 @@ public abstract class BossRitual extends BasicRitual {
             AttributeInstance maxHealth = Objects.requireNonNull(boss.getAttribute(Attribute.GENERIC_MAX_HEALTH));
             bossMaxHealth = maxHealth.getBaseValue();
             bossBar.setProgress(1D);
+            boss.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 12000, 1));
+            boss.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 12000, 1));
             state = RitualState.RUNNING;
         } else {
             bossBar.setProgress(boss.getHealth() / bossMaxHealth);

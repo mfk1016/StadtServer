@@ -6,7 +6,7 @@
 
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "1.3.4"
+    id("io.papermc.paperweight.userdev") version "1.3.5"
     id("xyz.jpenilla.run-paper") version "1.0.6" // Adds runServer and runMojangMappedServer tasks for testing
 }
 
@@ -27,13 +27,13 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle("1.18.1-R0.1-SNAPSHOT")
-    implementation("com.comphenix.protocol:ProtocolLib:4.8.0-SNAPSHOT")
-    implementation("com.google.code.gson:gson:2.8.9")
+    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+    implementation("com.comphenix.protocol:ProtocolLib:4.8.0")
+    implementation("com.google.code.gson:gson:2.9.0")
 }
 
 group = "me.mfk1016"
-version = "1.10.10"
+version = "1.11.0"
 description = "StadtServer"
 
 java {
@@ -73,7 +73,7 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.18.1")
-        paperBuild(177)
+        minecraftVersion("1.18.2")
+        paperBuild(252)
     }
 }

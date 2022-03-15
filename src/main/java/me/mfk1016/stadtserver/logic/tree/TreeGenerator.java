@@ -174,8 +174,8 @@ public abstract class TreeGenerator {
             for (int y = 0; y <= radius; y++)
                 for (int z = 0; z <= radius; z++) {
                     double currDist = Math.sqrt(x * x + y * y + z * z);
-                    if (currDist <= radius) {
-                        int random = currDist == radius ? 2 : 1;
+                    if (currDist < (double) radius) {
+                        int random = currDist == radius ? 3 : 1;
                         if (StadtServer.RANDOM.nextInt(random) == 0)
                             setLeaves(center.getRelative(x, y, z));
                         if (StadtServer.RANDOM.nextInt(random) == 0)

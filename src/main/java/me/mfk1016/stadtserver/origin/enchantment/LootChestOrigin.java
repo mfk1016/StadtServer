@@ -2,9 +2,12 @@ package me.mfk1016.stadtserver.origin.enchantment;
 
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
+import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LootChestOrigin extends EnchantmentOrigin {
@@ -16,14 +19,14 @@ public class LootChestOrigin extends EnchantmentOrigin {
         environment = env;
     }
 
-    public static Map<LootChestOrigin, Integer> matchOrigins(World world) {
-        Map<LootChestOrigin, Integer> result = new HashMap<>();
+    public static List<Pair<LootChestOrigin, Integer>> matchOrigins(World world) {
+        List<Pair<LootChestOrigin, Integer>> result = new ArrayList<>();
         for (EnchantmentOrigin elem : EnchantmentManager.ORIGINS) {
             if (elem instanceof LootChestOrigin origin) {
                 if (origin.canUseOrigin(world)) {
                     int level = origin.getRandomLevel();
                     if (level > 0)
-                        result.put(origin, level);
+                        result.add(new Pair<>(origin, level));
                 }
             }
         }

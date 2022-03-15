@@ -58,8 +58,8 @@ public class EnchantmentListener implements Listener {
         if (!(catchedItem.getItemMeta() instanceof EnchantmentStorageMeta))
             return;
 
-        FishBookOrigin.matchOrigins().forEach((origin, level) ->
-                EnchantmentManager.enchantItem(catchedItem, origin.getEnchantment(), level));
+        FishBookOrigin.matchOrigins().forEach((elem) ->
+                EnchantmentManager.enchantItem(catchedItem, elem._1.getEnchantment(), elem._2));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -100,14 +100,14 @@ public class EnchantmentListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPiglinBarter(PiglinBarterEvent event) {
-        List<ItemStack> results = new ArrayList<>();
-        PiglinTradeOrigin.matchOrigins().forEach((origin, level) -> {
-            ItemStack toAdd = new ItemStack(Material.ENCHANTED_BOOK);
-            EnchantmentManager.enchantItem(toAdd, origin.getEnchantment(), level);
-            results.add(toAdd);
-        });
-        if (!results.isEmpty())
-            event.getOutcome().add(results.get(StadtServer.RANDOM.nextInt(results.size())));
+        Pair<PiglinTradeOrigin, Integer> matched = PiglinTradeOrigin.matchOrigins();
+        if (matched == null)
+            return;
+
+        ItemStack result = new ItemStack(Material.ENCHANTED_BOOK);
+        EnchantmentManager.enchantItem(result, matched._1.getEnchantment(), matched._2);
+        event.getOutcome().clear();
+        event.getOutcome().add(result);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -119,9 +119,9 @@ public class EnchantmentListener implements Listener {
             SmithingEnchantment.replaceMending(item, 4, 4);
         }
 
-        LootChestOrigin.matchOrigins(event.getWorld()).forEach((origin, level) -> {
+        LootChestOrigin.matchOrigins(event.getWorld()).forEach((elem) -> {
             ItemStack toAdd = new ItemStack(Material.ENCHANTED_BOOK);
-            EnchantmentManager.enchantItem(toAdd, origin.getEnchantment(), level);
+            EnchantmentManager.enchantItem(toAdd, elem._1.getEnchantment(), elem._2);
             event.getLoot().add(toAdd);
         });
         switch (event.getWorld().getEnvironment()) {

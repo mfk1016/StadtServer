@@ -1,10 +1,12 @@
 package me.mfk1016.stadtserver.origin.enchantment;
 
+import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
+import me.mfk1016.stadtserver.util.Pair;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PiglinTradeOrigin extends EnchantmentOrigin {
 
@@ -12,16 +14,19 @@ public class PiglinTradeOrigin extends EnchantmentOrigin {
         super(enchantment, chance, levelChances);
     }
 
-    public static Map<PiglinTradeOrigin, Integer> matchOrigins() {
-        Map<PiglinTradeOrigin, Integer> result = new HashMap<>();
+    public static Pair<PiglinTradeOrigin, Integer> matchOrigins() {
+        List<Pair<PiglinTradeOrigin, Integer>> results = new ArrayList<>();
         for (EnchantmentOrigin origin : EnchantmentManager.ORIGINS) {
             if (origin instanceof PiglinTradeOrigin obj) {
                 int level = obj.getRandomLevel();
                 if (level > 0)
-                    result.put(obj, level);
+                    results.add(new Pair<>(obj, level));
             }
         }
-        return result;
+        if (results.isEmpty())
+            return null;
+        else
+            return results.get(StadtServer.RANDOM.nextInt(results.size()));
     }
 
 }

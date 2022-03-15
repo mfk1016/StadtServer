@@ -7,6 +7,7 @@ import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.loot.Lootable;
 
 public class WrenchActionInventory extends WrenchAction {
 
@@ -18,6 +19,10 @@ public class WrenchActionInventory extends WrenchAction {
 
     @Override
     protected Result wrenchBlock(Player player, Block target) {
+        if (target.getState() instanceof Lootable lootable) {
+            if (lootable.hasLootTable())
+                return Result.FALSE;
+        }
         if (!(target.getState() instanceof Container container))
             return Result.FALSE;
         Inventory inv = container.getInventory();
