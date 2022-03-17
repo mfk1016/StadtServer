@@ -150,7 +150,7 @@ public class AnvilLogic {
             int sacEnchLevel = enchEntrySac.getValue();
 
             // Ignore conflicting enchantments and add one level for every conflicting
-            if (!sacEnch.canEnchantItem(result)) {
+            if (!sacEnch.canEnchantItem(result) && (result.getType() != Material.ENCHANTED_BOOK)) {
                 continue;
             }
             boolean conflicts = false;
