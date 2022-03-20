@@ -5,6 +5,7 @@ import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.SmithingEnchantment;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
+import me.mfk1016.stadtserver.util.Keys;
 import me.mfk1016.stadtserver.util.Pair;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,6 +207,9 @@ public class AnvilLogic {
         } else {
             // Calculate the amount of items needed for repairing
             int durabilityPerItem = (int) Math.ceil((double) result.getType().getMaxDurability() / 4D);
+            // double repair for netherite scrap
+            if (sacrifice.getType() == Material.NETHERITE_SCRAP)
+                durabilityPerItem *= 2;
             int neededItems = (int) Math.ceil((double) resultDamage.getDamage() / (double) durabilityPerItem);
             int usedItems = Math.min(neededItems, sacrifice.getAmount());
             if (!anvil.getViewers().isEmpty())
@@ -215,7 +220,15 @@ public class AnvilLogic {
 
         anvil.setRepairCost(repairCost);
         resultDamage.setDamage(Math.max(0, resultDamage.getDamage() - toSub));
+
+        // Remove "Repaired by Ritual" tag
+        PersistentDataContainer pdc = resultDamage.getPersistentDataContainer();
+        if (pdc.has(Keys.IS_RITUAL_REPAIRED)) {
+            pdc.remove(Keys.IS_RITUAL_REPAIRED);
+        }
+
         result.setItemMeta(resultDamage);
+        EnchantmentManager.updateLore(result);
         event.setResult(result);
     }
 

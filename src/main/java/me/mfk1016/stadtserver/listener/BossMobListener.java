@@ -169,6 +169,20 @@ public class BossMobListener implements Listener {
             event.getDrops().add(AncientTome.randomAncientTome());
     }
 
+    private static final EntityType[] spawnerWeights = {
+            EntityType.ZOMBIE, EntityType.ZOMBIE,
+            EntityType.SKELETON, EntityType.SKELETON,
+            EntityType.SPIDER, EntityType.SPIDER,
+            EntityType.CAVE_SPIDER, EntityType.CAVE_SPIDER,
+            EntityType.BLAZE, EntityType.BLAZE,
+            EntityType.SILVERFISH, EntityType.SILVERFISH,
+            EntityType.CREEPER,
+            EntityType.SLIME,
+            EntityType.PILLAGER,
+            EntityType.WITCH,
+            EntityType.SHEEP, EntityType.SHEEP
+    };
+
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSpawnerPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
@@ -179,20 +193,8 @@ public class BossMobListener implements Listener {
             return;
 
         CreatureSpawner spawnerState = (CreatureSpawner) spawner.getState();
-        EntityType targetType = switch (StadtServer.RANDOM.nextInt(10)) {
-            case 0 -> EntityType.ZOMBIE;
-            case 1 -> EntityType.SKELETON;
-            case 2 -> EntityType.SPIDER;
-            case 3 -> EntityType.CAVE_SPIDER;
-            case 4 -> EntityType.BLAZE;
-            case 5 -> EntityType.CREEPER;
-            case 6 -> EntityType.SILVERFISH;
-            case 7 -> EntityType.SLIME;
-            case 8 -> EntityType.PILLAGER;
-            default -> EntityType.SHEEP;
-        };
+        EntityType targetType = spawnerWeights[StadtServer.RANDOM.nextInt(spawnerWeights.length)];
         spawnerState.setSpawnedType(targetType);
         spawnerState.update(true);
     }
-
 }

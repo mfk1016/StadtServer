@@ -39,8 +39,12 @@ public class Keys {
     private static final String IS_WRENCHED_s = "is_wrenched";
     // Set if an enchanted book is an ancient tome
     private static final String IS_ANCIENT_TOME_s = "is_ancient_tome";
+    // Set if a netherite item is repaired through a ritual
+    private static final String IS_RITUAL_REPAIRED_s = "is_ritual_repaired";
+
     public static NamespacedKey IS_WRENCHED;
     public static NamespacedKey IS_ANCIENT_TOME;
+    public static NamespacedKey IS_RITUAL_REPAIRED;
 
 
     public static void initialize() {
@@ -48,5 +52,6 @@ public class Keys {
         StadtServer.getInstance().getConfig().addDefault(CONFIG_MAX_LOGS, 1600);
         IS_WRENCHED = new NamespacedKey(StadtServer.getInstance(), IS_WRENCHED_s);
         IS_ANCIENT_TOME = new NamespacedKey(StadtServer.getInstance(), IS_ANCIENT_TOME_s);
+        IS_RITUAL_REPAIRED = new NamespacedKey(StadtServer.getInstance(), IS_RITUAL_REPAIRED_s);
     }
 }

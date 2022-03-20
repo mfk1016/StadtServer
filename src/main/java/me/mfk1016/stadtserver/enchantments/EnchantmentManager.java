@@ -2,16 +2,21 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
+import me.mfk1016.stadtserver.util.Keys;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.PluginManager;
 
 import java.lang.reflect.Field;
 import java.util.*;
+
+import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 public class EnchantmentManager {
 
@@ -146,7 +151,7 @@ public class EnchantmentManager {
         updateLore(item);
     }
 
-    private static void updateLore(ItemStack item) {
+    public static void updateLore(ItemStack item) {
         Map<Enchantment, Integer> enchantments = getItemEnchantments(item);
         ItemMeta meta = item.getItemMeta();
         List<Component> newLore = new ArrayList<>();
@@ -155,6 +160,12 @@ public class EnchantmentManager {
                 newLore.add(customEnchantment.displayName(entry.getValue()));
             }
         }
+
+        // Repaired by Ritual Tag
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        if (pdc.has(Keys.IS_RITUAL_REPAIRED))
+            newLore.add(Component.text("Repaired by Ritual").color(NamedTextColor.LIGHT_PURPLE));
+
         meta.lore(newLore);
         item.setItemMeta(meta);
     }

@@ -3,6 +3,7 @@ package me.mfk1016.stadtserver.rituals;
 import me.mfk1016.stadtserver.rituals.boss.EvokerBossRitual;
 import me.mfk1016.stadtserver.rituals.boss.VindicatorPillagerBossRitual;
 import me.mfk1016.stadtserver.rituals.boss.WitchBossRitual;
+import me.mfk1016.stadtserver.rituals.boss.WitherSkeletonBossRitual;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -27,6 +28,8 @@ public class RitualManager {
                 ritual = new VindicatorPillagerBossRitual(focus, EntityType.PILLAGER);
             } else if (sacrifice.getType() == EntityType.VILLAGER) {
                 ritual = new EvokerBossRitual(focus);
+            } else if (sacrifice.getType() == EntityType.CHICKEN) {
+                ritual = new WitherSkeletonBossRitual(focus);
             }
         }
 
