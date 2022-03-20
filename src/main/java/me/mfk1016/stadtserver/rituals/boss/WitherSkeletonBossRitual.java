@@ -124,5 +124,6 @@ public class WitherSkeletonBossRitual extends BossRitual {
             EnchantmentManager.updateLore(item);
             frame.setItem(item);
         }
+        focusBlock.getWorld().playSound(focusBlock.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 4, 1);
     }
 }
