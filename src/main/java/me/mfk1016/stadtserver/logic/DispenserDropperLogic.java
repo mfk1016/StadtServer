@@ -6,6 +6,7 @@ import me.mfk1016.stadtserver.util.CropData;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.block.Dropper;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Dispenser;
@@ -29,17 +30,27 @@ public class DispenserDropperLogic {
 
         Block dropperBlock = dropperState.getBlock();
         Directional dropperData = (Directional) dropperBlock.getBlockData();
-        Location targetPos = dropperBlock.getRelative(dropperData.getFacing()).getLocation().clone().add(TO_BLOCK_CENTER);
-        Item result = dropperBlock.getWorld().dropItem(targetPos, item);
-        BukkitRunnable runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                result.setVelocity(new Vector());
-                dropperState.update();
-                //dropperState.drop();
-            }
-        };
-        runnable.runTaskLater(StadtServer.getInstance(), 1L);
+        Block target = dropperBlock.getRelative(dropperData.getFacing());
+        if (target.getState() instanceof Container) {
+            BukkitRunnable runnable = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    dropperState.drop();
+                }
+            };
+            runnable.runTaskLater(StadtServer.getInstance(), 1L);
+        } else {
+            Location targetPos = target.getLocation().clone().add(TO_BLOCK_CENTER);
+            Item result = dropperBlock.getWorld().dropItem(targetPos, item);
+            BukkitRunnable runnable = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    result.setVelocity(new Vector());
+                    dropperState.update();
+                }
+            };
+            runnable.runTaskLater(StadtServer.getInstance(), 1L);
+        }
     }
 
     public static boolean tryPlacerAction(Block dispenserBlock, ItemStack item) {

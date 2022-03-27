@@ -1,5 +1,6 @@
 package me.mfk1016.stadtserver.logic.wrench;
 
+import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionBeeCheck;
 import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionInventory;
 import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionNoteBlock;
 import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionRedstoneLamp;
@@ -19,6 +20,7 @@ public abstract class WrenchAction {
             case NOTE_BLOCK -> new WrenchActionNoteBlock();
             case CHEST -> new WrenchActionInventory("Chest");
             case BARREL -> new WrenchActionInventory("Barrel");
+            case BEE_NEST, BEEHIVE -> new WrenchActionBeeCheck();
             default -> new WrenchActionNothing();
         };
     }
