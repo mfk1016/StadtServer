@@ -130,7 +130,7 @@ public class AnvilLogic {
         anvil.setRepairCost(anvil.getRepairCost() + baseCost);
         ItemStack result = Objects.requireNonNull(event.getResult());
         if (!isAncientTome && (isEnchanted || isRepaired))
-            AnvilLogic.increaseAnvilUses(result);
+            AnvilLogic.increaseAnvilUses(result, sacrifice);
         event.setResult(result);
 
         if (isRepaired && !isEnchanted)
@@ -167,6 +167,18 @@ public class AnvilLogic {
                 continue;
             }
 
+            // Ancient tome: only valid if the item is enchanted with the same enchantment + level
+            if (isAncientTome) {
+                int tarEnchLevel = getItemEnchantments(result).getOrDefault(sacEnch, 0);
+                if (tarEnchLevel == sacEnch.getMaxLevel()) {
+                    disenchantItem(result, sacEnch);
+                    enchantItem(result, sacEnch, tarEnchLevel + 1);
+                    enchantCost += sacrificeAnvilCost(sacEnch, tarEnchLevel + 1, sacrifice);
+                    hasResult = true;
+                }
+                continue;
+            }
+
             // Add new enchantments
             if (!isEnchantedWith(result, sacEnch)) {
                 enchantItem(result, sacEnch, sacEnchLevel);
@@ -178,7 +190,7 @@ public class AnvilLogic {
             // Merge existing enchantments
             int tarEnchLevel = getItemEnchantments(result).getOrDefault(sacEnch, 0);
             int resEnchLevel = Math.max(tarEnchLevel, sacEnchLevel);
-            if (tarEnchLevel == sacEnchLevel && (tarEnchLevel < sacEnch.getMaxLevel() || isAncientTome))
+            if (tarEnchLevel == sacEnchLevel && tarEnchLevel < sacEnch.getMaxLevel())
                 resEnchLevel += 1;
             disenchantItem(result, sacEnch);
             enchantItem(result, sacEnch, resEnchLevel);
@@ -245,11 +257,12 @@ public class AnvilLogic {
         event.setResult(result);
     }
 
-    public static void increaseAnvilUses(ItemStack item) {
-        Repairable meta = (Repairable) Objects.requireNonNull(item.getItemMeta());
-        int penalty = meta.getRepairCost() + 1;
-        meta.setRepairCost((penalty * 2) - 1);
-        item.setItemMeta(meta);
+    public static void increaseAnvilUses(ItemStack result, ItemStack sacrifice) {
+        Repairable metaResult = (Repairable) Objects.requireNonNull(result.getItemMeta());
+        Repairable metaSacrifice = (Repairable) Objects.requireNonNull(sacrifice.getItemMeta());
+        int penalty = Math.max(metaResult.getRepairCost(), metaSacrifice.getRepairCost()) + 1;
+        metaResult.setRepairCost((penalty * 2) - 1);
+        result.setItemMeta(metaResult);
     }
 
     public static int sacrificeAnvilCost(Enchantment enchantment, int level, ItemStack sacrifice) {
