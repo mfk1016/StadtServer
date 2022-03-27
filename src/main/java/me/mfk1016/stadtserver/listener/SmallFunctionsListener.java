@@ -64,6 +64,8 @@ public class SmallFunctionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onItemEnterChute(InventoryMoveItemEvent event) {
+        if (!(event.getSource().getHolder() instanceof Hopper))
+            return;
         if (!(event.getDestination().getHolder() instanceof Dropper dropperState))
             return;
 
