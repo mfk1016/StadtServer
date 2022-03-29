@@ -6,6 +6,7 @@ import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.*;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
 import me.mfk1016.stadtserver.rituals.RitualManager;
+import me.mfk1016.stadtserver.spells.SpellManager;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -37,6 +38,8 @@ public class StadtServer extends JavaPlugin {
 
         LOGGER.info(getDescription().getName() + ": register enchantments...");
         EnchantmentManager.onPluginEnable();
+        LOGGER.info(getDescription().getName() + ": register spells...");
+        SpellManager.onPluginEnable();
 
         LOGGER.info(getDescription().getName() + ": enable listeners...");
         SmallFunctionsListener smallFunctionsListener = new SmallFunctionsListener();
@@ -66,6 +69,7 @@ public class StadtServer extends JavaPlugin {
         ProtocolLibrary.getProtocolManager().removePacketListener(signPacketListener);
         signPacketListener = null;
         EnchantmentManager.onPluginDisable();
+        SpellManager.onPluginDisable();
         RecipeManager.unregisterBrewingRecipes();
         saveConfig();
         LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " stopped.");

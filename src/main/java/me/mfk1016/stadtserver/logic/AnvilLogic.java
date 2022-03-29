@@ -5,6 +5,7 @@ import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.SmithingEnchantment;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
+import me.mfk1016.stadtserver.spells.CustomSpell;
 import me.mfk1016.stadtserver.util.Keys;
 import me.mfk1016.stadtserver.util.Pair;
 import net.kyori.adventure.text.Component;
@@ -150,6 +151,10 @@ public class AnvilLogic {
         for (var enchEntrySac : enchMapSac.entrySet()) {
             Enchantment sacEnch = enchEntrySac.getKey();
             int sacEnchLevel = enchEntrySac.getValue();
+
+            // Ignore spells
+            if (sacEnch instanceof CustomSpell)
+                continue;
 
             // Ignore conflicting enchantments and add one level for every conflicting
             if (!sacEnch.canEnchantItem(result) && (result.getType() != Material.ENCHANTED_BOOK)) {

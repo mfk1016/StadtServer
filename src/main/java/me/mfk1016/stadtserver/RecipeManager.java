@@ -94,17 +94,21 @@ public class RecipeManager {
 
     private static List<SmithingRecipe> getWrenchRecipes() {
         List<SmithingRecipe> wrenchRecipes = new ArrayList<>();
-        RecipeChoice additive = new RecipeChoice.ExactChoice(new ItemStack(Material.COPPER_INGOT));
+        RecipeChoice wrenchAdditive = new RecipeChoice.ExactChoice(new ItemStack(Material.COPPER_INGOT));
+        RecipeChoice trowelAdditive = new RecipeChoice.ExactChoice(new ItemStack(Material.GOLD_INGOT));
         for (Material shovelMaterial : Arrays.asList(Material.WOODEN_SHOVEL,
                 Material.STONE_SHOVEL,
                 Material.IRON_SHOVEL,
                 Material.GOLDEN_SHOVEL,
                 Material.DIAMOND_SHOVEL,
                 Material.NETHERITE_SHOVEL)) {
-            NamespacedKey recipeKey = new NamespacedKey(StadtServer.getInstance(), "wrenchRecipe_" + shovelMaterial.name());
             ItemStack shovel = new ItemStack(shovelMaterial);
             RecipeChoice base = new RecipeChoice.MaterialChoice(shovelMaterial);
-            wrenchRecipes.add(new SmithingRecipe(recipeKey, shovel, base, additive));
+
+            NamespacedKey wrenchRecipeKey = new NamespacedKey(StadtServer.getInstance(), "wrenchRecipe_" + shovelMaterial.name());
+            wrenchRecipes.add(new SmithingRecipe(wrenchRecipeKey, shovel, base, wrenchAdditive));
+            NamespacedKey trowelRecipeKey = new NamespacedKey(StadtServer.getInstance(), "trowelRecipe_" + shovelMaterial.name());
+            wrenchRecipes.add(new SmithingRecipe(trowelRecipeKey, shovel, base, trowelAdditive));
         }
         return wrenchRecipes;
     }

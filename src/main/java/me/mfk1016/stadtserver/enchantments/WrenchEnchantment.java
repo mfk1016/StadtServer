@@ -61,7 +61,7 @@ public class WrenchEnchantment extends CustomEnchantment {
 
     @Override
     public boolean conflictsWith(@NotNull Enchantment other) {
-        return false;
+        return other.equals(EnchantmentManager.TROWEL);
     }
 
     @Override
@@ -102,6 +102,10 @@ public class WrenchEnchantment extends CustomEnchantment {
         ItemStack result = event.getResult();
         if (base == null || additive == null || additive.getType() != Material.COPPER_INGOT || result == null)
             return;
+        if (EnchantmentManager.isEnchantedWith(base, EnchantmentManager.TROWEL)) {
+            event.setResult(null);
+            return;
+        }
         if (!EnchantmentManager.isEnchantedWith(base, this)) {
             EnchantmentManager.enchantItem(result, this, 1);
             event.setResult(result);

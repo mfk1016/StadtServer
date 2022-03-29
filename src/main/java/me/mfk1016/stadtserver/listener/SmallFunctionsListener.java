@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
+import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.DispenserDropperLogic;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import org.bukkit.GameMode;
@@ -43,6 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
     - Editable Signs
 
     - Sticky Piston + Lightning Rod = Block breaker
+    - Sticky Piston + Grindstone = Crusher
 
     - Ladder placement helper
  */
@@ -129,17 +131,43 @@ public class SmallFunctionsListener implements Listener {
         Piston piston = (Piston) event.getBlock().getBlockData();
         if (piston.isExtended())
             return;
+        Block pistonTool = event.getBlock().getRelative(piston.getFacing());
 
-        Block lightningRod = event.getBlock().getRelative(piston.getFacing());
-        if (lightningRod.getType() != Material.LIGHTNING_ROD)
-            return;
-        Directional rodFace = (Directional) lightningRod.getBlockData();
-        if (rodFace.getFacing() != piston.getFacing())
-            return;
+        if (pistonTool.getType() == Material.LIGHTNING_ROD) {
+            Directional rodFace = (Directional) pistonTool.getBlockData();
+            if (rodFace.getFacing() != piston.getFacing())
+                return;
 
-        Block toBreak = lightningRod.getRelative(piston.getFacing());
-        if (toBreak.getPistonMoveReaction() == PistonMoveReaction.MOVE)
-            toBreak.breakNaturally(fakePick);
+            Block toBreak = pistonTool.getRelative(piston.getFacing());
+            if (toBreak.getPistonMoveReaction() == PistonMoveReaction.MOVE)
+                toBreak.breakNaturally(fakePick);
+
+        } else if (pistonTool.getType() == Material.GRINDSTONE) {
+            Directional grindstoneFace = (Directional) pistonTool.getBlockData();
+            if (grindstoneFace.getFacing() != piston.getFacing())
+                return;
+
+            Block toBreak = pistonTool.getRelative(piston.getFacing());
+            if (toBreak.getPistonMoveReaction() == PistonMoveReaction.MOVE)
+                grindBlock(toBreak);
+        }
+    }
+
+    private static void grindBlock(Block toBreak) {
+        ItemStack drop = switch (toBreak.getType()) {
+            case COBBLESTONE -> new ItemStack(Material.GRAVEL);
+            case GRAVEL, SANDSTONE, CHISELED_SANDSTONE, CUT_SANDSTONE -> new ItemStack(Material.SAND);
+            case RED_SANDSTONE, CHISELED_RED_SANDSTONE, CUT_RED_SANDSTONE -> new ItemStack(Material.RED_SAND);
+            case ROOTED_DIRT -> new ItemStack(Material.DIRT);
+            case AMETHYST_BLOCK -> new ItemStack(Material.AMETHYST_SHARD, 3);
+            default -> null;
+        };
+        if (drop != null) {
+            toBreak.setType(Material.AIR);
+            if (StadtServer.RANDOM.nextInt(5) != 0)
+                toBreak.getWorld().dropItemNaturally(toBreak.getLocation(), drop);
+            toBreak.getWorld().playSound(toBreak.getLocation(), Sound.BLOCK_GRINDSTONE_USE, 1f, 1f);
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

@@ -22,7 +22,6 @@ public abstract class CustomEnchantment extends Enchantment implements Listener 
 
     private final String name;
 
-
     public CustomEnchantment(String name, String namespace) {
         super(new NamespacedKey(StadtServer.getInstance(), namespace));
         this.name = name;

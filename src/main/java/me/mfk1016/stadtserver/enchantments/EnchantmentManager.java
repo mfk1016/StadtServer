@@ -2,6 +2,7 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
+import me.mfk1016.stadtserver.spells.CustomSpell;
 import me.mfk1016.stadtserver.util.Keys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,8 +16,6 @@ import org.bukkit.plugin.PluginManager;
 
 import java.lang.reflect.Field;
 import java.util.*;
-
-import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 public class EnchantmentManager {
 
@@ -32,6 +31,7 @@ public class EnchantmentManager {
     public static EagleEyeEnchantment EAGLE_EYE;
     public static FarmingEnchantment FARMING;
     public static SacrificialEnchantment SACRIFICIAL;
+    public static TrowelEnchantment TROWEL;
 
     /* --- INIT + STOP --- */
 
@@ -44,6 +44,7 @@ public class EnchantmentManager {
         EAGLE_EYE = new EagleEyeEnchantment();
         FARMING = new FarmingEnchantment();
         SACRIFICIAL = new SacrificialEnchantment();
+        TROWEL = new TrowelEnchantment();
 
         // Add them here
         ALL_ENCHANTMENTS.add(CHOPPING);
@@ -52,6 +53,7 @@ public class EnchantmentManager {
         ALL_ENCHANTMENTS.add(EAGLE_EYE);
         ALL_ENCHANTMENTS.add(FARMING);
         ALL_ENCHANTMENTS.add(SACRIFICIAL);
+        ALL_ENCHANTMENTS.add(TROWEL);
 
         // Registering
         registerEnchantments();
@@ -155,9 +157,14 @@ public class EnchantmentManager {
         Map<Enchantment, Integer> enchantments = getItemEnchantments(item);
         ItemMeta meta = item.getItemMeta();
         List<Component> newLore = new ArrayList<>();
+        List<Component> spellLore = new ArrayList<>();
+
         for (var entry : enchantments.entrySet()) {
             if (entry.getKey() instanceof CustomEnchantment customEnchantment) {
-                newLore.add(customEnchantment.displayName(entry.getValue()));
+                if (!(customEnchantment instanceof CustomSpell))
+                    newLore.add(customEnchantment.displayName(entry.getValue()));
+                else
+                    spellLore.add(customEnchantment.displayName(entry.getValue()));
             }
         }
 
@@ -166,6 +173,7 @@ public class EnchantmentManager {
         if (pdc.has(Keys.IS_RITUAL_REPAIRED))
             newLore.add(Component.text("Repaired by Ritual").color(NamedTextColor.LIGHT_PURPLE));
 
+        newLore.addAll(spellLore);
         meta.lore(newLore);
         item.setItemMeta(meta);
     }
