@@ -2,15 +2,11 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
-import me.mfk1016.stadtserver.logic.wrench.WrenchAction;
-import me.mfk1016.stadtserver.logic.wrench.WrenchActionStateChange;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
-import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.block.TileState;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
@@ -25,10 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.Repairable;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -105,7 +97,7 @@ public class TrowelEnchantment extends CustomEnchantment {
         inventory.setItem(slot, toPlace);
         target.getWorld().playSound(target.getLocation(), Sound.BLOCK_GRASS_PLACE, 1f, 1f);
         if (player.getGameMode() == GameMode.SURVIVAL)
-           damageTrowel(event.getItem());
+            damageTrowel(event.getItem());
         event.setCancelled(true);
     }
 
@@ -133,9 +125,9 @@ public class TrowelEnchantment extends CustomEnchantment {
         if (!block.isEmpty())
             return false;
         Collection<Entity> entities = block.getWorld().getNearbyEntities(block.getBoundingBox());
-        if(entities.isEmpty()) return true; // no entity in the way
+        if (entities.isEmpty()) return true; // no entity in the way
         for (Entity entity : entities) {
-            if(!(entity instanceof Item)) return false; // a non-item entity is in the way
+            if (!(entity instanceof Item)) return false; // a non-item entity is in the way
         }
         return true; // there are entities in the way, but all of them are items
     }

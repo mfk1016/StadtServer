@@ -2,6 +2,7 @@ package me.mfk1016.stadtserver;
 
 import me.mfk1016.stadtserver.brewing.BrewingRecipe;
 import me.mfk1016.stadtserver.brewing.recipe.*;
+import me.mfk1016.stadtserver.spells.SpellManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -34,6 +35,11 @@ public class RecipeManager {
         for (SmithingRecipe wrenchRecipe : getWrenchRecipes()) {
             Bukkit.addRecipe(wrenchRecipe);
         }
+
+        SpellManager.ALL_SPELLS.forEach((spell) -> {
+            for (Recipe recipe : spell.getRecipes())
+                Bukkit.addRecipe(recipe);
+        });
 
         // Clay block to clay ball
         var clayBlockToBall = new ShapelessRecipe(new NamespacedKey(StadtServer.getInstance(), "clay_block_to_ball"), new ItemStack(Material.CLAY_BALL, 4));

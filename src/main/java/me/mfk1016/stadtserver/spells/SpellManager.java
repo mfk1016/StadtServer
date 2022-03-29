@@ -20,13 +20,21 @@ public class SpellManager {
     // Internal stuff
     private static final Set<CustomSpell> registeredSpells = new HashSet<>();
 
+    // Add all custom spells here
+    public static DarknessSpell DARKNESS;
+    public static SummonSpell SUMMON;
+
     /* --- INIT + STOP --- */
 
     public static void onPluginEnable() {
 
         // Initialize them here
+        DARKNESS = new DarknessSpell();
+        SUMMON = new SummonSpell();
 
         // Add them here
+        ALL_SPELLS.add(DARKNESS);
+        ALL_SPELLS.add(SUMMON);
 
         // Registering
         registerSpells();
@@ -98,13 +106,17 @@ public class SpellManager {
         return EnchantmentManager.getItemEnchantments(item).getOrDefault(spell, 0);
     }
 
-    public static boolean useSpellCharge(ItemStack item, CustomSpell spell) {
-        int charges = EnchantmentManager.getItemEnchantments(item).getOrDefault(spell, 0);
-        if (charges == 0)
-            return false;
-        EnchantmentManager.disenchantItem(item, spell);
-        if (charges > 1)
-            EnchantmentManager.enchantItem(item, spell, charges - 1);
-        return true;
+    public static void useSpellCharge(ItemStack item, CustomSpell spell) {
+        int charges = getSpellCharges(item, spell);
+        switch (charges) {
+            case 0:
+                break;
+            case 1:
+                removeSpell(item, spell);
+                break;
+            default:
+                addSpell(item, spell, charges - 1);
+                break;
+        }
     }
 }

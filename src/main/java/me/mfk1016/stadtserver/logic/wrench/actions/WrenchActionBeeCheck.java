@@ -5,10 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Beehive;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Player;
-
-import java.awt.*;
 
 public class WrenchActionBeeCheck extends WrenchAction {
 

@@ -4,9 +4,13 @@ import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Set;
 
 import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
@@ -20,10 +24,12 @@ public abstract class CustomSpell extends CustomEnchantment {
         super(name, namespace);
     }
 
+    public abstract Level spellLevel();
+
     @Override
     public @NotNull Component displayName(int i) {
-        String content = getName() + " " + i;
-        return undecoratedText(content).color(NamedTextColor.GREEN);
+        String content = i == 1 ? getName() : "" + i + " " + getName();
+        return undecoratedText(content).color(spellLevel().color);
     }
 
     @Override
@@ -31,8 +37,50 @@ public abstract class CustomSpell extends CustomEnchantment {
         return null;
     }
 
+    public abstract List<Recipe> getRecipes();
+
     @Override
     public int getAnvilCost(ItemStack sacrifice, int level) {
         return 0;
+    }
+
+    public abstract int getMaxCharges();
+
+    @Override
+    public int getMaxLevel() {
+        return getMaxCharges();
+    }
+
+    @Override
+    public int getStartLevel() {
+        return 1;
+    }
+
+    @Override
+    public @NotNull EnchantmentTarget getItemTarget() {
+        return EnchantmentTarget.ALL;
+    }
+
+    @Override
+    public boolean conflictsWith(@NotNull Enchantment other) {
+        return false;
+    }
+
+    @Override
+    public boolean isCursed() {
+        return false;
+    }
+
+
+    public enum Level {
+        COMMON(NamedTextColor.GREEN),
+        RARE(NamedTextColor.GOLD),
+        LEGENDARY(NamedTextColor.RED);
+
+        public final NamedTextColor color;
+
+        Level(NamedTextColor c) {
+            color = c;
+        }
     }
 }

@@ -5,6 +5,8 @@ import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.BossMobListener;
 import me.mfk1016.stadtserver.logic.AncientTome;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
+import me.mfk1016.stadtserver.spells.CustomSpell;
+import me.mfk1016.stadtserver.spells.SpellManager;
 import me.mfk1016.stadtserver.util.BossName;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -51,6 +53,10 @@ public class StadtServerCommand implements CommandExecutor {
         } else if (Objects.equals(section, "ancient")) {
             if (sender instanceof Player player) {
                 return onCommandAncientTome(player);
+            }
+        } else if (Objects.equals(section, "spell")) {
+            if (sender instanceof Player player) {
+                return onCommandSpell(player, args);
             }
         }
         return false;
@@ -125,6 +131,38 @@ public class StadtServerCommand implements CommandExecutor {
     private boolean onCommandAncientTome(Player player) {
         player.getWorld().dropItem(player.getLocation(), AncientTome.randomAncientTome());
         player.sendMessage("Ancient tome dropped.");
+        return true;
+    }
+
+    private boolean onCommandSpell(Player player, String[] args) {
+        if (args.length < 2)
+            return false;
+
+        int charges = 1;
+        if (args.length > 2) {
+            try {
+                charges = Integer.parseInt(args[2]);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        String enchStr = args[1].toLowerCase();
+        CustomSpell spell;
+        switch (enchStr) {
+            case "darkness":
+                spell = SpellManager.DARKNESS;
+                break;
+            case "summon":
+                spell = SpellManager.SUMMON;
+                break;
+            default:
+                return false;
+        }
+        charges = Math.min(Math.max(spell.getStartLevel(), charges), spell.getMaxLevel());
+
+        ItemStack target = player.getInventory().getItemInMainHand();
+        SpellManager.addSpell(target, spell, charges);
+        player.sendMessage("Spell '" + enchStr + "' added.");
         return true;
     }
 }
