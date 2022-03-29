@@ -5,6 +5,7 @@ import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.entity.Villager;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,5 +52,9 @@ public class VillagerTradeOrigin extends EnchantmentOrigin {
         int costDeviation = baseCost / 5;
         int deviation = StadtServer.RANDOM.nextInt((costDeviation * 2) + 1) - costDeviation;
         return Math.max(1, Math.min(baseCost + deviation, 64));
+    }
+
+    public boolean canApplyDirectly(ItemStack result) {
+        return enchantment.canEnchantItem(result);
     }
 }

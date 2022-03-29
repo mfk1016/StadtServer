@@ -12,6 +12,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.Contract;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,5 +51,13 @@ public class Functions {
                 // ignore
             }
         }
+    }
+
+    public static MerchantRecipe copyRecipe(MerchantRecipe recipe, ItemStack result) {
+        MerchantRecipe newRecipe = new MerchantRecipe(result, recipe.getUses(), recipe.getMaxUses(),
+                recipe.hasExperienceReward(), recipe.getVillagerExperience(),
+                recipe.getPriceMultiplier());
+        newRecipe.setIngredients(recipe.getIngredients());
+        return newRecipe;
     }
 }

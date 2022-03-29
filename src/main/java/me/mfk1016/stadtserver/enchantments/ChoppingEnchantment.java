@@ -81,10 +81,8 @@ public class ChoppingEnchantment extends CustomEnchantment {
         // 10% chance for Chopping when getting an enchanted book
         result.add(new FishBookOrigin(this, 10, levelChances));
 
-        // Librarian: 3% chance for Chopping at level 5
         // Toolsmith: 7% chance for Chopping at level 5
         int[] baseCosts = {30};
-        result.add(new VillagerTradeOrigin(this, 3, levelChances, Villager.Profession.LIBRARIAN, 5, baseCosts));
         result.add(new VillagerTradeOrigin(this, 7, levelChances, Villager.Profession.TOOLSMITH, 5, baseCosts));
 
         // Boss Pillager/Vindicator: 50% chance for chopping

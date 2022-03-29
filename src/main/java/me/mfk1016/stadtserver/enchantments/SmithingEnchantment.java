@@ -118,22 +118,23 @@ public class SmithingEnchantment extends CustomEnchantment {
     public Set<EnchantmentOrigin> getOrigins() {
         Set<EnchantmentOrigin> result = new HashSet<>();
 
-        // Librarian: 3% at villager level 1+ for Smithing I / II with 2/1 distribution
-        // Tool/Weaponsmith: 7% at villager level 3+ for Smithing II / III / IV with 4/2/1 distribution
-        int[] levelChancesLibrarian = {2, 1, 0, 0, 0};
-        int[] levelChancesSmith = {0, 4, 2, 1, 0};
+        // Librarian: 2% at villager level 1+ for Smithing I / II / III with equal distribution
+        // Tool/Weaponsmith/Armorer: 5% at villager level 3+ for Smithing III / IV with 2/1 distribution
+        int[] levelChancesLibrarian = {1, 1, 1, 0, 0};
+        int[] levelChancesSmith = {0, 0, 2, 1, 0};
         int[] baseCosts = {10, 20, 30, 40, 0};
-        result.add(new VillagerTradeOrigin(this, 7, levelChancesSmith, Villager.Profession.TOOLSMITH, 3, baseCosts));
-        result.add(new VillagerTradeOrigin(this, 7, levelChancesSmith, Villager.Profession.WEAPONSMITH, 3, baseCosts));
-        result.add(new VillagerTradeOrigin(this, 3, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 5, levelChancesSmith, Villager.Profession.TOOLSMITH, 3, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 5, levelChancesSmith, Villager.Profession.WEAPONSMITH, 3, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 5, levelChancesSmith, Villager.Profession.ARMORER, 3, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 2, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
 
-        // Piglin: 3% chance for Smithing III / IV with 2/1 distribution
-        int[] levelChancesPiglin = {0, 0, 2, 1, 0};
+        // Piglin: 3% chance for Smithing III / IV with equal distribution
+        int[] levelChancesPiglin = {0, 0, 1, 1, 0};
         result.add(new PiglinTradeOrigin(this, 3, levelChancesPiglin));
 
-        // Loot chest: 5%/25%/25% chance for Smithing IV in overworld/nether/end
+        // Loot chest: 10%/25%/25% chance for Smithing IV in overworld/nether/end
         int[] levelChancesLoot = {0, 0, 0, 1, 0};
-        result.add(new LootChestOrigin(this, 5, levelChancesLoot, World.Environment.NORMAL));
+        result.add(new LootChestOrigin(this, 10, levelChancesLoot, World.Environment.NORMAL));
         result.add(new LootChestOrigin(this, 25, levelChancesLoot, World.Environment.NETHER));
         result.add(new LootChestOrigin(this, 25, levelChancesLoot, World.Environment.THE_END));
 

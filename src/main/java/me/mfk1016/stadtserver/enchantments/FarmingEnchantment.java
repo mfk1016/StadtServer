@@ -82,13 +82,13 @@ public class FarmingEnchantment extends CustomEnchantment {
         int[] levelChancesFish = {0, 1, 0};
         result.add(new FishBookOrigin(this, 15, levelChancesFish));
 
-        // Librarian: 3% at villager level 1+ for Farming I / II with 3/2 distribution
-        // Farmer: 7% at villager level 3+ for Farming III
+        // Librarian: 2% at villager level 1+ for Farming I / II with 3/2 distribution
+        // Farmer: 7% at villager level 4+ for Farming III
         int[] levelChancesLibrarian = {3, 2, 0};
         int[] levelChancesFarmer = {0, 0, 1};
         int[] baseCosts = {10, 20, 30};
-        result.add(new VillagerTradeOrigin(this, 3, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
-        result.add(new VillagerTradeOrigin(this, 7, levelChancesFarmer, Villager.Profession.FARMER, 3, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 2, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
+        result.add(new VillagerTradeOrigin(this, 4, levelChancesFarmer, Villager.Profession.FARMER, 4, baseCosts));
 
         // Loot chest: 5% chance in the overworld for Farming II / III with 2/1 distribution
         int[] levelChancesLoot = {0, 2, 1};

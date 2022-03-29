@@ -78,10 +78,6 @@ public class SacrificialEnchantment extends CustomEnchantment {
 
         int[] levelChances = {1};
 
-        // Cleric: 3% at villager level 5 for Sacrificial
-        int[] baseCosts = {30};
-        result.add(new VillagerTradeOrigin(this, 3, levelChances, Villager.Profession.CLERIC, 5, baseCosts));
-
         // Piglin: 2% chance for Sacrificial
         result.add(new PiglinTradeOrigin(this, 2, levelChances));
 

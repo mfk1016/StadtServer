@@ -74,12 +74,9 @@ public class EagleEyeEnchantment extends CustomEnchantment {
     public Set<EnchantmentOrigin> getOrigins() {
         Set<EnchantmentOrigin> result = new HashSet<>();
 
-        // Librarian: 3% at villager level 1+ for Eagle Eye I / II with 2/1 distribution
         // Fletcher: 7% at villager level 3+ for Eagle Eye II / III with 2/1 distribution
-        int[] levelChancesLibrarian = {2, 1, 0, 0, 0};
         int[] levelChancesFletcher = {0, 2, 1, 0, 0};
         int[] baseCosts = {15, 30, 45, 60, 75};
-        result.add(new VillagerTradeOrigin(this, 3, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
         result.add(new VillagerTradeOrigin(this, 7, levelChancesFletcher, Villager.Profession.FLETCHER, 3, baseCosts));
 
         // Loot chest: 10% chance in the nether/end for Eagle Eye IV
