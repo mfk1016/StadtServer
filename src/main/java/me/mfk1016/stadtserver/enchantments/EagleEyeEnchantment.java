@@ -4,7 +4,8 @@ import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.BossMobBookOrigin;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import me.mfk1016.stadtserver.origin.enchantment.LootChestOrigin;
-import me.mfk1016.stadtserver.origin.enchantment.VillagerTradeOrigin;
+import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
+import me.mfk1016.stadtserver.origin.villager.WorkerEnchantmentOrigin;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -73,11 +74,6 @@ public class EagleEyeEnchantment extends CustomEnchantment {
     @Override
     public Set<EnchantmentOrigin> getOrigins() {
         Set<EnchantmentOrigin> result = new HashSet<>();
-
-        // Fletcher: 7% at villager level 3+ for Eagle Eye II / III with 2/1 distribution
-        int[] levelChancesFletcher = {0, 2, 1, 0, 0};
-        int[] baseCosts = {15, 30, 45, 60, 75};
-        result.add(new VillagerTradeOrigin(this, 7, levelChancesFletcher, Villager.Profession.FLETCHER, 3, baseCosts));
 
         // Loot chest: 10% chance in the nether/end for Eagle Eye IV
         int[] levelChancesLoot = {0, 0, 0, 1, 0};

@@ -25,7 +25,7 @@ public class DarknessSpell extends CustomSpell {
 
     @Override
     public Level spellLevel() {
-        return Level.COMMON;
+        return Level.RARE;
     }
 
     @Override

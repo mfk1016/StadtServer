@@ -9,7 +9,7 @@ import me.mfk1016.stadtserver.logic.AnvilLogic;
 import me.mfk1016.stadtserver.origin.enchantment.FishBookOrigin;
 import me.mfk1016.stadtserver.origin.enchantment.LootChestOrigin;
 import me.mfk1016.stadtserver.origin.enchantment.PiglinTradeOrigin;
-import me.mfk1016.stadtserver.origin.enchantment.VillagerTradeOrigin;
+import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -35,6 +35,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static me.mfk1016.stadtserver.util.Functions.copyRecipe;
 
@@ -73,7 +74,7 @@ public class EnchantmentListener implements Listener {
 
         // Librarian items with mending are replaced with smithing 4
         if (EnchantmentManager.isEnchantedWith(result, Enchantment.MENDING)) {
-            result = new ItemStack(Material.ENCHANTED_BOOK);
+            EnchantmentManager.disenchantItem(result, Enchantment.MENDING);
             EnchantmentManager.enchantItem(result, EnchantmentManager.SMITHING, 4);
             MerchantRecipe newRecipe = copyRecipe(recipe, result);
             event.setRecipe(newRecipe);
@@ -81,29 +82,10 @@ public class EnchantmentListener implements Listener {
         }
 
         // Select the first possible trade matching the chance
-        Pair<VillagerTradeOrigin, Integer> matched = VillagerTradeOrigin.matchOrigins(villager);
-        if (matched == null)
+        Optional<VillagerOrigin> origin = VillagerOrigin.match(villager, recipe);
+        if (origin.isEmpty())
             return;
-
-        if (matched._1.canApplyDirectly(result)) {
-            EnchantmentManager.enchantItem(result, matched._1.getEnchantment(), matched._2);
-            MerchantRecipe newRecipe = copyRecipe(recipe, result);
-            ItemStack emeralds = new ItemStack(Material.EMERALD, matched._1.getCostForLevel(matched._2) + 5);
-            newRecipe.setIngredients(List.of(emeralds));
-            event.setRecipe(newRecipe);
-        } else {
-            result = new ItemStack(Material.ENCHANTED_BOOK);
-            EnchantmentManager.enchantItem(result, matched._1.getEnchantment(), matched._2);
-            MerchantRecipe newRecipe = copyRecipe(recipe, result);
-            ItemStack book = new ItemStack(Material.BOOK);
-            ItemStack emeralds = new ItemStack(Material.EMERALD, matched._1.getCostForLevel(matched._2));
-            if (recipe.getIngredients().get(0).getType() == Material.EMERALD)
-                newRecipe.setIngredients(List.of(emeralds, book));
-            else
-                newRecipe.setIngredients(List.of(book, emeralds));
-            event.setRecipe(newRecipe);
-        }
-
+        event.setRecipe(origin.get().applyOrigin(villager, recipe));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

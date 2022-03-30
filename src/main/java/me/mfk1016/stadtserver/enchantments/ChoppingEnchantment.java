@@ -3,6 +3,8 @@ package me.mfk1016.stadtserver.enchantments;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.logic.tree.TreeChopper;
 import me.mfk1016.stadtserver.origin.enchantment.*;
+import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
+import me.mfk1016.stadtserver.origin.villager.WorkerEnchantmentOrigin;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -80,10 +82,6 @@ public class ChoppingEnchantment extends CustomEnchantment {
 
         // 10% chance for Chopping when getting an enchanted book
         result.add(new FishBookOrigin(this, 10, levelChances));
-
-        // Toolsmith: 7% chance for Chopping at level 5
-        int[] baseCosts = {30};
-        result.add(new VillagerTradeOrigin(this, 7, levelChances, Villager.Profession.TOOLSMITH, 5, baseCosts));
 
         // Boss Pillager/Vindicator: 50% chance for chopping
         result.add(new BossMobBookOrigin(this, 50, levelChances, EntityType.PILLAGER, 1, World.Environment.NORMAL));

@@ -5,6 +5,7 @@ import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.BossMobListener;
 import me.mfk1016.stadtserver.logic.AncientTome;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
+import me.mfk1016.stadtserver.origin.OriginManager;
 import me.mfk1016.stadtserver.spells.CustomSpell;
 import me.mfk1016.stadtserver.spells.SpellManager;
 import me.mfk1016.stadtserver.util.BossName;
@@ -32,11 +33,14 @@ public class StadtServerCommand implements CommandExecutor {
                 String toDo = args[1];
                 if (toDo.equals("reload")) {
                     StadtServer.getInstance().reloadConfig();
-                    CategoryManager.initialize(false);
+                    CategoryManager.initialize(true);
+                    OriginManager.initialize(true);
                     player.sendMessage("Configuration + Sorting reloaded.");
                     return true;
                 } else if (toDo.equals("reset")) {
                     StadtServer.getInstance().saveResource("config.yml", true);
+                    StadtServer.getInstance().saveResource("sorting.json", true);
+                    StadtServer.getInstance().saveResource("origins.json", true);
                     StadtServer.getInstance().reloadConfig();
                     player.sendMessage("Default configuration dumped.");
                     return true;

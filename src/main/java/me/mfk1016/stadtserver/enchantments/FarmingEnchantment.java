@@ -2,7 +2,12 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.origin.enchantment.*;
+import me.mfk1016.stadtserver.origin.villager.LibrarianBookOrigin;
+import me.mfk1016.stadtserver.origin.villager.VillagerBookOrigin;
+import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
+import me.mfk1016.stadtserver.origin.villager.WorkerEnchantmentOrigin;
 import me.mfk1016.stadtserver.util.CropData;
+import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -81,14 +86,6 @@ public class FarmingEnchantment extends CustomEnchantment {
         // Fishing: 15% for Farming II when getting an enchanted book
         int[] levelChancesFish = {0, 1, 0};
         result.add(new FishBookOrigin(this, 15, levelChancesFish));
-
-        // Librarian: 2% at villager level 1+ for Farming I / II with 3/2 distribution
-        // Farmer: 7% at villager level 4+ for Farming III
-        int[] levelChancesLibrarian = {3, 2, 0};
-        int[] levelChancesFarmer = {0, 0, 1};
-        int[] baseCosts = {10, 20, 30};
-        result.add(new VillagerTradeOrigin(this, 2, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
-        result.add(new VillagerTradeOrigin(this, 4, levelChancesFarmer, Villager.Profession.FARMER, 4, baseCosts));
 
         // Loot chest: 5% chance in the overworld for Farming II / III with 2/1 distribution
         int[] levelChancesLoot = {0, 2, 1};

@@ -2,6 +2,7 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
+import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
 import me.mfk1016.stadtserver.spells.CustomSpell;
 import me.mfk1016.stadtserver.util.Keys;
 import net.kyori.adventure.text.Component;
@@ -68,6 +69,7 @@ public class EnchantmentManager {
 
     public static void onPluginDisable() {
         ORIGINS.clear();
+        VillagerOrigin.ORIGINS.clear();
         unregisterEnchantments();
     }
 
@@ -129,6 +131,14 @@ public class EnchantmentManager {
         } else {
             return item.getEnchantments();
         }
+    }
+
+    public static boolean canEnchantItem(ItemStack item, Enchantment enchantment) {
+        for (Enchantment ench : getItemEnchantments(item).keySet()) {
+            if (enchantment.conflictsWith(ench) || ench.conflictsWith(enchantment))
+                return false;
+        }
+        return enchantment.canEnchantItem(item);
     }
 
     public static void enchantItem(ItemStack item, Enchantment enchantment, int level) {

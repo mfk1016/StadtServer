@@ -1,0 +1,69 @@
+{
+  "villager:book": [
+    {
+      "chance": 7,
+      "profession": "FARMER",
+      "level": [5],
+      "enchantment": "farming",
+      "weights": [0, 0, 1],
+      "costs": [0, 0, 20],
+      "devs": [0, 0, 6]
+    }
+  ],
+  "villager:librarian": [
+    {
+      "chance": 2,
+      "level": [2, 3, 4],
+      "enchantment": "farming",
+      "weights": [1, 2, 0],
+      "costs": [5, 10, 0],
+      "devs": [6, 6, 0]
+    },
+    {
+      "chance": 2,
+      "level": [1, 2],
+      "enchantment": "smithing",
+      "weights": [0, 1, 1, 0, 0],
+      "costs": [0, 20, 30, 40, 0],
+      "devs": [0, 6, 6, 6, 0]
+    },
+    {
+      "chance": 2,
+      "level": [3, 4, 5],
+      "enchantment": "smithing",
+      "weights": [0, 0, 1, 1, 0],
+      "costs": [0, 20, 30, 40, 0],
+      "devs": [0, 6, 6, 6, 0]
+    }
+  ],
+  "villager:worker": [
+    {
+      "chance": 10,
+      "level": [4],
+      "enchantment": "chopping",
+      "weights": [1],
+      "added": [10]
+    },
+    {
+      "chance": 10,
+      "level": [4, 5],
+      "enchantment": "eagle_eye",
+      "weights": [0, 0, 1, 1, 0],
+      "added": [0, 0, 5, 10, 0]
+    },
+    {
+      "chance": 10,
+      "level": [2],
+      "enchantment": "smithing",
+      "weights": [0, 1, 1, 0, 0],
+      "added": [0, 2, 4, 6, 0]
+    },
+    {
+      "chance": 10,
+      "level": [3, 4, 5],
+      "enchantment": "smithing",
+      "weights": [0, 0, 1, 1, 0],
+      "added": [0, 2, 4, 6, 0]
+    }
+  ]
+}

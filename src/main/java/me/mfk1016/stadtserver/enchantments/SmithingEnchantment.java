@@ -1,6 +1,11 @@
 package me.mfk1016.stadtserver.enchantments;
 
+import com.destroystokyo.paper.MaterialTags;
 import me.mfk1016.stadtserver.origin.enchantment.*;
+import me.mfk1016.stadtserver.origin.villager.LibrarianBookOrigin;
+import me.mfk1016.stadtserver.origin.villager.VillagerBookOrigin;
+import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
+import me.mfk1016.stadtserver.origin.villager.WorkerEnchantmentOrigin;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
@@ -10,6 +15,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
@@ -102,7 +108,7 @@ public class SmithingEnchantment extends CustomEnchantment {
 
     @Override
     public boolean canEnchantItem(@NotNull ItemStack item) {
-        return true;
+        return EnchantmentTarget.BREAKABLE.includes(item);
     }
 
     @Override
@@ -117,16 +123,6 @@ public class SmithingEnchantment extends CustomEnchantment {
     @Override
     public Set<EnchantmentOrigin> getOrigins() {
         Set<EnchantmentOrigin> result = new HashSet<>();
-
-        // Librarian: 2% at villager level 1+ for Smithing I / II / III with equal distribution
-        // Tool/Weaponsmith/Armorer: 5% at villager level 3+ for Smithing III / IV with 2/1 distribution
-        int[] levelChancesLibrarian = {1, 1, 1, 0, 0};
-        int[] levelChancesSmith = {0, 0, 2, 1, 0};
-        int[] baseCosts = {10, 20, 30, 40, 0};
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesSmith, Villager.Profession.TOOLSMITH, 3, baseCosts));
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesSmith, Villager.Profession.WEAPONSMITH, 3, baseCosts));
-        result.add(new VillagerTradeOrigin(this, 5, levelChancesSmith, Villager.Profession.ARMORER, 3, baseCosts));
-        result.add(new VillagerTradeOrigin(this, 2, levelChancesLibrarian, Villager.Profession.LIBRARIAN, 1, baseCosts));
 
         // Piglin: 3% chance for Smithing III / IV with equal distribution
         int[] levelChancesPiglin = {0, 0, 1, 1, 0};
