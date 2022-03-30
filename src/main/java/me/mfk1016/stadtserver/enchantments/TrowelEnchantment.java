@@ -2,7 +2,6 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
-import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -66,11 +65,6 @@ public class TrowelEnchantment extends CustomEnchantment {
     @Override
     public int getAnvilCost(ItemStack sacrifice, int level) {
         return 1;
-    }
-
-    @Override
-    public Set<EnchantmentOrigin> getOrigins() {
-        return new HashSet<>();
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

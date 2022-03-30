@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
-import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
@@ -43,7 +42,7 @@ public class LibrarianBookOrigin extends VillagerEnchantmentOrigin {
         EnchantmentManager.enchantItem(newBook, enchantment, enchLevel);
         int maxUses = 6 + (StadtServer.RANDOM.nextInt(3) * 3);
         MerchantRecipe result = new MerchantRecipe(newBook, 0, maxUses, true,
-                                                    25, 0.2f);
+                25, 0.2f);
         int emeraldCost = Math.min(levelCosts[enchLevel - 1] + StadtServer.RANDOM.nextInt(levelDeviation[enchLevel - 1]), 64);
         result.setIngredients(List.of(new ItemStack(Material.EMERALD, emeraldCost), new ItemStack(Material.BOOK)));
         return result;
@@ -74,7 +73,7 @@ public class LibrarianBookOrigin extends VillagerEnchantmentOrigin {
             if (ench.getKey().getKey().equals(enchantment))
                 realEnchantment = ench;
         }
-
+        assert realEnchantment != null;
         List<LibrarianBookOrigin> result = new ArrayList<>();
         for (int l : levels) {
             result.add(new LibrarianBookOrigin(chance, l, realEnchantment, weights, costs, devs));

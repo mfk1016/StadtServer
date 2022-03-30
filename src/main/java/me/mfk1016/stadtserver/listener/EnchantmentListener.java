@@ -6,13 +6,14 @@ import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.SmithingEnchantment;
 import me.mfk1016.stadtserver.logic.AncientTome;
 import me.mfk1016.stadtserver.logic.AnvilLogic;
-import me.mfk1016.stadtserver.origin.enchantment.FishBookOrigin;
-import me.mfk1016.stadtserver.origin.enchantment.LootChestOrigin;
-import me.mfk1016.stadtserver.origin.enchantment.PiglinTradeOrigin;
+import me.mfk1016.stadtserver.origin.loot.ChestEnchantmentOrigin;
+import me.mfk1016.stadtserver.origin.loot.FishEnchantmentOrigin;
+import me.mfk1016.stadtserver.origin.loot.LootOrigin;
+import me.mfk1016.stadtserver.origin.loot.PiglinEnchantmentOrigin;
 import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
-import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
@@ -31,7 +32,6 @@ import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import java.util.List;
 import java.util.Objects;
@@ -55,13 +55,15 @@ public class EnchantmentListener implements Listener {
     public void onFishing(PlayerFishEvent event) {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH)
             return;
-        ItemStack catchedItem = ((Item) Objects.requireNonNull(event.getCaught())).getItemStack();
+        Item catched = (Item) Objects.requireNonNull(event.getCaught());
+        ItemStack catchedItem = catched.getItemStack();
         SmithingEnchantment.replaceMending(catchedItem, 4, 3);
-        if (!(catchedItem.getItemMeta() instanceof EnchantmentStorageMeta))
+        World world = event.getPlayer().getWorld();
+        List<LootOrigin> origins = LootOrigin.match(FishEnchantmentOrigin.TYPE, Optional.of(catchedItem), world);
+        if (origins.isEmpty())
             return;
-
-        FishBookOrigin.matchOrigins().forEach((elem) ->
-                EnchantmentManager.enchantItem(catchedItem, elem._1.getEnchantment(), elem._2));
+        ItemStack result = origins.get(0).applyOrigin(Optional.of(catchedItem));
+        catched.setItemStack(result);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -90,12 +92,11 @@ public class EnchantmentListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPiglinBarter(PiglinBarterEvent event) {
-        Pair<PiglinTradeOrigin, Integer> matched = PiglinTradeOrigin.matchOrigins();
-        if (matched == null)
+        World world = event.getEntity().getWorld();
+        List<LootOrigin> origins = LootOrigin.match(PiglinEnchantmentOrigin.TYPE, Optional.empty(), world);
+        if (origins.isEmpty())
             return;
-
-        ItemStack result = new ItemStack(Material.ENCHANTED_BOOK);
-        EnchantmentManager.enchantItem(result, matched._1.getEnchantment(), matched._2);
+        ItemStack result = origins.get(0).applyOrigin(Optional.empty());
         event.getOutcome().clear();
         event.getOutcome().add(result);
     }
@@ -109,11 +110,10 @@ public class EnchantmentListener implements Listener {
             SmithingEnchantment.replaceMending(item, 4, 4);
         }
 
-        LootChestOrigin.matchOrigins(event.getWorld()).forEach((elem) -> {
-            ItemStack toAdd = new ItemStack(Material.ENCHANTED_BOOK);
-            EnchantmentManager.enchantItem(toAdd, elem._1.getEnchantment(), elem._2);
-            event.getLoot().add(toAdd);
-        });
+        List<LootOrigin> origins = LootOrigin.match(ChestEnchantmentOrigin.TYPE, Optional.empty(), event.getWorld());
+        for (LootOrigin origin : origins)
+            event.getLoot().add(origin.applyOrigin(Optional.empty()));
+
         switch (event.getWorld().getEnvironment()) {
             case NETHER:
                 if (StadtServer.RANDOM.nextInt(100) < 5)

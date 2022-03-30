@@ -1,7 +1,6 @@
 package me.mfk1016.stadtserver.spells;
 
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
-import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.enchantments.Enchantment;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Set;
 
 import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
@@ -30,11 +28,6 @@ public abstract class CustomSpell extends CustomEnchantment {
     public @NotNull Component displayName(int i) {
         String content = i == 1 ? getName() : "" + i + " " + getName();
         return undecoratedText(content).color(spellLevel().color);
-    }
-
-    @Override
-    public Set<EnchantmentOrigin> getOrigins() {
-        return null;
     }
 
     public abstract List<Recipe> getRecipes();

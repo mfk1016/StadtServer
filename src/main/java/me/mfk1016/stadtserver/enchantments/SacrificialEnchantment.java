@@ -2,11 +2,9 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
-import me.mfk1016.stadtserver.origin.enchantment.*;
 import me.mfk1016.stadtserver.rituals.RitualManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
@@ -21,9 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
@@ -70,27 +66,6 @@ public class SacrificialEnchantment extends CustomEnchantment {
         } else {
             return 2 * level;
         }
-    }
-
-    @Override
-    public Set<EnchantmentOrigin> getOrigins() {
-        Set<EnchantmentOrigin> result = new HashSet<>();
-
-        int[] levelChances = {1};
-
-        // Piglin: 2% chance for Sacrificial
-        result.add(new PiglinTradeOrigin(this, 2, levelChances));
-
-        // Loot chest: 3% chance in the overworld, 15% the nether/end for Sacrificial
-        result.add(new LootChestOrigin(this, 3, levelChances, World.Environment.NORMAL));
-        result.add(new LootChestOrigin(this, 15, levelChances, World.Environment.NETHER));
-        result.add(new LootChestOrigin(this, 15, levelChances, World.Environment.THE_END));
-
-        // Boss Witch/Evoker: 50% chance for Sacrificial
-        result.add(new BossMobBookOrigin(this, 50, levelChances, EntityType.WITCH, 1, World.Environment.NORMAL));
-        result.add(new BossMobBookOrigin(this, 50, levelChances, EntityType.EVOKER, 1, World.Environment.NORMAL));
-
-        return result;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

@@ -1,29 +1,17 @@
 package me.mfk1016.stadtserver.enchantments;
 
-import com.destroystokyo.paper.MaterialTags;
-import me.mfk1016.stadtserver.origin.enchantment.*;
-import me.mfk1016.stadtserver.origin.villager.LibrarianBookOrigin;
-import me.mfk1016.stadtserver.origin.villager.VillagerBookOrigin;
-import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
-import me.mfk1016.stadtserver.origin.villager.WorkerEnchantmentOrigin;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /*
     Repair items with a limited level cost
@@ -72,7 +60,7 @@ public class SmithingEnchantment extends CustomEnchantment {
         // Prevent a repair cost overflow
         if (result.getItemMeta() instanceof Repairable repairMeta && repairMeta.getRepairCost() > 63) {
             repairMeta.setRepairCost(63);
-            result.setItemMeta((ItemMeta) repairMeta);
+            result.setItemMeta(repairMeta);
         }
 
         // Adjust the repair cost
@@ -118,29 +106,5 @@ public class SmithingEnchantment extends CustomEnchantment {
         } else {
             return 2 * level;
         }
-    }
-
-    @Override
-    public Set<EnchantmentOrigin> getOrigins() {
-        Set<EnchantmentOrigin> result = new HashSet<>();
-
-        // Piglin: 3% chance for Smithing III / IV with equal distribution
-        int[] levelChancesPiglin = {0, 0, 1, 1, 0};
-        result.add(new PiglinTradeOrigin(this, 3, levelChancesPiglin));
-
-        // Loot chest: 10%/25%/25% chance for Smithing IV in overworld/nether/end
-        int[] levelChancesLoot = {0, 0, 0, 1, 0};
-        result.add(new LootChestOrigin(this, 10, levelChancesLoot, World.Environment.NORMAL));
-        result.add(new LootChestOrigin(this, 25, levelChancesLoot, World.Environment.NETHER));
-        result.add(new LootChestOrigin(this, 25, levelChancesLoot, World.Environment.THE_END));
-
-        // Boss Piglin Brute: 50% chance for Smithing V in nether
-        int[] levelChancesBoss = {0, 0, 0, 0, 1};
-        result.add(new BossMobBookOrigin(this, 50, levelChancesBoss, EntityType.PIGLIN_BRUTE, 1, World.Environment.NETHER));
-
-        // Level 4 Boss Vindicator: 100% chance for Smithing V
-        result.add(new BossMobBookOrigin(this, 100, levelChancesBoss, EntityType.VINDICATOR, 4, World.Environment.NORMAL));
-
-        return result;
     }
 }

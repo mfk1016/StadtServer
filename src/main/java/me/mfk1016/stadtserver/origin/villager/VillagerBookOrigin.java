@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
-import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
@@ -65,10 +64,8 @@ public class VillagerBookOrigin extends VillagerEnchantmentOrigin {
             if (ench.getKey().getKey().equals(enchantment))
                 realEnchantment = ench;
         }
-
+        assert realEnchantment != null;
         List<VillagerBookOrigin> result = new ArrayList<>();
-        if (realEnchantment == null)
-            System.out.println("Enchantment not found: " + enchantment);
         for (int l : levels) {
             result.add(new VillagerBookOrigin(chance, profession, l, realEnchantment, weights, costs, devs));
         }

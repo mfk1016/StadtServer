@@ -29,7 +29,9 @@ public class DarknessSpell extends CustomSpell {
     }
 
     @Override
-    public List<Recipe> getRecipes() { return new ArrayList<>(); }
+    public List<Recipe> getRecipes() {
+        return new ArrayList<>();
+    }
 
     @Override
     public int getMaxCharges() {

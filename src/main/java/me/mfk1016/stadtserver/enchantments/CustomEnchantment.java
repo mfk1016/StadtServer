@@ -2,7 +2,6 @@ package me.mfk1016.stadtserver.enchantments;
 
 import io.papermc.paper.enchantments.EnchantmentRarity;
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
@@ -28,8 +27,6 @@ public abstract class CustomEnchantment extends Enchantment implements Listener 
     }
 
     public abstract int getAnvilCost(ItemStack sacrifice, int level);
-
-    public abstract Set<EnchantmentOrigin> getOrigins();
 
     @Override
     public @NotNull String getName() {

@@ -27,7 +27,7 @@ public class WorkerEnchantmentOrigin extends VillagerEnchantmentOrigin {
     @Override
     protected boolean matchProfession(Villager villager) {
         return switch (villager.getProfession()) {
-            case ARMORER, TOOLSMITH, WEAPONSMITH, FLETCHER, FISHERMAN, SHEPHERD -> true;
+            case ARMORER, TOOLSMITH, WEAPONSMITH, FLETCHER, FISHERMAN -> true;
             default -> false;
         };
     }
@@ -59,7 +59,7 @@ public class WorkerEnchantmentOrigin extends VillagerEnchantmentOrigin {
             if (ench.getKey().getKey().equals(enchantment))
                 realEnchantment = ench;
         }
-
+        assert realEnchantment != null;
         List<WorkerEnchantmentOrigin> result = new ArrayList<>();
         for (int l : levels) {
             result.add(new WorkerEnchantmentOrigin(chance, l, realEnchantment, weights, added));

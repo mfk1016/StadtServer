@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.origin.loot.LootOrigin;
+import me.mfk1016.stadtserver.origin.mob.MobOrigin;
 import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
 
 import java.io.File;
@@ -24,6 +26,8 @@ public class OriginManager {
         try {
             JsonObject object = gson.fromJson(new FileReader(originsConfig), JsonObject.class);
             VillagerOrigin.initialize(object, gson);
+            LootOrigin.initialize(object, gson);
+            MobOrigin.initialize(object, gson);
         } catch (Exception e) {
             StadtServer.LOGGER.severe("sorting.json loading error: sorting categories not available");
             e.printStackTrace();

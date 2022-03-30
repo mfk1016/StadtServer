@@ -1,8 +1,6 @@
 package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
-import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
 import me.mfk1016.stadtserver.spells.CustomSpell;
 import me.mfk1016.stadtserver.util.Keys;
 import net.kyori.adventure.text.Component;
@@ -22,7 +20,6 @@ public class EnchantmentManager {
 
     // Public stuff
     public static final Set<CustomEnchantment> ALL_ENCHANTMENTS = new HashSet<>();
-    public static final Set<EnchantmentOrigin> ORIGINS = new HashSet<>();
     // Internal stuff
     private static final Set<CustomEnchantment> registeredEnchantments = new HashSet<>();
     // Add all custom enchantments here
@@ -63,13 +60,10 @@ public class EnchantmentManager {
         PluginManager pm = StadtServer.getInstance().getServer().getPluginManager();
         for (CustomEnchantment e : ALL_ENCHANTMENTS) {
             pm.registerEvents(e, StadtServer.getInstance());
-            ORIGINS.addAll(e.getOrigins());
         }
     }
 
     public static void onPluginDisable() {
-        ORIGINS.clear();
-        VillagerOrigin.ORIGINS.clear();
         unregisterEnchantments();
     }
 

@@ -3,7 +3,6 @@ package me.mfk1016.stadtserver.enchantments;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.logic.wrench.WrenchAction;
 import me.mfk1016.stadtserver.logic.wrench.WrenchActionStateChange;
-import me.mfk1016.stadtserver.origin.enchantment.EnchantmentOrigin;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -23,9 +22,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 public class WrenchEnchantment extends CustomEnchantment {
 
@@ -72,11 +69,6 @@ public class WrenchEnchantment extends CustomEnchantment {
     @Override
     public int getAnvilCost(ItemStack sacrifice, int level) {
         return 1;
-    }
-
-    @Override
-    public Set<EnchantmentOrigin> getOrigins() {
-        return new HashSet<>();
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

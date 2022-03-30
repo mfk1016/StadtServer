@@ -1,25 +1,16 @@
 package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
-import me.mfk1016.stadtserver.origin.enchantment.*;
-import me.mfk1016.stadtserver.origin.villager.LibrarianBookOrigin;
-import me.mfk1016.stadtserver.origin.villager.VillagerBookOrigin;
-import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
-import me.mfk1016.stadtserver.origin.villager.WorkerEnchantmentOrigin;
 import me.mfk1016.stadtserver.util.CropData;
-import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -29,7 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
@@ -77,26 +70,6 @@ public class FarmingEnchantment extends CustomEnchantment {
         } else {
             return 2 * level;
         }
-    }
-
-    @Override
-    public Set<EnchantmentOrigin> getOrigins() {
-        Set<EnchantmentOrigin> result = new HashSet<>();
-
-        // Fishing: 15% for Farming II when getting an enchanted book
-        int[] levelChancesFish = {0, 1, 0};
-        result.add(new FishBookOrigin(this, 15, levelChancesFish));
-
-        // Loot chest: 5% chance in the overworld for Farming II / III with 2/1 distribution
-        int[] levelChancesLoot = {0, 2, 1};
-        result.add(new LootChestOrigin(this, 5, levelChancesLoot, World.Environment.NORMAL));
-
-        // Boss Zombie (Villager): 10% (20%) chance in the overworld for Farming III
-        int[] levelChancesBoss = {0, 0, 1};
-        result.add(new BossMobBookOrigin(this, 10, levelChancesBoss, EntityType.ZOMBIE, 1, World.Environment.NORMAL));
-        result.add(new BossMobBookOrigin(this, 20, levelChancesBoss, EntityType.ZOMBIE_VILLAGER, 1, World.Environment.NORMAL));
-
-        return result;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

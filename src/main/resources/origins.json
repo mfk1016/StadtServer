@@ -1,4 +1,73 @@
 {
+  "loot:fish": [
+    {
+      "chance": 10,
+      "enchantment": "chopping",
+      "weights": [1]
+    },
+    {
+      "chance": 10,
+      "enchantment": "farming",
+      "weights": [0, 1, 1]
+    }
+  ],
+  "loot:piglin": [
+    {
+      "chance": 2,
+      "enchantment": "sacrificial",
+      "weights": [1]
+    },
+    {
+      "chance": 3,
+      "enchantment": "smithing",
+      "weights": [0, 0, 2, 1, 0]
+    }
+  ],
+  "loot:chest": [
+    {
+      "chance": 5,
+      "enchantment": "chopping",
+      "weights": [1],
+      "environment": ["NORMAL"]
+    },
+    {
+      "chance": 10,
+      "enchantment": "eagle_eye",
+      "weights": [0, 0, 0, 1, 0],
+      "environment": ["NETHER", "THE_END"]
+    },
+    {
+      "chance": 5,
+      "enchantment": "farming",
+      "weights": [0, 2, 1],
+      "environment": ["NORMAL"]
+    },
+    {
+      "chance": 3,
+      "enchantment": "sacrificial",
+      "weights": [1],
+      "environment": ["NORMAL"]
+    },
+    {
+      "chance": 10,
+      "enchantment": "sacrificial",
+      "weights": [1],
+      "environment": ["NETHER", "THE_END"]
+    },
+    {
+      "chance": 10,
+      "enchantment": "smithing",
+      "weights": [0, 0, 0, 1, 0],
+      "environment": ["NORMAL"]
+    },
+    {
+      "chance": 25,
+      "enchantment": "smithing",
+      "weights": [0, 0, 0, 1, 0],
+      "environment": ["NETHER", "THE_END"]
+    }
+  ],
+
   "villager:book": [
     {
       "chance": 7,
@@ -8,12 +77,21 @@
       "weights": [0, 0, 1],
       "costs": [0, 0, 20],
       "devs": [0, 0, 6]
+    },
+    {
+      "chance": 2,
+      "profession": "CLERIC",
+      "level": [2],
+      "enchantment": "sacrificial",
+      "weights": [1],
+      "costs": [15],
+      "devs": [6]
     }
   ],
   "villager:librarian": [
     {
       "chance": 2,
-      "level": [2, 3, 4],
+      "level": [1, 2, 3],
       "enchantment": "farming",
       "weights": [1, 2, 0],
       "costs": [5, 10, 0],
@@ -21,19 +99,35 @@
     },
     {
       "chance": 2,
+      "level": [2, 3, 4],
+      "enchantment": "eagle_eye",
+      "weights": [1, 2, 1, 0, 0],
+      "costs": [5, 10, 15, 0, 0],
+      "devs": [6, 6, 6, 0, 0]
+    },
+    {
+      "chance": 2,
+      "level": [5],
+      "enchantment": "eagle_eye",
+      "weights": [0, 0, 0, 2, 1],
+      "costs": [0, 0, 0, 20, 30],
+      "devs": [0, 0, 0, 6, 6]
+    },
+    {
+      "chance": 2,
       "level": [1, 2],
       "enchantment": "smithing",
       "weights": [0, 1, 1, 0, 0],
-      "costs": [0, 20, 30, 40, 0],
-      "devs": [0, 6, 6, 6, 0]
+      "costs": [0, 20, 30, 0, 0],
+      "devs": [0, 6, 6, 0, 0]
     },
     {
       "chance": 2,
       "level": [3, 4, 5],
       "enchantment": "smithing",
       "weights": [0, 0, 1, 1, 0],
-      "costs": [0, 20, 30, 40, 0],
-      "devs": [0, 6, 6, 6, 0]
+      "costs": [0, 0, 30, 40, 0],
+      "devs": [0, 0, 6, 6, 0]
     }
   ],
   "villager:worker": [
@@ -56,14 +150,343 @@
       "level": [2],
       "enchantment": "smithing",
       "weights": [0, 1, 1, 0, 0],
-      "added": [0, 2, 4, 6, 0]
+      "added": [0, 2, 4, 0, 0]
     },
     {
       "chance": 10,
       "level": [3, 4, 5],
       "enchantment": "smithing",
       "weights": [0, 0, 1, 1, 0],
-      "added": [0, 2, 4, 6, 0]
+      "added": [0, 0, 4, 6, 0]
+    }
+  ],
+
+  "mob:boss_enchantment": [
+    {
+      "chance": 50,
+      "entity": "PILLAGER",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "enchantment": "chopping",
+      "weights": [1]
+    },
+    {
+      "chance": 50,
+      "entity": "VINDICATOR",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "enchantment": "chopping",
+      "weights": [1]
+    },
+    {
+      "chance": 10,
+      "entity": "SKELETON",
+      "minlevel": 2,
+      "environment": "NORMAL",
+      "enchantment": "eagle_eye",
+      "weights": [0, 0, 2, 1, 0]
+    },
+    {
+      "chance": 10,
+      "entity": "SKELETON",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "enchantment": "eagle_eye",
+      "weights": [0, 0, 2, 1, 0]
+    },
+    {
+      "chance": 100,
+      "entity": "PILLAGER",
+      "minlevel": 4,
+      "environment": "NORMAL",
+      "enchantment": "eagle_eye",
+      "weights": [0, 0, 0, 0, 1]
+    },
+    {
+      "chance": 10,
+      "entity": "ZOMBIE",
+      "minlevel": 2,
+      "environment": "NORMAL",
+      "enchantment": "farming",
+      "weights": [0, 0, 1]
+    },
+    {
+      "chance": 10,
+      "entity": "ZOMBIE_VILLAGER",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "enchantment": "farming",
+      "weights": [0, 0, 1]
+    },
+    {
+      "chance": 25,
+      "entity": "WITCH",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "enchantment": "sacrificial",
+      "weights": [1]
+    },
+    {
+      "chance": 50,
+      "entity": "EVOKER",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "enchantment": "sacrificial",
+      "weights": [1]
+    },
+    {
+      "chance": 50,
+      "entity": "PIGLIN_BRUTE",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "enchantment": "smithing",
+      "weights": [0, 0, 0, 0, 1]
+    },
+    {
+      "chance": 100,
+      "entity": "VINDICATOR",
+      "minlevel": 4,
+      "environment": "NORMAL",
+      "enchantment": "smithing",
+      "weights": [0, 0, 0, 0, 1]
+    }
+  ],
+  "mob:boss_loot": [
+    {
+      "chance": 5,
+      "entity": "ENDERMAN",
+      "minlevel": 2,
+      "environment": "THE_END",
+      "material": "ELYTRA",
+      "amount": 1
+    },
+    {
+      "chance": 5,
+      "entity": "CREEPER",
+      "minlevel": 2,
+      "environment": "NORMAL",
+      "material": "TOTEM_OF_UNDYING",
+      "amount": 1},
+    {
+      "chance": 5,
+      "entity": "WITHER_SKELETON",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "material": "NETHERITE_SCRAP",
+      "amount": 2
+    },
+    {
+      "chance": 5,
+      "entity": "ZOMBIFIED_PIGLIN",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "material": "NETHER_WART",
+      "amount": 4
+    },
+    {
+      "chance": 5,
+      "entity": "PIGLIN",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "material": "NETHER_WART",
+      "amount": 8
+    },
+
+    {
+      "chance": 10,
+      "entity": "WITCH",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "BREWING_STAND",
+      "amount": 1
+    },
+    {
+      "chance": 10,
+      "entity": "DROWNED",
+      "minlevel": 2,
+      "environment": "NORMAL",
+      "material": "TRIDENT",
+      "amount": 1
+    },
+    {
+      "chance": 10,
+      "entity": "ZOMBIE",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "IRON_BLOCK",
+      "amount": 1
+    },
+    {
+      "chance": 10,
+      "entity": "ZOMBIE_VILLAGER",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "IRON_BLOCK",
+      "amount": 2
+    },
+    {
+      "chance": 10,
+      "entity": "PILLAGER",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "AMETHYST_SHARD",
+      "amount": 4
+    },
+    {
+      "chance": 10,
+      "entity": "VINDICATOR",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "AMETHYST_SHARD",
+      "amount": 8
+    },
+
+    {
+      "chance": 25,
+      "entity": "STRAY",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "BLUE_ICE",
+      "amount": 8
+    },
+    {
+      "chance": 25,
+      "entity": "BLAZE",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "material": "MAGMA_CREAM",
+      "amount": 4
+    },
+    {
+      "chance": 25,
+      "entity": "SKELETON",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "SPECTRAL_ARROW",
+      "amount": 4
+    },
+    {
+      "chance": 25,
+      "entity": "SKELETON",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "material": "SPECTRAL_ARROW",
+      "amount": 8
+    },
+    {
+      "chance": 25,
+      "entity": "PIGLIN",
+      "minlevel": 2,
+      "environment": "NETHER",
+      "material": "GOLD_BLOCK",
+      "amount": 1
+    },
+
+    {
+      "chance": 50,
+      "entity": "SPIDER",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "COBWEB",
+      "amount": 8
+    },
+    {
+      "chance": 50,
+      "entity": "BLAZE",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "material": "BLAZE_POWDER",
+      "amount": 8
+    },
+    {
+      "chance": 50,
+      "entity": "HUSK",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "RED_SAND",
+      "amount": 32
+    },
+    {
+      "chance": 50,
+      "entity": "GUARDIAN",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "WET_SPONGE",
+      "amount": 2
+    },
+    {
+      "chance": 50,
+      "entity": "ZOMBIFIED_PIGLIN",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "material": "GOLD_INGOT",
+      "amount": 2
+    },
+
+    {
+      "chance": 100,
+      "entity": "ENDERMAN",
+      "minlevel": 1,
+      "environment": "NORMAL",
+      "material": "ENDER_PEARL",
+      "amount": 1
+    },
+    {
+      "chance": 100,
+      "entity": "ENDERMAN",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "material": "ENDER_PEARL",
+      "amount": 1
+    },
+    {
+      "chance": 100,
+      "entity": "ENDERMAN",
+      "minlevel": 1,
+      "environment": "THE_END",
+      "material": "ENDER_PEARL",
+      "amount": 1
+    },
+    {
+      "chance": 100,
+      "entity": "SHULKER",
+      "minlevel": 1,
+      "environment": "THE_END",
+      "material": "SHULKER_SHELL",
+      "amount": 1
+    },
+    {
+      "chance": 100,
+      "entity": "CREEPER",
+      "minlevel": 2,
+      "environment": "NORMAL",
+      "material": "TNT",
+      "amount": 2
+    },
+    {
+      "chance": 100,
+      "entity": "WITHER_SKELETON",
+      "minlevel": 1,
+      "environment": "NETHER",
+      "material": "WITHER_SKELETON_SKULL",
+      "amount": 1
+    },
+
+    {
+      "chance": 100,
+      "entity": "EVOKER",
+      "minlevel": 4,
+      "environment": "NORMAL",
+      "material": "SPAWNER",
+      "amount": 1
+    },
+    {
+      "chance": 100,
+      "entity": "WITCH",
+      "minlevel": 4,
+      "environment": "NORMAL",
+      "material": "DRAGON_BREATH",
+      "amount": 4
     }
   ]
 }

@@ -2,7 +2,6 @@ package me.mfk1016.stadtserver.origin.villager;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
-import org.bukkit.entity.Villager;
 
 import java.util.Arrays;
 

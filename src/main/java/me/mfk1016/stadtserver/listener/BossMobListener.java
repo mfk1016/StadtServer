@@ -1,10 +1,8 @@
 package me.mfk1016.stadtserver.listener;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.logic.AncientTome;
-import me.mfk1016.stadtserver.origin.BossMobRareLootOrigin;
-import me.mfk1016.stadtserver.origin.enchantment.BossMobBookOrigin;
+import me.mfk1016.stadtserver.origin.mob.MobOrigin;
 import me.mfk1016.stadtserver.util.BossName;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Difficulty;
@@ -157,11 +155,9 @@ public class BossMobListener implements Listener {
             if (drop.getMaxStackSize() > 1)
                 drop.setAmount(drop.getAmount() * (bossLevel + 1));
         }
-        event.getDrops().addAll(BossMobRareLootOrigin.matchOrigins(event.getEntity()));
-        BossMobBookOrigin.matchOrigins(event.getEntity(), event.getEntity().getWorld()).forEach((elem) -> {
-            ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
-            EnchantmentManager.enchantItem(book, elem._1.getEnchantment(), elem._2);
-            event.getDrops().add(book);
+
+        MobOrigin.match(event.getEntity()).forEach((origin) -> {
+            event.getDrops().add(origin.applyOrigin());
         });
 
         // Ancient Tome: 25% at level 3, 100% at level 4
