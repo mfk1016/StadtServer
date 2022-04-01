@@ -71,6 +71,7 @@ public class AncientTome {
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(Keys.IS_ANCIENT_TOME, PersistentDataType.INTEGER, 1);
         meta.displayName(undecoratedText("Ancient Tome").color(NamedTextColor.LIGHT_PURPLE));
+        meta.setCustomModelData(1);
         result.setItemMeta(meta);
         return result;
     }
