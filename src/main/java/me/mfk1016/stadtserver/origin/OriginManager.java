@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.origin.loot.LootOrigin;
 import me.mfk1016.stadtserver.origin.mob.MobOrigin;
-import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
+import me.mfk1016.stadtserver.origin.trade.MerchantOrigin;
 
 import java.io.File;
 import java.io.FileReader;
@@ -25,7 +25,7 @@ public class OriginManager {
         }
         try {
             JsonObject object = gson.fromJson(new FileReader(originsConfig), JsonObject.class);
-            VillagerOrigin.initialize(object, gson);
+            MerchantOrigin.initialize(object, gson);
             LootOrigin.initialize(object, gson);
             MobOrigin.initialize(object, gson);
         } catch (Exception e) {

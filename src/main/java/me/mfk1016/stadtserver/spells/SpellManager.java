@@ -3,15 +3,19 @@ package me.mfk1016.stadtserver.spells;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
+import me.mfk1016.stadtserver.util.Pair;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
+import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 public class SpellManager {
 
@@ -23,6 +27,7 @@ public class SpellManager {
     // Add all custom spells here
     public static DarknessSpell DARKNESS;
     public static SummonSpell SUMMON;
+    public static MagnetSpell MAGNET;
 
     /* --- INIT + STOP --- */
 
@@ -31,10 +36,12 @@ public class SpellManager {
         // Initialize them here
         DARKNESS = new DarknessSpell();
         SUMMON = new SummonSpell();
+        MAGNET = new MagnetSpell();
 
         // Add them here
         ALL_SPELLS.add(DARKNESS);
         ALL_SPELLS.add(SUMMON);
+        ALL_SPELLS.add(MAGNET);
 
         // Registering
         registerSpells();
@@ -95,7 +102,8 @@ public class SpellManager {
     /* --- SPELLS --- */
 
     public static void addSpell(ItemStack item, CustomSpell spell, int charges) {
-        EnchantmentManager.enchantItem(item, spell, charges);
+        int newCharges = Math.min(getSpellCharges(item, spell) + charges, spell.getMaxCharges());
+        EnchantmentManager.enchantItem(item, spell, newCharges);
     }
 
     public static void removeSpell(ItemStack item, CustomSpell spell) {
@@ -115,8 +123,47 @@ public class SpellManager {
                 removeSpell(item, spell);
                 break;
             default:
-                addSpell(item, spell, charges - 1);
+                EnchantmentManager.enchantItem(item, spell, charges - 1);
                 break;
         }
+    }
+
+    /* --- MEDIUMS --- */
+
+    public static final Material[] SPELL_MEDIUMS = {
+            Material.REDSTONE, Material.GLOWSTONE_DUST, Material.LAPIS_LAZULI, Material.AMETHYST_SHARD
+    };
+
+    private static final String[] SPELL_MEDIUM_NAMES = {
+            "Electrified Redstone Dust", "Luminous Glowstone Dust",
+            "Aquatic Lapis Lazuli", "Glittering Amethyst Shard"
+    };
+
+    public static ItemStack createSpellMedium(CustomSpell spell, int charges) {
+        int slot = StadtServer.RANDOM.nextInt(SPELL_MEDIUMS.length);
+        Material mat = SPELL_MEDIUMS[slot];
+        String name = SPELL_MEDIUM_NAMES[slot];
+        ItemStack result = new ItemStack(mat);
+        ItemMeta meta = result.getItemMeta();
+        meta.displayName(undecoratedText(name).color(NamedTextColor.AQUA));
+        result.setItemMeta(meta);
+        addSpell(result, spell, charges);
+        return result;
+    }
+
+    public static Optional<Pair<CustomSpell, Integer>> getMediumSpell(ItemStack item) {
+        boolean isMediumMaterial = false;
+        for (Material mat : SPELL_MEDIUMS) {
+            if (mat == item.getType())
+                isMediumMaterial = true;
+        }
+        Map<Enchantment, Integer> spells = item.getEnchantments();
+        if (!isMediumMaterial || spells.size() != 1 || item.getAmount() != 1)
+            return Optional.empty();
+        for (var entry : spells.entrySet()) {
+            if (entry.getKey() instanceof CustomSpell spell)
+                return Optional.of(new Pair<>(spell, entry.getValue()));
+        }
+        return Optional.empty();
     }
 }

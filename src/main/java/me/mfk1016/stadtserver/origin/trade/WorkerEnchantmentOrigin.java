@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.origin.villager;
+package me.mfk1016.stadtserver.origin.trade;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -7,6 +7,7 @@ import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 
 import java.util.ArrayList;
@@ -33,12 +34,12 @@ public class WorkerEnchantmentOrigin extends VillagerEnchantmentOrigin {
     }
 
     @Override
-    protected boolean isApplicable(Villager villager, MerchantRecipe recipe) {
+    protected boolean isApplicable(Merchant merchant, MerchantRecipe recipe) {
         return EnchantmentManager.canEnchantItem(recipe.getResult(), enchantment);
     }
 
     @Override
-    public MerchantRecipe applyOrigin(Villager villager, MerchantRecipe oldRecipe) {
+    public MerchantRecipe applyOrigin(Merchant merchant, MerchantRecipe oldRecipe) {
         ItemStack newItem = oldRecipe.getResult();
         int enchLevel = getEnchantmentLevel();
         EnchantmentManager.enchantItem(newItem, enchantment, enchLevel);

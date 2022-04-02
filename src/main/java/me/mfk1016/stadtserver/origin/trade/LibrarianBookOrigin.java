@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.origin.villager;
+package me.mfk1016.stadtserver.origin.trade;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -8,6 +8,7 @@ import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 
 import java.util.ArrayList;
@@ -32,7 +33,9 @@ public class LibrarianBookOrigin extends VillagerEnchantmentOrigin {
     }
 
     @Override
-    protected boolean isApplicable(Villager villager, MerchantRecipe recipe) {
+    protected boolean isApplicable(Merchant merchant, MerchantRecipe recipe) {
+        if (!(merchant instanceof Villager villager))
+            return false;
         return villager.getVillagerLevel() == 5 || recipe.getResult().getType() == Material.ENCHANTED_BOOK;
     }
 
@@ -49,7 +52,8 @@ public class LibrarianBookOrigin extends VillagerEnchantmentOrigin {
     }
 
     @Override
-    public MerchantRecipe applyOrigin(Villager villager, MerchantRecipe oldRecipe) {
+    public MerchantRecipe applyOrigin(Merchant merchant, MerchantRecipe oldRecipe) {
+        Villager villager = (Villager) merchant;
         // Level 5: Add a new trade instead of replacing the old one
         if (villager.getVillagerLevel() == 5) {
             List<MerchantRecipe> recipes = villager.getRecipes();

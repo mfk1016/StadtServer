@@ -39,9 +39,10 @@ public class StadtServer extends JavaPlugin {
 
         LOGGER.info(getDescription().getName() + ": register enchantments...");
         EnchantmentManager.onPluginEnable();
-        OriginManager.initialize(false);
         LOGGER.info(getDescription().getName() + ": register spells...");
         SpellManager.onPluginEnable();
+
+        OriginManager.initialize(false);
 
         LOGGER.info(getDescription().getName() + ": enable listeners...");
         SmallFunctionsListener smallFunctionsListener = new SmallFunctionsListener();
@@ -50,6 +51,7 @@ public class StadtServer extends JavaPlugin {
         pm.registerEvents(new MinecartListener(), this);
         pm.registerEvents(smallFunctionsListener, this);
         pm.registerEvents(new EnchantmentListener(), this);
+        pm.registerEvents(new SpellListener(), this);
         pm.registerEvents(new BossMobListener(), this);
         pm.registerEvents(new DoorListener(), this);
         pm.registerEvents(new BrewingManager(), this);

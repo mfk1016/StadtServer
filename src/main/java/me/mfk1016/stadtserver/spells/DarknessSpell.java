@@ -35,7 +35,7 @@ public class DarknessSpell extends CustomSpell {
 
     @Override
     public int getMaxCharges() {
-        return 4;
+        return 2;
     }
 
     @Override
@@ -48,11 +48,11 @@ public class DarknessSpell extends CustomSpell {
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SPECTATOR)
             return;
+        ItemStack pickaxe = player.getInventory().getItemInMainHand();
+        if (!PluginCategories.isPickaxe(pickaxe.getType()) || SpellManager.getSpellCharges(pickaxe, this) == 0)
+            return;
         World world = player.getWorld();
         if (world.getEnvironment() != World.Environment.NORMAL || world.getTime() >= 12000)
-            return;
-        ItemStack pickaxe = player.getInventory().getItemInMainHand();
-        if (SpellManager.getSpellCharges(pickaxe, this) == 0)
             return;
 
         // Block must be glowstone and the sky must be visible (from the glowstone)
@@ -70,9 +70,10 @@ public class DarknessSpell extends CustomSpell {
                 if (world.getTime() >= 18000) {
                     world.playSound(particleSpawn, Sound.ENTITY_WOLF_HOWL, 4f, 1f);
                     this.cancel();
+                } else {
+                    world.spawnParticle(Particle.FLAME, particleSpawn, 1, 0.4, 0.25, 0.4, 0.01);
+                    world.setTime(Math.min(world.getTime() + 99, 18000));
                 }
-                world.spawnParticle(Particle.FLAME, particleSpawn, 1, 0.4, 0.25, 0.4, 0.01);
-                world.setTime(Math.min(world.getTime() + 99, 18000));
             }
         };
         runner.runTaskTimer(StadtServer.getInstance(), 1, 1);

@@ -1,7 +1,6 @@
 package me.mfk1016.stadtserver.logic.tree;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Axis;
 import org.bukkit.Material;

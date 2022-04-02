@@ -159,6 +159,9 @@ public class StadtServerCommand implements CommandExecutor {
             case "summon":
                 spell = SpellManager.SUMMON;
                 break;
+            case "magnet":
+                spell = SpellManager.MAGNET;
+                break;
             default:
                 return false;
         }

@@ -1,25 +1,25 @@
-package me.mfk1016.stadtserver.origin.villager;
+package me.mfk1016.stadtserver.origin.trade;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.mfk1016.stadtserver.StadtServer;
-import org.bukkit.entity.Villager;
+import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
-public abstract class VillagerOrigin {
+public abstract class MerchantOrigin {
 
-    public static final ArrayList<VillagerOrigin> ORIGINS = new ArrayList<>();
+    public static final ArrayList<MerchantOrigin> ORIGINS = new ArrayList<>();
 
-    public static Optional<VillagerOrigin> match(Villager villager, MerchantRecipe recipe) {
+    public static Optional<MerchantOrigin> match(Merchant merchant, MerchantRecipe recipe) {
         Collections.shuffle(ORIGINS);
-        for (VillagerOrigin origin : ORIGINS) {
-            if (origin.isMatched(villager, recipe))
+        for (MerchantOrigin origin : ORIGINS) {
+            if (origin.isMatched(merchant, recipe))
                 return Optional.of(origin);
         }
         return Optional.empty();
@@ -39,26 +39,24 @@ public abstract class VillagerOrigin {
         for (JsonElement jsonElement : book) {
             ORIGINS.addAll(VillagerBookOrigin.fromJson(jsonElement.getAsJsonObject(), gson));
         }
+        JsonArray spell = root.getAsJsonArray("wandering_trader:spell");
+        for (JsonElement jsonElement : spell) {
+            ORIGINS.add(WanderingTraderSpellOrigin.fromJson(jsonElement.getAsJsonObject(), gson));
+        }
     }
 
     private final int chance;
-    protected final int villagerLevel;
 
-    public VillagerOrigin(int chance, int villagerLevel) {
+    public MerchantOrigin(int chance) {
         this.chance = chance;
-        this.villagerLevel = villagerLevel;
     }
 
-    private boolean isMatched(Villager villager, MerchantRecipe recipe) {
-        return villager.getVillagerLevel() == villagerLevel
-                && matchProfession(villager)
-                && isApplicable(villager, recipe)
+    protected boolean isMatched(Merchant merchant, MerchantRecipe recipe) {
+        return isApplicable(merchant, recipe)
                 && StadtServer.RANDOM.nextInt(100) < chance;
     }
 
-    protected abstract boolean matchProfession(Villager villager);
+    protected abstract boolean isApplicable(Merchant merchant, MerchantRecipe recipe);
 
-    protected abstract boolean isApplicable(Villager villager, MerchantRecipe recipe);
-
-    public abstract MerchantRecipe applyOrigin(Villager villager, MerchantRecipe oldRecipe);
+    public abstract MerchantRecipe applyOrigin(Merchant merchant, MerchantRecipe oldRecipe);
 }

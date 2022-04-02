@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.origin.villager;
+package me.mfk1016.stadtserver.origin.trade;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;

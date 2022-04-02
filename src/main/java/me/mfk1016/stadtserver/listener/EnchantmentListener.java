@@ -10,7 +10,7 @@ import me.mfk1016.stadtserver.origin.loot.ChestEnchantmentOrigin;
 import me.mfk1016.stadtserver.origin.loot.FishEnchantmentOrigin;
 import me.mfk1016.stadtserver.origin.loot.LootOrigin;
 import me.mfk1016.stadtserver.origin.loot.PiglinEnchantmentOrigin;
-import me.mfk1016.stadtserver.origin.villager.VillagerOrigin;
+import me.mfk1016.stadtserver.origin.trade.MerchantOrigin;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -69,9 +69,6 @@ public class EnchantmentListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onVillagerAquireTrade(VillagerAcquireTradeEvent event) {
-        if (!(event.getEntity() instanceof Villager villager))
-            return;
-
         MerchantRecipe recipe = event.getRecipe();
         ItemStack result = recipe.getResult();
 
@@ -85,10 +82,10 @@ public class EnchantmentListener implements Listener {
         }
 
         // Select the first possible trade matching the chance
-        Optional<VillagerOrigin> origin = VillagerOrigin.match(villager, recipe);
+        Optional<MerchantOrigin> origin = MerchantOrigin.match(event.getEntity(), recipe);
         if (origin.isEmpty())
             return;
-        event.setRecipe(origin.get().applyOrigin(villager, recipe));
+        event.setRecipe(origin.get().applyOrigin(event.getEntity(), recipe));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

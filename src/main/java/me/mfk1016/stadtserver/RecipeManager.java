@@ -35,6 +35,7 @@ public class RecipeManager {
         for (SmithingRecipe wrenchRecipe : getWrenchRecipes()) {
             Bukkit.addRecipe(wrenchRecipe);
         }
+        Bukkit.addRecipe(getMediumRecipe());
 
         SpellManager.ALL_SPELLS.forEach((spell) -> {
             for (Recipe recipe : spell.getRecipes())
@@ -117,6 +118,13 @@ public class RecipeManager {
             wrenchRecipes.add(new SmithingRecipe(trowelRecipeKey, shovel, base, trowelAdditive));
         }
         return wrenchRecipes;
+    }
+
+    private static SmithingRecipe getMediumRecipe() {
+        RecipeChoice base = new RecipeChoice.MaterialChoice(Material.values());
+        RecipeChoice medium = new RecipeChoice.MaterialChoice(SpellManager.SPELL_MEDIUMS);
+        NamespacedKey mediumRecipeKey = new NamespacedKey(StadtServer.getInstance(), "spellMediumRecipe");
+        return new SmithingRecipe(mediumRecipeKey, new ItemStack(Material.EMERALD), base, medium);
     }
 
     private enum SmeltingRecipes {

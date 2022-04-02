@@ -69,9 +69,7 @@ public class SummonSpell extends CustomSpell {
     public void summonPlayer(Player player, Block focus) {
         World world = focus.getWorld();
         BukkitRunnable runner = new BukkitRunnable() {
-
             int duration = 2;
-
             final Location spawnFocus = focus.getLocation().toCenterLocation();
             final Location spawnFocus2 = focus.getRelative(BlockFace.UP).getLocation().toCenterLocation();
 
