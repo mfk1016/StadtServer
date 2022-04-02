@@ -1,15 +1,18 @@
 package me.mfk1016.stadtserver.listener;
 
+import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import me.mfk1016.stadtserver.StadtServer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -65,6 +68,37 @@ public class VineListener implements Listener {
             playerMessage(event.getPlayer(), "Vine growth resumed at " + messageLocString(vineBlock));
         }
         event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerDestroyVine(BlockBreakEvent event) {
+        if (!isVine(event.getBlock().getType()))
+            return;
+        if (isVine(event.getBlock().getRelative(BlockFace.UP).getType()))
+            return;
+
+        Block vineBlock = event.getBlock();
+        NamespacedKey vineKey = getChunkContainerKey(vineBlock);
+        PersistentDataContainer pdc = vineBlock.getChunk().getPersistentDataContainer();
+        if (pdc.has(vineKey)) {
+            pdc.remove(vineKey);
+            playerMessage(event.getPlayer(), "Vine growth resumed at " + messageLocString(vineBlock));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onVineDestroy(BlockDestroyEvent event) {
+        if (!isVine(event.getBlock().getType()))
+            return;
+        if (isVine(event.getBlock().getRelative(BlockFace.UP).getType()))
+            return;
+
+        Block vineBlock = event.getBlock();
+        NamespacedKey vineKey = getChunkContainerKey(vineBlock);
+        PersistentDataContainer pdc = vineBlock.getChunk().getPersistentDataContainer();
+        if (pdc.has(vineKey)) {
+            pdc.remove(vineKey);
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
