@@ -1,5 +1,6 @@
 package me.mfk1016.stadtserver.listener;
 
+import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.logic.tree.TreeGenerator;
 import me.mfk1016.stadtserver.util.Pair;
@@ -11,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -22,6 +25,13 @@ public class TreeListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onTreeGrow(StructureGrowEvent event) {
         Player player = event.getPlayer();
+        Pair<Integer, Block> sizebase = getTreeShape(event.getLocation().getBlock());
+        if (sizebase == null) // not grown from sapling
+            return;
+        TreeGenerator gen = TreeGenerator.matchGenerator(sizebase._2, sizebase._2.getType(), sizebase._1);
+        if (gen == null)
+            return;
+
         if (player != null) {
             if (growingPlayers.contains(player.getUniqueId())) {
                 event.setCancelled(true);
@@ -30,23 +40,22 @@ public class TreeListener implements Listener {
                 growingPlayers.add(player.getUniqueId());
             }
         }
-        Pair<Integer, Block> sizebase = getTreeShape(event.getLocation().getBlock());
-        if (sizebase == null)
-            // not grown from a sapling -> no player involved
-            return;
-        int size = sizebase._1;
-        Block nwBase = sizebase._2;
-        Material sapling = nwBase.getType();
-        TreeGenerator gen = TreeGenerator.matchGenerator(nwBase, sapling, size);
-        if (gen != null && gen.isEnoughSpace()) {
-            gen.generateTree();
+        if (gen.isEnoughSpace()) {
+            BukkitRunnable runnable = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    gen.generateTree();
+                    if (player != null)
+                        growingPlayers.remove(player.getUniqueId());
+                }
+            };
             event.setCancelled(true);
-        }
-        if (player != null)
-            growingPlayers.remove(event.getPlayer().getUniqueId());
+            runnable.runTaskLater(StadtServer.getInstance(), 1L);
+        } else if (player != null)
+            growingPlayers.remove(player.getUniqueId());
     }
 
-    private Pair<Integer, Block> getTreeShape(Block test) {
+    private static Pair<Integer, Block> getTreeShape(Block test) {
         if (!PluginCategories.isSapling(test.getType()))
             return null;
         Material sap = test.getType();

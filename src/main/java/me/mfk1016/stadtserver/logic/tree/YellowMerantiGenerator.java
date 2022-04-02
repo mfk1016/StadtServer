@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Orientable;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +72,7 @@ public class YellowMerantiGenerator extends TreeGenerator {
             Block root = pickBranchRoot(branch, 1);
             int rootHeight = StadtServer.RANDOM.nextInt(3) + 2;
             Block log = root.getRelative(branch.toFace());
-            if (!log.isEmpty() && !PluginCategories.isLeaves(log.getType()) && log.getType() != saplingType)
+            if (!isRootTarget(log))
                 continue;
             for (int i = 0; i < rootHeight; i++) {
                 setWood(log.getRelative(0, i, 0), Axis.Y);
@@ -145,41 +146,47 @@ public class YellowMerantiGenerator extends TreeGenerator {
     }
 
     private void addMeratiLeaves(Block last) {
-        for (int x = 0; x <= 4; x++) {
-            for (int z = 0; z <= 4; z++) {
-                if (x <= 2 && z <= 2 && x + z < 3) {
-                    setLeaves(last.getRelative(x, 2, z));
-                    setLeaves(last.getRelative(x, -1, z));
-                    setLeaves(last.getRelative(-x, 2, z));
-                    setLeaves(last.getRelative(-x, -1, z));
-                    setLeaves(last.getRelative(x, 2, -z));
-                    setLeaves(last.getRelative(x, -1, -z));
-                    setLeaves(last.getRelative(-x, 2, -z));
-                    setLeaves(last.getRelative(-x, -1, -z));
-                }
-                if (x <= 3 && z <= 3 && x + z < 5) {
-                    setLeaves(last.getRelative(x, 1, z));
-                    setLeaves(last.getRelative(-x, 1, z));
-                    setLeaves(last.getRelative(x, 1, -z));
-                    setLeaves(last.getRelative(-x, 1, -z));
-                }
-                if (x + z < 7) {
-                    setLeaves(last.getRelative(x, 0, z));
-                    setLeaves(last.getRelative(-x, 0, z));
-                    setLeaves(last.getRelative(x, 0, -z));
-                    setLeaves(last.getRelative(-x, 0, -z));
-                }
-                // vines
-                if (StadtServer.RANDOM.nextInt(2) == 0 && x + z < 7) {
-                    if (x == 4) {
-                        setVines(last.getRelative(-5, 0, z), BlockFace.EAST);
-                        setVines(last.getRelative(5, 0, z), BlockFace.WEST);
-                    } else if (z == 4) {
-                        setVines(last.getRelative(x, 0, -5), BlockFace.SOUTH);
-                        setVines(last.getRelative(x, 0, 5), BlockFace.NORTH);
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (int x = 0; x <= 4; x++) {
+                    for (int z = 0; z <= 4; z++) {
+                        if (x <= 2 && z <= 2 && x + z < 3) {
+                            setLeaves(last.getRelative(x, 2, z));
+                            setLeaves(last.getRelative(x, -1, z));
+                            setLeaves(last.getRelative(-x, 2, z));
+                            setLeaves(last.getRelative(-x, -1, z));
+                            setLeaves(last.getRelative(x, 2, -z));
+                            setLeaves(last.getRelative(x, -1, -z));
+                            setLeaves(last.getRelative(-x, 2, -z));
+                            setLeaves(last.getRelative(-x, -1, -z));
+                        }
+                        if (x <= 3 && z <= 3 && x + z < 5) {
+                            setLeaves(last.getRelative(x, 1, z));
+                            setLeaves(last.getRelative(-x, 1, z));
+                            setLeaves(last.getRelative(x, 1, -z));
+                            setLeaves(last.getRelative(-x, 1, -z));
+                        }
+                        if (x + z < 7) {
+                            setLeaves(last.getRelative(x, 0, z));
+                            setLeaves(last.getRelative(-x, 0, z));
+                            setLeaves(last.getRelative(x, 0, -z));
+                            setLeaves(last.getRelative(-x, 0, -z));
+                        }
+                        // vines
+                        if (StadtServer.RANDOM.nextInt(2) == 0 && x + z < 7) {
+                            if (x == 4) {
+                                setVines(last.getRelative(-5, 0, z), BlockFace.EAST);
+                                setVines(last.getRelative(5, 0, z), BlockFace.WEST);
+                            } else if (z == 4) {
+                                setVines(last.getRelative(x, 0, -5), BlockFace.SOUTH);
+                                setVines(last.getRelative(x, 0, 5), BlockFace.NORTH);
+                            }
+                        }
                     }
                 }
             }
-        }
+        };
+        runnable.runTaskLater(StadtServer.getInstance(), 1L);
     }
 }

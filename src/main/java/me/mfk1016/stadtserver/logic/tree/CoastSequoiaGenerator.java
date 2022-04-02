@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Orientable;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,46 +56,51 @@ public class CoastSequoiaGenerator extends TreeGenerator {
         }
 
         // branches
-        List<Pair<Block, Branch>> branchBases = pickBranchBases();
-        int currBranch = 1;
-        for (var locbranch : branchBases) {
-            double yUp = Math.max(90D - ((currBranch - 1) * 5), 10D);
-            double yDown = yUp - 5;
-            int length = branchLength - StadtServer.RANDOM.nextInt(4) - (currBranch / 4);
-            Block last = randomBranchEnd(locbranch._1, locbranch._2, yDown, yUp, length, 0.8);
-            List<Pair<Block, Axis>> branchLogs = connectLogs(locbranch._1, last);
-            for (int i = 0; i < branchLogs.size(); i++) {
-                Block log = branchLogs.get(i)._1;
-                Axis axis = branchLogs.get(i)._2;
-                setWood(log, axis);
-                if (yUp > 15D)
-                    setWood(log.getRelative(BlockFace.DOWN), axis);
-                if (i < (branchLogs.size() / 3) * 2)
-                    continue;
-                for (BlockFace face : BlockFace.values()) {
-                    if (!face.isCartesian())
-                        continue;
-                    setLeaves(log.getRelative(face));
-                    if (yUp > 15D)
-                        setLeaves(log.getRelative(face).getRelative(BlockFace.DOWN));
-                    setLeaves(log.getRelative(face).getRelative(BlockFace.UP));
-                    if (face != BlockFace.UP && face != BlockFace.DOWN && i != branchLogs.size() - 1) {
-                        setLeaves(log.getRelative(face).getRelative(face));
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                List<Pair<Block, Branch>> branchBases = pickBranchBases();
+                int currBranch = 1;
+                for (var locbranch : branchBases) {
+                    double yUp = Math.max(90D - ((currBranch - 1) * 5), 10D);
+                    double yDown = yUp - 5;
+                    int length = branchLength - StadtServer.RANDOM.nextInt(4) - (currBranch / 4);
+                    Block last = randomBranchEnd(locbranch._1, locbranch._2, yDown, yUp, length, 0.8);
+                    List<Pair<Block, Axis>> branchLogs = connectLogs(locbranch._1, last);
+                    for (int i = 0; i < branchLogs.size(); i++) {
+                        Block log = branchLogs.get(i)._1;
+                        Axis axis = branchLogs.get(i)._2;
+                        setWood(log, axis);
                         if (yUp > 15D)
-                            setLeaves(log.getRelative(face).getRelative(face).getRelative(BlockFace.DOWN));
-                        //setLeaves(log.getRelative(face).getRelative(face).getRelative(BlockFace.UP));
+                            setWood(log.getRelative(BlockFace.DOWN), axis);
+                        if (i < (branchLogs.size() / 3) * 2)
+                            continue;
+                        for (BlockFace face : BlockFace.values()) {
+                            if (!face.isCartesian())
+                                continue;
+                            setLeaves(log.getRelative(face));
+                            if (yUp > 15D)
+                                setLeaves(log.getRelative(face).getRelative(BlockFace.DOWN));
+                            setLeaves(log.getRelative(face).getRelative(BlockFace.UP));
+                            if (face != BlockFace.UP && face != BlockFace.DOWN && i != branchLogs.size() - 1) {
+                                setLeaves(log.getRelative(face).getRelative(face));
+                                if (yUp > 15D)
+                                    setLeaves(log.getRelative(face).getRelative(face).getRelative(BlockFace.DOWN));
+                            }
+                        }
                     }
+                    currBranch++;
                 }
             }
-            currBranch++;
-        }
+        };
+        runnable.runTaskLater(StadtServer.getInstance(), 1L);
 
         // roots
         for (var branch : Branch.cardinals()) {
             Block root = pickBranchRoot(branch, 1);
             int rootHeight = StadtServer.RANDOM.nextInt(3) + 2;
             Block log = root.getRelative(branch.toFace());
-            if (!log.isEmpty() && !PluginCategories.isLeaves(log.getType()) && log.getType() != saplingType)
+            if (!isRootTarget(log))
                 continue;
             for (int i = 0; i < rootHeight; i++) {
                 setWood(log.getRelative(0, i, 0), Axis.Y);

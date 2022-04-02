@@ -6,6 +6,7 @@ import org.bukkit.Axis;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,19 +94,25 @@ public class ProperAcaciaGenerator extends TreeGenerator {
     }
 
     private void addAcaciaLeaves(Block last) {
-        for (int x = -4; x <= 4; x++) {
-            for (int z = -4; z <= 4; z++) {
-                if (Math.abs(x) + Math.abs(z) >= 7)
-                    continue;
-                setLeaves(last.getRelative(x, 0, z));
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (int x = -4; x <= 4; x++) {
+                    for (int z = -4; z <= 4; z++) {
+                        if (Math.abs(x) + Math.abs(z) >= 7)
+                            continue;
+                        setLeaves(last.getRelative(x, 0, z));
+                    }
+                }
+                for (int x = -3; x <= 3; x++) {
+                    for (int z = -3; z <= 3; z++) {
+                        if (Math.abs(x) + Math.abs(z) >= 5)
+                            continue;
+                        setLeaves(last.getRelative(x, 1, z));
+                    }
+                }
             }
-        }
-        for (int x = -3; x <= 3; x++) {
-            for (int z = -3; z <= 3; z++) {
-                if (Math.abs(x) + Math.abs(z) >= 5)
-                    continue;
-                setLeaves(last.getRelative(x, 1, z));
-            }
-        }
+        };
+        runnable.runTaskLater(StadtServer.getInstance(), 1L);
     }
 }

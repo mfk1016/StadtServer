@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.block.data.Orientable;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -170,30 +171,36 @@ public abstract class TreeGenerator {
     }
 
     protected void generateSphereLeaves(Block center, int radius) {
-        for (int x = 0; x <= radius; x++)
-            for (int y = 0; y <= radius; y++)
-                for (int z = 0; z <= radius; z++) {
-                    double currDist = Math.sqrt(x * x + y * y + z * z);
-                    if (currDist < (double) radius) {
-                        int random = currDist == radius ? 3 : 1;
-                        if (StadtServer.RANDOM.nextInt(random) == 0)
-                            setLeaves(center.getRelative(x, y, z));
-                        if (StadtServer.RANDOM.nextInt(random) == 0)
-                            setLeaves(center.getRelative(-x, y, z));
-                        if (StadtServer.RANDOM.nextInt(random) == 0)
-                            setLeaves(center.getRelative(x, -y, z));
-                        if (StadtServer.RANDOM.nextInt(random) == 0)
-                            setLeaves(center.getRelative(x, y, -z));
-                        if (StadtServer.RANDOM.nextInt(random) == 0)
-                            setLeaves(center.getRelative(-x, -y, z));
-                        if (StadtServer.RANDOM.nextInt(random) == 0)
-                            setLeaves(center.getRelative(-x, y, -z));
-                        if (StadtServer.RANDOM.nextInt(random) == 0)
-                            setLeaves(center.getRelative(x, -y, -z));
-                        if (StadtServer.RANDOM.nextInt(random) == 0)
-                            setLeaves(center.getRelative(-x, -y, -z));
-                    }
-                }
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (int x = 0; x <= radius; x++)
+                    for (int y = 0; y <= radius; y++)
+                        for (int z = 0; z <= radius; z++) {
+                            double currDist = Math.sqrt(x * x + y * y + z * z);
+                            if (currDist < (double) radius) {
+                                int random = currDist == radius ? 3 : 1;
+                                if (StadtServer.RANDOM.nextInt(random) == 0)
+                                    setLeaves(center.getRelative(x, y, z));
+                                if (StadtServer.RANDOM.nextInt(random) == 0)
+                                    setLeaves(center.getRelative(-x, y, z));
+                                if (StadtServer.RANDOM.nextInt(random) == 0)
+                                    setLeaves(center.getRelative(x, -y, z));
+                                if (StadtServer.RANDOM.nextInt(random) == 0)
+                                    setLeaves(center.getRelative(x, y, -z));
+                                if (StadtServer.RANDOM.nextInt(random) == 0)
+                                    setLeaves(center.getRelative(-x, -y, z));
+                                if (StadtServer.RANDOM.nextInt(random) == 0)
+                                    setLeaves(center.getRelative(-x, y, -z));
+                                if (StadtServer.RANDOM.nextInt(random) == 0)
+                                    setLeaves(center.getRelative(x, -y, -z));
+                                if (StadtServer.RANDOM.nextInt(random) == 0)
+                                    setLeaves(center.getRelative(-x, -y, -z));
+                            }
+                        }
+            }
+        };
+        runnable.runTaskLater(StadtServer.getInstance(), 1L);
     }
 
     protected void setLeaves(Block leaves) {
@@ -210,6 +217,17 @@ public abstract class TreeGenerator {
         MultipleFacing vine = (MultipleFacing) Material.VINE.createBlockData();
         vine.setFace(face, true);
         target.setBlockData(vine);
+    }
+
+    protected boolean isRootTarget(Block block) {
+        return block.isEmpty()
+                || PluginCategories.isLeaves(block.getType())
+                || block.getType() == saplingType
+                || block.getType() == Material.DIRT
+                || block.getType() == Material.GRASS_BLOCK
+                || block.getType() == Material.PODZOL
+                || block.getType() == Material.MYCELIUM
+                || block.getType() == Material.ROOTED_DIRT;
     }
 
     public abstract void generateTree();

@@ -98,7 +98,7 @@ public class ProperDarkOakGenerator extends TreeGenerator {
             Block root = pickBranchRoot(branch, 1);
             boolean high = StadtServer.RANDOM.nextInt(2) == 0;
             Block log = root.getRelative(branch.toFace());
-            if (!log.isEmpty() && !PluginCategories.isLeaves(log.getType()) && log.getType() != saplingType)
+            if (!isRootTarget(log))
                 continue;
             log.setType(Material.DARK_OAK_WOOD);
             if (high)
