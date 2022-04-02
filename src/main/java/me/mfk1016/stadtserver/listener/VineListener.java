@@ -25,7 +25,7 @@ public class VineListener implements Listener {
     public void onPlayerShearVine(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
-        if (!event.hasBlock() || Objects.requireNonNull(event.getClickedBlock()).getType() != Material.VINE)
+        if (!event.hasBlock() || !isVine(Objects.requireNonNull(event.getClickedBlock()).getType()))
             return;
         if (!event.hasItem() || Objects.requireNonNull(event.getItem()).getType() != Material.SHEARS)
             return;
@@ -48,7 +48,7 @@ public class VineListener implements Listener {
     public void onPlayerBonemealVine(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
-        if (!event.hasBlock() || Objects.requireNonNull(event.getClickedBlock()).getType() != Material.VINE)
+        if (!event.hasBlock() || !isVine(Objects.requireNonNull(event.getClickedBlock()).getType()))
             return;
         if (!event.hasItem() || Objects.requireNonNull(event.getItem()).getType() != Material.BONE_MEAL)
             return;
@@ -69,7 +69,7 @@ public class VineListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onVineGrow(BlockSpreadEvent event) {
-        if (event.getSource().getType() != Material.VINE)
+        if (!isVine(event.getSource().getType()))
             return;
         Location sourceLoc = event.getSource().getLocation();
         Location targetLoc = event.getBlock().getLocation();
@@ -95,6 +95,13 @@ public class VineListener implements Listener {
     private String messageLocString(Block vineBlock) {
         Location loc = vineBlock.getLocation();
         return "X: " + loc.getBlockX() + " Z: " + loc.getBlockZ();
+    }
+
+    private static boolean isVine(Material mat) {
+        return switch (mat) {
+            case VINE, CAVE_VINES_PLANT, CAVE_VINES -> true;
+            default -> false;
+        };
     }
 
 }

@@ -38,13 +38,13 @@ public class SummonSpell extends CustomSpell {
 
     @Override
     public boolean canEnchantItem(@NotNull ItemStack item) {
-        return item.getType() == Material.CLOCK;
+        return item.getType() == Material.COMPASS;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onUseClock(PlayerInteractEvent event) {
-        ItemStack clock = event.getItem();
-        if (stackEmpty(clock) || SpellManager.getSpellCharges(clock, this) == 0)
+    public void onUseCompass(PlayerInteractEvent event) {
+        ItemStack compass = event.getItem();
+        if (stackEmpty(compass) || SpellManager.getSpellCharges(compass, this) == 0)
             return;
         Block focus = event.getClickedBlock();
         if (focus == null || focus.getType() != Material.PLAYER_HEAD)
@@ -61,8 +61,8 @@ public class SummonSpell extends CustomSpell {
             return;
 
         world.playSound(event.getPlayer().getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 4f, 1f);
-        world.playSound(target.getLocation(), Sound.ENTITY_WITCH_CELEBRATE, 4f, 1f);
-        SpellManager.useSpellCharge(clock, this);
+        target.playSound(target.getLocation(), Sound.ENTITY_WITCH_CELEBRATE, 4f, 1f);
+        SpellManager.useSpellCharge(compass, this);
         summonPlayer(target, focus.getRelative(BlockFace.UP));
     }
 
