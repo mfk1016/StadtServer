@@ -73,6 +73,10 @@ public class EvokerBossRitual extends BossRitual {
         };
         if (target != -1) {
             ItemFrame targetFrame = frames[target];
+            if (targetFrame.getItem().getType() != Material.DIAMOND) {
+                state = RitualState.FAILURE;
+                return;
+            }
             targetFrame.setItem(null);
             targetFrame.getWorld().playSound(targetFrame.getLocation(), Sound.ENTITY_VILLAGER_DEATH, 4, 1);
         }

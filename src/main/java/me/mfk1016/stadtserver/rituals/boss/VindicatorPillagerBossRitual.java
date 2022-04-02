@@ -75,6 +75,10 @@ public class VindicatorPillagerBossRitual extends BossRitual {
         };
         if (target != -1) {
             Block targetBanner = bannerBlocks[target].getRelative(0, 2, 0);
+            if (!targetBanner.getType().name().endsWith("_BANNER")) {
+                state = RitualState.FAILURE;
+                return;
+            }
             targetBanner.setType(Material.AIR);
             targetBanner.getWorld().playSound(targetBanner.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 4, 1);
         }

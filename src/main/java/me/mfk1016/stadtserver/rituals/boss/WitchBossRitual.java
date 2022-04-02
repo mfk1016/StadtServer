@@ -68,7 +68,10 @@ public class WitchBossRitual extends BossRitual {
         };
         if (target != -1) {
             Block targetCandle = edgeBlocks[target].getRelative(BlockFace.UP);
-            Candle candle = (Candle) targetCandle.getBlockData();
+            if (!(targetCandle.getBlockData() instanceof Candle candle)) {
+                state = RitualState.FAILURE;
+                return;
+            }
             candle.setLit(false);
             targetCandle.setBlockData(candle);
             targetCandle.getWorld().playSound(targetCandle.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 4, 1);

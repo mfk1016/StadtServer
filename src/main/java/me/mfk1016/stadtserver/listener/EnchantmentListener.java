@@ -16,6 +16,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -173,9 +174,27 @@ public class EnchantmentListener implements Listener {
             return;
 
         Block clicked = Objects.requireNonNull(event.getClickedBlock());
+        if (clicked.getBlockData() instanceof Waterlogged waterlogged) {
+            waterlogged.setWaterlogged(true);
+            clicked.setBlockData(waterlogged);
+            clicked.getWorld().playSound(event.getPlayer().getLocation(), Sound.ITEM_BUCKET_EMPTY, 1f, 1f);
+            event.setCancelled(true);
+            return;
+        } else if (clicked.isLiquid()) {
+            event.setCancelled(true);
+            return;
+        }
+
         Block target = clicked.getRelative(event.getBlockFace());
-        target.setType(Material.WATER);
-        target.getWorld().playSound(event.getPlayer().getLocation(), Sound.ITEM_BUCKET_EMPTY, 1f, 1f);
+        if (target.getBlockData() instanceof Waterlogged waterlogged) {
+            waterlogged.setWaterlogged(true);
+            target.setBlockData(waterlogged);
+            target.getWorld().playSound(event.getPlayer().getLocation(), Sound.ITEM_BUCKET_EMPTY, 1f, 1f);
+        } else if (target.isEmpty()) {
+            target.setType(Material.WATER);
+            target.getWorld().playSound(event.getPlayer().getLocation(), Sound.ITEM_BUCKET_EMPTY, 1f, 1f);
+
+        }
         event.setCancelled(true);
     }
 }
