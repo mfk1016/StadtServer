@@ -11,9 +11,12 @@ import org.bukkit.block.Dropper;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.entity.Item;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
 
 public class DispenserDropperLogic {
 
@@ -24,24 +27,29 @@ public class DispenserDropperLogic {
                 tryPlanting(dispenserBlock, item);
     }
 
-    public static void tryChuteAction(Dropper dropperState, ItemStack item) {
+    public static void tryChuteAction(Dropper dropperState, InventoryMoveItemEvent event) {
         if (!WrenchEnchantment.isWrenched(dropperState))
             return;
 
         Block dropperBlock = dropperState.getBlock();
         Directional dropperData = (Directional) dropperBlock.getBlockData();
         Block target = dropperBlock.getRelative(dropperData.getFacing());
-        if (target.getState() instanceof Container) {
-            BukkitRunnable runnable = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    dropperState.drop();
-                }
-            };
-            runnable.runTaskLater(StadtServer.getInstance(), 1L);
+        if (target.getState() instanceof Container container) {
+            HashMap<Integer, ItemStack> invalid = container.getInventory().addItem(event.getItem());
+            if (invalid.isEmpty()) {
+                BukkitRunnable runnable = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        dropperState.update();
+                    }
+                };
+                runnable.runTaskLater(StadtServer.getInstance(), 1L);
+            } else {
+                event.setCancelled(true);
+            }
         } else {
             Location targetPos = target.getLocation().clone().add(TO_BLOCK_CENTER);
-            Item result = dropperBlock.getWorld().dropItem(targetPos, item);
+            Item result = dropperBlock.getWorld().dropItem(targetPos, event.getItem());
             BukkitRunnable runnable = new BukkitRunnable() {
                 @Override
                 public void run() {

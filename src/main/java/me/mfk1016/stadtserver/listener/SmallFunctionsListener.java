@@ -71,7 +71,7 @@ public class SmallFunctionsListener implements Listener {
         if (!(event.getDestination().getHolder() instanceof Dropper dropperState))
             return;
 
-        DispenserDropperLogic.tryChuteAction(dropperState, event.getItem());
+        DispenserDropperLogic.tryChuteAction(dropperState, event);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
