@@ -67,13 +67,6 @@ public class RecipeManager {
         ALL_BREWING_RECIPES.clear();
     }
 
-    public static BrewingRecipe byID(String id) {
-        for (var recipe : ALL_BREWING_RECIPES)
-            if (recipe.getRecipeID().equals(id))
-                return recipe;
-        return null;
-    }
-
     public static BrewingRecipe matchBrewingRecipe(BrewerInventory inventory, boolean weakMatch) {
 
         ItemStack ingredient = inventory.getIngredient();

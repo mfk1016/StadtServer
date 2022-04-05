@@ -33,7 +33,7 @@ public class WarpedFungusRecipe extends BrewingRecipe {
     }
 
     public WarpedFungusRecipe() {
-        super("warped_fungus");
+        super();
     }
 
     @Override

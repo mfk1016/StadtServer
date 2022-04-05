@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class ShieldingRecipe extends BrewingRecipe {
 
     public ShieldingRecipe() {
-        super("shielding");
+        super();
     }
 
     @Override

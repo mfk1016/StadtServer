@@ -22,7 +22,7 @@ public class CustomAmplifyRecipe extends BrewingRecipe {
     }
 
     public CustomAmplifyRecipe() {
-        super("custom_amplify");
+        super();
     }
 
     @Override

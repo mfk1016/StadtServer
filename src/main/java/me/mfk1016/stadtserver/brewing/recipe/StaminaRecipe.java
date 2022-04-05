@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class StaminaRecipe extends BrewingRecipe {
 
     public StaminaRecipe() {
-        super("stamina");
+        super();
     }
 
     @Override

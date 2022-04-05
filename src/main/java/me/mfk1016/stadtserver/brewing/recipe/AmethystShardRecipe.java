@@ -31,7 +31,7 @@ public class AmethystShardRecipe extends BrewingRecipe {
     }
 
     public AmethystShardRecipe() {
-        super("amethyst_shard");
+        super();
     }
 
     @Override

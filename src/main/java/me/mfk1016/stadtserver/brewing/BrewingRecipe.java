@@ -6,15 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class BrewingRecipe {
 
-    private final String recipeID;
-
-    public BrewingRecipe(String id) {
-        this.recipeID = id;
-    }
-
-    public String getRecipeID() {
-        return recipeID;
-    }
+    public BrewingRecipe() {}
 
     public abstract boolean isApplicable(@NotNull ItemStack input, Material ingredient);
 

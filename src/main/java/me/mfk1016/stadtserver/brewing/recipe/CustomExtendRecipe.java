@@ -22,7 +22,7 @@ public class CustomExtendRecipe extends BrewingRecipe {
     }
 
     public CustomExtendRecipe() {
-        super("custom_extend");
+        super();
     }
 
     @Override

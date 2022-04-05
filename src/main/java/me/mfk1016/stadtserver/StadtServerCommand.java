@@ -35,14 +35,16 @@ public class StadtServerCommand implements CommandExecutor {
                     StadtServer.getInstance().reloadConfig();
                     CategoryManager.initialize(true);
                     OriginManager.initialize(true);
-                    player.sendMessage("Configuration + Sorting reloaded.");
+                    player.sendMessage("Configuration reloaded.");
                     return true;
                 } else if (toDo.equals("reset")) {
                     StadtServer.getInstance().saveResource("config.yml", true);
                     StadtServer.getInstance().saveResource("sorting.json", true);
                     StadtServer.getInstance().saveResource("origins.json", true);
                     StadtServer.getInstance().reloadConfig();
-                    player.sendMessage("Default configuration dumped.");
+                    CategoryManager.initialize(true);
+                    OriginManager.initialize(true);
+                    player.sendMessage("Default configuration dumped and reloaded.");
                     return true;
                 }
             }

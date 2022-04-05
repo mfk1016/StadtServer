@@ -13,7 +13,7 @@ import java.util.Objects;
 public class CustomSplashRecipe extends BrewingRecipe {
 
     public CustomSplashRecipe() {
-        super("custom_splash");
+        super();
     }
 
     @Override

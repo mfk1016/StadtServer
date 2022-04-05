@@ -12,7 +12,7 @@ import java.util.Objects;
 public class DyePotionRecipe extends BrewingRecipe {
 
     public DyePotionRecipe() {
-        super("dye_potion");
+        super();
     }
 
     @Override

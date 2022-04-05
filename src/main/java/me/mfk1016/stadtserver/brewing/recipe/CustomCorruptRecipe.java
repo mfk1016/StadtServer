@@ -25,7 +25,7 @@ public class CustomCorruptRecipe extends BrewingRecipe {
     }
 
     public CustomCorruptRecipe() {
-        super("custom_corrupt");
+        super();
     }
 
     @Override

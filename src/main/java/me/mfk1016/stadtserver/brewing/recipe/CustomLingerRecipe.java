@@ -13,7 +13,7 @@ import java.util.Objects;
 public class CustomLingerRecipe extends BrewingRecipe {
 
     public CustomLingerRecipe() {
-        super("custom_linger");
+        super();
     }
 
     @Override
