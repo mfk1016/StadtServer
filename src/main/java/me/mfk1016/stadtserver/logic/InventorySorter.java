@@ -108,18 +108,24 @@ public class InventorySorter {
     private static int cmpEnchantments(ItemStack a, ItemStack b) {
 
         // enchanted < not enchanted
-        // more enchantments < less enchantments
         Map<Enchantment, Integer> enchantmentsA = EnchantmentManager.getItemEnchantments(a);
         Map<Enchantment, Integer> enchantmentsB = EnchantmentManager.getItemEnchantments(b);
         String nameA = "";
         String nameB = "";
-        if (!enchantmentsA.isEmpty()) {
-            nameA = enchantmentsA.keySet().stream().toList().get(0).getKey().getKey();
+        int levelA = 0;
+        int levelB = 0;
+        for (var enchA : enchantmentsA.entrySet()) {
+            nameA = enchA.getKey().getKey().getKey();
+            levelA = enchA.getValue();
+            break;
         }
-        if (!enchantmentsB.isEmpty()) {
-            nameB = enchantmentsB.keySet().stream().toList().get(0).getKey().getKey();
+        for (var enchB : enchantmentsB.entrySet()) {
+            nameB = enchB.getKey().getKey().getKey();
+            levelB = enchB.getValue();
+            break;
         }
         int nameCmp = Integer.compare(nameA.compareTo(nameB), 0);
+        int levelCmp = Integer.compare(levelA, levelB);
 
         if (enchantmentsA.isEmpty() && enchantmentsB.isEmpty()) {
             return 0;
@@ -130,7 +136,7 @@ public class InventorySorter {
         } else if (nameCmp != 0) {
             return nameCmp;
         } else {
-            return Integer.compare(enchantmentsB.size(), enchantmentsA.size());
+            return levelCmp;
         }
     }
 

@@ -29,7 +29,7 @@ public class OriginManager {
             LootOrigin.initialize(object, gson);
             MobOrigin.initialize(object, gson);
         } catch (Exception e) {
-            StadtServer.LOGGER.severe("sorting.json loading error: sorting categories not available");
+            StadtServer.LOGGER.severe("origins.json loading error: origins not available");
             e.printStackTrace();
         }
     }
