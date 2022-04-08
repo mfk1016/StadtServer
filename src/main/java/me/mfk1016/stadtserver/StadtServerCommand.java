@@ -1,5 +1,7 @@
 package me.mfk1016.stadtserver;
 
+import me.mfk1016.stadtserver.brewing.PotionRecipeManager;
+import me.mfk1016.stadtserver.brewing.PotionManager;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.BossMobListener;
@@ -34,15 +36,20 @@ public class StadtServerCommand implements CommandExecutor {
                 if (toDo.equals("reload")) {
                     StadtServer.getInstance().reloadConfig();
                     CategoryManager.initialize(true);
+                    PotionManager.initialize(true);
+                    PotionRecipeManager.initialize();
                     OriginManager.initialize(true);
                     player.sendMessage("Configuration reloaded.");
                     return true;
                 } else if (toDo.equals("reset")) {
                     StadtServer.getInstance().saveResource("config.yml", true);
                     StadtServer.getInstance().saveResource("sorting.json", true);
+                    StadtServer.getInstance().saveResource("potions.json", true);
                     StadtServer.getInstance().saveResource("origins.json", true);
                     StadtServer.getInstance().reloadConfig();
                     CategoryManager.initialize(true);
+                    PotionManager.initialize(true);
+                    PotionRecipeManager.initialize();
                     OriginManager.initialize(true);
                     player.sendMessage("Default configuration dumped and reloaded.");
                     return true;

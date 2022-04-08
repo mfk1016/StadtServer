@@ -1,7 +1,8 @@
 package me.mfk1016.stadtserver;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import me.mfk1016.stadtserver.brewing.BrewingManager;
+import me.mfk1016.stadtserver.brewing.PotionRecipeManager;
+import me.mfk1016.stadtserver.brewing.PotionManager;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.*;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
@@ -22,7 +23,7 @@ public class StadtServer extends JavaPlugin {
     public static final Logger LOGGER = Logger.getLogger("Minecraft");
     public static final Random RANDOM = new Random();
     private static StadtServer plugin = null;
-    private SignPacketListener signPacketListener;
+    private SignPacketListener signPacketListener = null;
 
     public static StadtServer getInstance() {
         return plugin;
@@ -41,7 +42,10 @@ public class StadtServer extends JavaPlugin {
         EnchantmentManager.onPluginEnable();
         LOGGER.info(getDescription().getName() + ": register spells...");
         SpellManager.onPluginEnable();
-
+        LOGGER.info(getDescription().getName() + ": register potions...");
+        PotionManager.initialize(false);
+        PotionRecipeManager.initialize();
+        LOGGER.info(getDescription().getName() + ": enable origins...");
         OriginManager.initialize(false);
 
         LOGGER.info(getDescription().getName() + ": enable listeners...");
@@ -54,7 +58,7 @@ public class StadtServer extends JavaPlugin {
         pm.registerEvents(new SpellListener(), this);
         pm.registerEvents(new BossMobListener(), this);
         pm.registerEvents(new DoorListener(), this);
-        pm.registerEvents(new BrewingManager(), this);
+        pm.registerEvents(new PotionRecipeManager(), this);
         pm.registerEvents(new TreeListener(), this);
         pm.registerEvents(new VineListener(), this);
         ProtocolLibrary.getProtocolManager().addPacketListener(signPacketListener);
@@ -70,11 +74,12 @@ public class StadtServer extends JavaPlugin {
     public void onDisable() {
         RitualManager.onPluginDisable();
         HandlerList.unregisterAll(this);
-        ProtocolLibrary.getProtocolManager().removePacketListener(signPacketListener);
+        if (signPacketListener != null)
+            ProtocolLibrary.getProtocolManager().removePacketListener(signPacketListener);
         signPacketListener = null;
         EnchantmentManager.onPluginDisable();
         SpellManager.onPluginDisable();
-        RecipeManager.unregisterBrewingRecipes();
+        //RecipeManager.unregisterBrewingRecipes();
         saveConfig();
         LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " stopped.");
     }

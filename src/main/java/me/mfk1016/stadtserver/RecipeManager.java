@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver;
 
-import me.mfk1016.stadtserver.brewing.BrewingRecipe;
 import me.mfk1016.stadtserver.brewing.recipe.*;
 import me.mfk1016.stadtserver.spells.SpellManager;
 import org.bukkit.Bukkit;
@@ -12,11 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
-
 public class RecipeManager {
 
-    private static final List<BrewingRecipe> ALL_BREWING_RECIPES = new ArrayList<>();
     private static final int FURNACE = 0;
     private static final int SMOKER = 1;
     private static final int BLAST = 2;
@@ -46,50 +42,6 @@ public class RecipeManager {
         var clayBlockToBall = new ShapelessRecipe(new NamespacedKey(StadtServer.getInstance(), "clay_block_to_ball"), new ItemStack(Material.CLAY_BALL, 4));
         clayBlockToBall.addIngredient(1, Material.CLAY);
         Bukkit.addRecipe(clayBlockToBall);
-
-        if (ALL_BREWING_RECIPES.isEmpty()) {
-            ALL_BREWING_RECIPES.add(new WarpedFungusRecipe());
-            ALL_BREWING_RECIPES.add(new AmethystShardRecipe());
-
-            ALL_BREWING_RECIPES.add(new StaminaRecipe());
-            ALL_BREWING_RECIPES.add(new ShieldingRecipe());
-
-            ALL_BREWING_RECIPES.add(new CustomAmplifyRecipe());
-            ALL_BREWING_RECIPES.add(new CustomExtendRecipe());
-            ALL_BREWING_RECIPES.add(new CustomCorruptRecipe());
-            ALL_BREWING_RECIPES.add(new CustomSplashRecipe());
-            ALL_BREWING_RECIPES.add(new CustomLingerRecipe());
-            ALL_BREWING_RECIPES.add(new DyePotionRecipe());
-        }
-    }
-
-    public static void unregisterBrewingRecipes() {
-        ALL_BREWING_RECIPES.clear();
-    }
-
-    public static BrewingRecipe matchBrewingRecipe(BrewerInventory inventory, boolean weakMatch) {
-
-        ItemStack ingredient = inventory.getIngredient();
-        if (ingredient == null)
-            return null;
-
-        for (var recipe : ALL_BREWING_RECIPES) {
-            boolean match = false;
-            int matchCount = 0;
-            for (int i = 0; i < 3; i++) {
-                ItemStack input = inventory.getItem(i);
-                if (stackEmpty(input)) {
-                    matchCount++;
-                } else if (recipe.isApplicable(input, ingredient.getType())) {
-                    match = true;
-                    matchCount++;
-                }
-            }
-            if (match && (weakMatch || matchCount == 3)) {
-                return recipe;
-            }
-        }
-        return null;
     }
 
     private static List<SmithingRecipe> getWrenchRecipes() {

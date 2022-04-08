@@ -88,4 +88,11 @@ public class PluginCategories {
             default -> false;
         };
     }
+
+    public static boolean isPotion(Material material) {
+        return switch (material) {
+            case POTION, SPLASH_POTION, LINGERING_POTION -> true;
+            default -> false;
+        };
+    }
 }
