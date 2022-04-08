@@ -81,10 +81,10 @@ public abstract class TreeGenerator {
         for (int y = 0; y < treeHeight; y++) {
             for (int z = 0; z < checkSquare; z++) {
                 for (int x = 0; y < checkSquare; x++) {
-                    Block current = corner.getRelative(x, y, z);
-                    if (PluginCategories.isLog(current.getType()) || PluginCategories.isWood(current.getType()))
+                    Material current = corner.getRelative(x, y, z).getType();
+                    if (PluginCategories.isLog(current) || PluginCategories.isWood(current))
                         continue;
-                    if (current.getType().isOccluding())
+                    if (current.isOccluding())
                         break;
                 }
             }
