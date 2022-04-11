@@ -76,6 +76,7 @@ public class MultiPotionRecipe extends AdvancedPotionRecipe {
         recipe.recipeMap.put("slow_falling:1_1", "levitation:1_1");
         recipe.recipeMap.put("slow_falling:2_1", "levitation:2_1");
         recipe.recipeMap.put("slow_falling:3_1", "levitation:3_1");
+        recipe.addRandomOutput(3, "bad_omen:0_4");
         return recipe;
     }
 }

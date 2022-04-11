@@ -21,6 +21,7 @@ public class WarpedFungusRecipe extends MultiPotionRecipe {
             }
         }
         addRandomOutput(10, "failure");
+        addRandomOutput(1, "luck:0_2");
     }
 
     @Override

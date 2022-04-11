@@ -1,6 +1,8 @@
 {
   "custom_types" : [
     { "id" : "failure", "name" : "", "effects" : [] },
+    { "id" : "luck:0_2", "name" : "Luck", "effects" : [{ "type" : "luck", "duration" : 6000, "level" : 2 }] },
+    { "id" : "bad_omen:0_4", "name": "Negativity", "effects" : [{ "type" : "bad_omen", "duration" : 18000, "level" : 4 }] },
 
     { "id" : "haste:1_1", "name" : "Stamina", "effects" : [{ "type" : "haste", "duration" : 3600, "level" : 1 }] },
     { "id" : "haste:2_1", "name" : "Stamina", "effects" : [{ "type" : "haste", "duration" : 9600, "level" : 1 }] },

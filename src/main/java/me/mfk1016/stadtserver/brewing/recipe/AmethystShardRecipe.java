@@ -20,7 +20,9 @@ public class AmethystShardRecipe extends MultiPotionRecipe {
                     recipeMap.put(baseID, type.id());
             }
         }
-        addRandomOutput(20, "failure");
+        addRandomOutput(17, "failure");
+        addRandomOutput(2, "luck:0_2");
+        addRandomOutput(1, "bad_omen:0_4");
     }
 
     @Override
