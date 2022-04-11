@@ -75,8 +75,8 @@ public class YellowMerantiGenerator extends TreeGenerator {
             if (!isRootTarget(log))
                 continue;
             for (int i = 0; i < rootHeight; i++) {
-                setWood(log.getRelative(0, i, 0), Axis.Y);
-                setWood(log.getRelative(0, i - 2, 0).getRelative(branch.toFace()), Axis.Y);
+                setRoot(log.getRelative(0, i, 0));
+                setRoot(log.getRelative(0, i - 2, 0).getRelative(branch.toFace()));
             }
         }
 
@@ -141,6 +141,16 @@ public class YellowMerantiGenerator extends TreeGenerator {
         log.setType(Material.JUNGLE_WOOD);
         if (log.getBlockData() instanceof Orientable o) {
             o.setAxis(axis);
+            log.setBlockData(o);
+        }
+    }
+
+    protected void setRoot(Block log) {
+        if (!isRootTarget(log))
+            return;
+        log.setType(Material.JUNGLE_WOOD);
+        if (log.getBlockData() instanceof Orientable o) {
+            o.setAxis(Axis.Y);
             log.setBlockData(o);
         }
     }

@@ -48,8 +48,10 @@ public class PotionRecipeManager implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAdvancedBrewFinished(BrewEvent event) {
         for (AdvancedPotionRecipe recipe : recipes)
-            if (recipe.isIngredientMatched(event))
+            if (recipe.isIngredientMatched(event)) {
                 recipe.applyAdvancedRecipe(event);
+                recipe.applyRandomOutput(event);
+            }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

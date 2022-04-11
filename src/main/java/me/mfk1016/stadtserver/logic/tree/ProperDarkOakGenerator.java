@@ -95,12 +95,14 @@ public class ProperDarkOakGenerator extends TreeGenerator {
         // roots
         for (var branch : Branch.cardinals()) {
             Block root = pickBranchRoot(branch, 1);
-            boolean high = StadtServer.RANDOM.nextInt(2) == 0;
             Block log = root.getRelative(branch.toFace());
             if (!isRootTarget(log))
                 continue;
             log.setType(Material.DARK_OAK_WOOD);
-            if (high)
+            Block below = log.getRelative(BlockFace.DOWN);
+            if (isRootTarget(below))
+                below.setType(Material.DARK_OAK_WOOD);
+            if (StadtServer.RANDOM.nextInt(2) == 0)
                 log.getRelative(BlockFace.UP).setType(Material.DARK_OAK_WOOD);
         }
     }

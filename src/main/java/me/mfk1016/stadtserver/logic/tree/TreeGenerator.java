@@ -80,7 +80,7 @@ public abstract class TreeGenerator {
         }
         for (int y = 0; y < treeHeight; y++) {
             for (int z = 0; z < checkSquare; z++) {
-                for (int x = 0; y < checkSquare; x++) {
+                for (int x = 0; x < checkSquare; x++) {
                     Material current = corner.getRelative(x, y, z).getType();
                     if (PluginCategories.isLog(current) || PluginCategories.isWood(current))
                         continue;
@@ -143,7 +143,8 @@ public abstract class TreeGenerator {
         if (step.length() == 0)
             return result;
         Vector offset = new Vector();
-        while (distance.length() > offset.length()) {
+        double distance_length = distance.length();
+        while (distance_length > offset.length()) {
             Block current = last.getRelative(offset.getBlockX(), offset.getBlockY(), offset.getBlockZ());
             for (var baseOffset : additionalBaseOffsets) {
                 Block add = current.getRelative(baseOffset.getBlockX(), baseOffset.getBlockY(), baseOffset.getBlockZ());
@@ -171,31 +172,16 @@ public abstract class TreeGenerator {
     }
 
     protected void generateSphereLeaves(Block center, int radius) {
+        assert radius > 0;
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
-                for (int x = 0; x <= radius; x++)
-                    for (int y = 0; y <= radius; y++)
-                        for (int z = 0; z <= radius; z++) {
+                for (int x = -radius; x <= radius; x++)
+                    for (int y = -radius; y <= radius; y++)
+                        for (int z = -radius; z <= radius; z++) {
                             double currDist = Math.sqrt(x * x + y * y + z * z);
                             if (currDist < (double) radius) {
-                                int random = currDist == radius ? 3 : 1;
-                                if (StadtServer.RANDOM.nextInt(random) == 0)
-                                    setLeaves(center.getRelative(x, y, z));
-                                if (StadtServer.RANDOM.nextInt(random) == 0)
-                                    setLeaves(center.getRelative(-x, y, z));
-                                if (StadtServer.RANDOM.nextInt(random) == 0)
-                                    setLeaves(center.getRelative(x, -y, z));
-                                if (StadtServer.RANDOM.nextInt(random) == 0)
-                                    setLeaves(center.getRelative(x, y, -z));
-                                if (StadtServer.RANDOM.nextInt(random) == 0)
-                                    setLeaves(center.getRelative(-x, -y, z));
-                                if (StadtServer.RANDOM.nextInt(random) == 0)
-                                    setLeaves(center.getRelative(-x, y, -z));
-                                if (StadtServer.RANDOM.nextInt(random) == 0)
-                                    setLeaves(center.getRelative(x, -y, -z));
-                                if (StadtServer.RANDOM.nextInt(random) == 0)
-                                    setLeaves(center.getRelative(-x, -y, -z));
+                                setLeaves(center.getRelative(x, y, z));
                             }
                         }
             }
@@ -222,12 +208,12 @@ public abstract class TreeGenerator {
     protected boolean isRootTarget(Block block) {
         return block.isEmpty()
                 || PluginCategories.isLeaves(block.getType())
-                || block.getType() == saplingType
-                || block.getType() == Material.DIRT
-                || block.getType() == Material.GRASS_BLOCK
-                || block.getType() == Material.PODZOL
-                || block.getType() == Material.MYCELIUM
-                || block.getType() == Material.ROOTED_DIRT;
+                || PluginCategories.isSapling(block.getType())
+                || switch (block.getType()) {
+                        case DIRT, GRASS_BLOCK, PODZOL, MYCELIUM,
+                                ROOTED_DIRT, GRASS, TALL_GRASS, WATER -> true;
+                        default -> false;
+                };
     }
 
     public abstract void generateTree();
