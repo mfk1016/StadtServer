@@ -26,7 +26,7 @@ public class YellowMerantiGenerator extends TreeGenerator {
 
     public YellowMerantiGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
-                Material.JUNGLE_LOG, Material.JUNGLE_LEAVES, Material.JUNGLE_SAPLING);
+                Material.JUNGLE_LOG, Material.JUNGLE_WOOD, Material.JUNGLE_LEAVES, Material.JUNGLE_SAPLING);
         checkSquare = 9;
     }
 
@@ -41,7 +41,7 @@ public class YellowMerantiGenerator extends TreeGenerator {
             for (int x = 0; x < 3; x++) {
                 for (int z = 0; z < 3; z++) {
                     if (y == trunkHeight - 1)
-                        setWood(nwBase.getRelative(x, y, z), Axis.Y);
+                        setWood(nwBase.getRelative(x, y, z), Axis.Y, false);
                     else
                         setLog(nwBase.getRelative(x, y, z), Axis.Y);
                 }
@@ -60,8 +60,8 @@ public class YellowMerantiGenerator extends TreeGenerator {
             for (Pair<Block, Axis> branchLog : branchLogs) {
                 Block log = branchLog._1;
                 Axis axis = branchLog._2;
-                setWood(log, axis);
-                setWood(log.getRelative(BlockFace.DOWN), axis);
+                setWood(log, axis, false);
+                setWood(log.getRelative(BlockFace.DOWN), axis, false);
             }
             addMeratiLeaves(last);
             currBranch++;
@@ -133,26 +133,6 @@ public class YellowMerantiGenerator extends TreeGenerator {
             case W -> nwBase.getRelative(0, height - 1, 1);
             case SW -> nwBase.getRelative(0, height - 1, 2);
         };
-    }
-
-    protected void setWood(Block log, Axis axis) {
-        if (!log.isEmpty() && !PluginCategories.isLeaves(log.getType()) && log.getType() != saplingType)
-            return;
-        log.setType(Material.JUNGLE_WOOD);
-        if (log.getBlockData() instanceof Orientable o) {
-            o.setAxis(axis);
-            log.setBlockData(o);
-        }
-    }
-
-    protected void setRoot(Block log) {
-        if (!isRootTarget(log))
-            return;
-        log.setType(Material.JUNGLE_WOOD);
-        if (log.getBlockData() instanceof Orientable o) {
-            o.setAxis(Axis.Y);
-            log.setBlockData(o);
-        }
     }
 
     private void addMeratiLeaves(Block last) {

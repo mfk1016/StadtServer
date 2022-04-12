@@ -2,7 +2,7 @@ package me.mfk1016.stadtserver.listener;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
-import me.mfk1016.stadtserver.logic.tree.TreeGenerator;
+import me.mfk1016.stadtserver.logic.tree.*;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -27,7 +27,7 @@ public class TreeListener implements Listener {
         Pair<Integer, Block> sizebase = getTreeShape(event.getLocation().getBlock());
         if (sizebase == null) // not grown from sapling
             return;
-        TreeGenerator gen = TreeGenerator.matchGenerator(sizebase._2, sizebase._2.getType(), sizebase._1);
+        TreeGenerator gen = matchGenerator(sizebase._2, sizebase._2.getType(), sizebase._1);
         if (gen == null)
             return;
 
@@ -87,5 +87,38 @@ public class TreeListener implements Listener {
             size++;
         }
         return new Pair<>(size, nwBase);
+    }
+
+    private TreeGenerator matchGenerator(Block root, Material saplingType, int size) {
+        switch (saplingType) {
+            case OAK_SAPLING -> {
+                if (size == 2)
+                    return new GermanOakGenerator(root);
+            }
+            case BIRCH_SAPLING -> {
+                if (size == 2)
+                    if (StadtServer.RANDOM.nextInt(4) == 0)
+                        return new SplitHimalayaBirchGenerator(root);
+                    else
+                        return new HimalayaBirchGenerator(root);
+            }
+            case DARK_OAK_SAPLING -> {
+                if (size == 3)
+                    return new ProperDarkOakGenerator(root);
+            }
+            case ACACIA_SAPLING -> {
+                if (size == 2)
+                    return new ProperAcaciaGenerator(root);
+            }
+            case JUNGLE_SAPLING -> {
+                if (size == 3)
+                    return new YellowMerantiGenerator(root);
+            }
+            case SPRUCE_SAPLING -> {
+                if (size == 3)
+                    return new CoastSequoiaGenerator(root);
+            }
+        }
+        return null;
     }
 }

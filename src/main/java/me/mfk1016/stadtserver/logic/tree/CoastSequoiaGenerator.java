@@ -26,7 +26,7 @@ public class CoastSequoiaGenerator extends TreeGenerator {
 
     public CoastSequoiaGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
-                Material.SPRUCE_LOG, Material.SPRUCE_LEAVES, Material.SPRUCE_SAPLING);
+                Material.SPRUCE_LOG, Material.SPRUCE_WOOD, Material.SPRUCE_LEAVES, Material.SPRUCE_SAPLING);
         checkSquare = 9;
     }
 
@@ -41,7 +41,7 @@ public class CoastSequoiaGenerator extends TreeGenerator {
             for (int x = 0; x < 3; x++) {
                 for (int z = 0; z < 3; z++) {
                     if (y == trunkHeight - 1) {
-                        setWood(nwBase.getRelative(x, y, z), Axis.Y);
+                        setWood(nwBase.getRelative(x, y, z), Axis.Y, false);
                         for (BlockFace face : BlockFace.values()) {
                             if (!face.isCartesian())
                                 continue;
@@ -70,9 +70,9 @@ public class CoastSequoiaGenerator extends TreeGenerator {
                     for (int i = 0; i < branchLogs.size(); i++) {
                         Block log = branchLogs.get(i)._1;
                         Axis axis = branchLogs.get(i)._2;
-                        setWood(log, axis);
+                        setWood(log, axis, false);
                         if (yUp > 15D)
-                            setWood(log.getRelative(BlockFace.DOWN), axis);
+                            setWood(log.getRelative(BlockFace.DOWN), axis, false);
                         if (i < (branchLogs.size() / 3) * 2)
                             continue;
                         for (BlockFace face : BlockFace.values()) {
@@ -150,25 +150,5 @@ public class CoastSequoiaGenerator extends TreeGenerator {
             case W -> nwBase.getRelative(0, height - 1, 1);
             case SW -> nwBase.getRelative(0, height - 1, 2);
         };
-    }
-
-    protected void setWood(Block log, Axis axis) {
-        if (!log.isEmpty() && !PluginCategories.isLeaves(log.getType()) && log.getType() != saplingType)
-            return;
-        log.setType(Material.SPRUCE_WOOD);
-        if (log.getBlockData() instanceof Orientable o) {
-            o.setAxis(axis);
-            log.setBlockData(o);
-        }
-    }
-
-    protected void setRoot(Block log) {
-        if (!isRootTarget(log))
-            return;
-        log.setType(Material.SPRUCE_WOOD);
-        if (log.getBlockData() instanceof Orientable o) {
-            o.setAxis(Axis.Y);
-            log.setBlockData(o);
-        }
     }
 }

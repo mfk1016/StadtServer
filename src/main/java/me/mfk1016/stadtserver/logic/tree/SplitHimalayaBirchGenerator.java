@@ -27,7 +27,7 @@ public class SplitHimalayaBirchGenerator extends TreeGenerator {
 
     public SplitHimalayaBirchGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
-                Material.BIRCH_LOG, Material.BIRCH_LEAVES, Material.BIRCH_SAPLING);
+                Material.BIRCH_LOG, Material.BIRCH_WOOD, Material.BIRCH_LEAVES, Material.BIRCH_SAPLING);
         checkSquare = 6;
     }
 
@@ -94,11 +94,11 @@ public class SplitHimalayaBirchGenerator extends TreeGenerator {
         // Trunk wood for all exposed logs
         for (Pair<Block, Axis> blockAxisPair : trunk) {
             if (!blockAxisPair._1.getRelative(BlockFace.DOWN).getType().isOccluding() || !blockAxisPair._1.getRelative(BlockFace.UP).getType().isOccluding())
-                blockAxisPair._1.setType(Material.BIRCH_WOOD);
+                setWood(blockAxisPair._1, blockAxisPair._2, true);
         }
         for (Pair<Block, Axis> blockAxisPair : offTrunk) {
             if (!blockAxisPair._1.getRelative(BlockFace.DOWN).getType().isOccluding() || !blockAxisPair._1.getRelative(BlockFace.UP).getType().isOccluding())
-                blockAxisPair._1.setType(Material.BIRCH_WOOD);
+                setWood(blockAxisPair._1, blockAxisPair._2, true);
         }
 
         trunkHeight = Math.max(trunkBases.size(), offTrunkBases.size());
@@ -108,10 +108,12 @@ public class SplitHimalayaBirchGenerator extends TreeGenerator {
         for (int x = 0; x < 2; x++) {
             for (int z = 0; z < 2; z++) {
                 Block log = trunkBases.get(trunkBases.size() - 1).getRelative(x, 0, z);
+                Block offlog = offTrunkBases.get(offTrunkBases.size() - 1).getRelative(x, 0, z);
                 for (BlockFace face : BlockFace.values()) {
                     if (!face.isCartesian())
                         continue;
                     setLeaves(log.getRelative(face));
+                    setLeaves(offlog.getRelative(face));
                 }
             }
         }
@@ -129,11 +131,9 @@ public class SplitHimalayaBirchGenerator extends TreeGenerator {
             for (int i = 0; i < branchLogs.size(); i++) {
                 Block log = branchLogs.get(i)._1;
                 Axis axis = branchLogs.get(i)._2;
-                setLog(log, axis);
+                setWood(log, axis, false);
                 for (BlockFace face : BlockFace.values()) {
                     if (face == BlockFace.DOWN) {
-                        if (!log.getRelative(face).getType().isOccluding())
-                            log.setType(Material.BIRCH_WOOD);
                         continue;
                     }
                     if (!face.isCartesian() || i < branchLogs.size() / 2)

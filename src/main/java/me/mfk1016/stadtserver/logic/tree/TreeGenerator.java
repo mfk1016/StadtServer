@@ -20,53 +20,24 @@ public abstract class TreeGenerator {
     protected final Block nwBase;
     protected final int minHeight;
     protected final Material logType;
+    protected final Material woodType;
     protected final Material leavesType;
     protected final Material saplingType;
     private final Set<Block> placedLeaves = new HashSet<>();
     protected int treeHeight;
     protected int checkSquare = 3;
 
-    public TreeGenerator(Block nwBase, int treeHeight, int minHeight, Material log, Material leaves, Material sapling) {
+    public TreeGenerator(Block nwBase, int treeHeight, int minHeight, Material log, Material wood, Material leaves, Material sapling) {
         this.nwBase = nwBase;
         this.treeHeight = treeHeight;
         this.minHeight = minHeight;
         this.logType = log;
+        this.woodType = wood;
         this.leavesType = leaves;
         this.saplingType = sapling;
     }
 
-    public static TreeGenerator matchGenerator(Block root, Material saplingType, int size) {
-        switch (saplingType) {
-            case OAK_SAPLING -> {
-                if (size == 2)
-                    return new GermanOakGenerator(root);
-            }
-            case BIRCH_SAPLING -> {
-                if (size == 2)
-                    if (StadtServer.RANDOM.nextInt(4) == 0)
-                        return new SplitHimalayaBirchGenerator(root);
-                    else
-                        return new HimalayaBirchGenerator(root);
-            }
-            case DARK_OAK_SAPLING -> {
-                if (size == 3)
-                    return new ProperDarkOakGenerator(root);
-            }
-            case ACACIA_SAPLING -> {
-                if (size == 2)
-                    return new ProperAcaciaGenerator(root);
-            }
-            case JUNGLE_SAPLING -> {
-                if (size == 3)
-                    return new YellowMerantiGenerator(root);
-            }
-            case SPRUCE_SAPLING -> {
-                if (size == 3)
-                    return new CoastSequoiaGenerator(root);
-            }
-        }
-        return null;
-    }
+    /* --- TEST --- */
 
     public boolean isEnoughSpace() {
         if (nwBase.getLocation().getBlockY() + treeHeight > 310)
@@ -96,7 +67,10 @@ public abstract class TreeGenerator {
         return true;
     }
 
-    protected Block randomBranchEnd(Block base, Branch b, double angleDown, double angleUp, double distance, double spread) {
+
+    /* --- BRANCH + LOGS/WOOD --- */
+
+    protected static Block randomBranchEnd(Block base, Branch b, double angleDown, double angleUp, double distance, double spread) {
         Pair<Vector, Vector> quadEdges = b.getSphereQuadrant(angleDown, angleUp, spread);
         double offX = (quadEdges._2.getX() - quadEdges._1.getX()) * StadtServer.RANDOM.nextDouble();
         double offY = (quadEdges._2.getY() - quadEdges._1.getY()) * StadtServer.RANDOM.nextDouble();
@@ -111,7 +85,7 @@ public abstract class TreeGenerator {
 
     // Returns Pairs of block, axis determining the complete branch.
     // The indexes of the base branch are index % size(base + additionalBases)
-    protected List<Pair<Block, Axis>> connectLogs(Block base, Block last, Block... additionalBases) {
+    protected static List<Pair<Block, Axis>> connectLogs(Block base, Block last, Block... additionalBases) {
         List<Vector> additionalBaseOffsets = new ArrayList<>();
         for (var b : additionalBases) {
             additionalBaseOffsets.add(b.getLocation().toVector().subtract(base.getLocation().toVector()));
@@ -150,7 +124,8 @@ public abstract class TreeGenerator {
                 Block add = current.getRelative(baseOffset.getBlockX(), baseOffset.getBlockY(), baseOffset.getBlockZ());
                 result.add(new Pair<>(add, axis));
             }
-            result.add(new Pair<>(current, axis));
+            if (!current.getLocation().equals(base.getLocation()))
+                result.add(new Pair<>(current, axis));
             offset.add(step);
         }
         for (Block additionBase : additionalBases) {
@@ -162,11 +137,33 @@ public abstract class TreeGenerator {
     }
 
     protected void setLog(Block log, Axis axis) {
-        if (!log.isEmpty() && !PluginCategories.isLeaves(log.getType()) && log.getType() != saplingType)
+        if (!log.isEmpty() && !PluginCategories.isLeaves(log.getType()) &&
+                log.getType() != saplingType && log.getType() != woodType)
             return;
         log.setType(logType);
         if (log.getBlockData() instanceof Orientable o) {
             o.setAxis(axis);
+            log.setBlockData(o);
+        }
+    }
+
+    protected void setWood(Block log, Axis axis, boolean replaceLog) {
+        if (!log.isEmpty() && !PluginCategories.isLeaves(log.getType()) &&
+                log.getType() != saplingType && !(log.getType() == logType && replaceLog))
+            return;
+        log.setType(woodType);
+        if (log.getBlockData() instanceof Orientable o) {
+            o.setAxis(axis);
+            log.setBlockData(o);
+        }
+    }
+
+    protected void setRoot(Block log) {
+        if (!isRootTarget(log))
+            return;
+        log.setType(woodType);
+        if (log.getBlockData() instanceof Orientable o) {
+            o.setAxis(Axis.Y);
             log.setBlockData(o);
         }
     }
@@ -210,8 +207,9 @@ public abstract class TreeGenerator {
                 || PluginCategories.isLeaves(block.getType())
                 || PluginCategories.isSapling(block.getType())
                 || switch (block.getType()) {
-                        case DIRT, GRASS_BLOCK, PODZOL, MYCELIUM,
-                                ROOTED_DIRT, GRASS, TALL_GRASS, WATER -> true;
+                        case DIRT, GRASS_BLOCK, PODZOL, MYCELIUM, ROOTED_DIRT,
+                                GRASS, TALL_GRASS, WATER, VINE, SAND, GRAVEL,
+                                RED_SAND, NETHERRACK, CRIMSON_NYLIUM, WARPED_NYLIUM -> true;
                         default -> false;
                 };
     }

@@ -26,7 +26,7 @@ public class ProperDarkOakGenerator extends TreeGenerator {
 
     public ProperDarkOakGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
-                Material.DARK_OAK_LOG, Material.DARK_OAK_LEAVES, Material.DARK_OAK_SAPLING);
+                Material.DARK_OAK_LOG, Material.DARK_OAK_WOOD, Material.DARK_OAK_LEAVES, Material.DARK_OAK_SAPLING);
         checkSquare = 11;
     }
 
@@ -63,9 +63,7 @@ public class ProperDarkOakGenerator extends TreeGenerator {
             for (int i = 0; i < branchLogs.size(); i++) {
                 Block log = branchLogs.get(i)._1;
                 Axis axis = branchLogs.get(i)._2;
-                setLog(log, axis);
-                if (!log.getRelative(BlockFace.DOWN).getType().isOccluding() && i != branchLogs.size() - 1)
-                    log.setType(Material.DARK_OAK_WOOD);
+                setWood(log, axis, false);
                 if (i < branchLogs.size() / 3)
                     continue;
                 generateSphereLeaves(log, Math.min(i / 3, 5));
@@ -98,12 +96,12 @@ public class ProperDarkOakGenerator extends TreeGenerator {
             Block log = root.getRelative(branch.toFace());
             if (!isRootTarget(log))
                 continue;
-            log.setType(Material.DARK_OAK_WOOD);
+            setRoot(log);
             Block below = log.getRelative(BlockFace.DOWN);
             if (isRootTarget(below))
-                below.setType(Material.DARK_OAK_WOOD);
+                setRoot(below);
             if (StadtServer.RANDOM.nextInt(2) == 0)
-                log.getRelative(BlockFace.UP).setType(Material.DARK_OAK_WOOD);
+                setRoot(log.getRelative(BlockFace.UP));
         }
     }
 

@@ -26,7 +26,7 @@ public class HimalayaBirchGenerator extends TreeGenerator {
 
     public HimalayaBirchGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
-                Material.BIRCH_LOG, Material.BIRCH_LEAVES, Material.BIRCH_SAPLING);
+                Material.BIRCH_LOG, Material.BIRCH_WOOD, Material.BIRCH_LEAVES, Material.BIRCH_SAPLING);
         checkSquare = 6;
     }
 
@@ -63,11 +63,9 @@ public class HimalayaBirchGenerator extends TreeGenerator {
             for (int i = 0; i < branchLogs.size(); i++) {
                 Block log = branchLogs.get(i)._1;
                 Axis axis = branchLogs.get(i)._2;
-                setLog(log, axis);
+                setWood(log, axis, false);
                 for (BlockFace face : BlockFace.values()) {
                     if (face == BlockFace.DOWN) {
-                        if (!log.getRelative(face).getType().isOccluding())
-                            log.setType(Material.BIRCH_WOOD);
                         continue;
                     }
                     if (!face.isCartesian() || i < branchLogs.size() / 2)

@@ -23,7 +23,7 @@ public class ProperAcaciaGenerator extends TreeGenerator {
 
     public ProperAcaciaGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
-                Material.ACACIA_LOG, Material.ACACIA_LEAVES, Material.ACACIA_SAPLING);
+                Material.ACACIA_LOG, Material.ACACIA_WOOD, Material.ACACIA_LEAVES, Material.ACACIA_SAPLING);
         checkSquare = 6;
     }
 
@@ -50,14 +50,8 @@ public class ProperAcaciaGenerator extends TreeGenerator {
             Block last = randomBranchEnd(locbranch._1, locbranch._2, yDown, yUp, length, 0.8);
             List<Pair<Block, Axis>> branchLogs = connectLogs(locbranch._1, last);
             for (Pair<Block, Axis> branchLog : branchLogs) {
-                setLog(branchLog._1, Axis.Y);
-                setLog(branchLog._1.getRelative(BlockFace.DOWN), Axis.Y);
-                if (!branchLog._1.getRelative(0, -2, 0).getType().isOccluding()) {
-                    branchLog._1.getRelative(BlockFace.DOWN).setType(Material.ACACIA_WOOD);
-                }
-                if (!branchLog._1.getRelative(0, 1, 0).getType().isOccluding()) {
-                    branchLog._1.setType(Material.ACACIA_WOOD);
-                }
+                setWood(branchLog._1, Axis.Y, false);
+                setWood(branchLog._1.getRelative(BlockFace.DOWN), Axis.Y, false);
             }
             addAcaciaLeaves(last);
             currBranch++;

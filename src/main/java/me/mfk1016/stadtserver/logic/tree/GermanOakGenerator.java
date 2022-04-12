@@ -26,7 +26,7 @@ public class GermanOakGenerator extends TreeGenerator {
 
     public GermanOakGenerator(Block nwBase) {
         super(nwBase, MIN_HEIGHT + StadtServer.RANDOM.nextInt(HEIGHT_RANGE), MIN_HEIGHT,
-                Material.OAK_LOG, Material.OAK_LEAVES, Material.OAK_SAPLING);
+                Material.OAK_LOG, Material.OAK_WOOD, Material.OAK_LEAVES, Material.OAK_SAPLING);
         checkSquare = 6;
     }
 
@@ -63,9 +63,7 @@ public class GermanOakGenerator extends TreeGenerator {
             for (int i = 0; i < branchLogs.size(); i++) {
                 Block log = branchLogs.get(i)._1;
                 Axis axis = branchLogs.get(i)._2;
-                setLog(log, axis);
-                if (!log.getRelative(BlockFace.DOWN).getType().isOccluding() && i != branchLogs.size() - 1)
-                    log.setType(Material.OAK_WOOD);
+                setWood(log, axis, false);
                 if (i < branchLogs.size() / 3)
                     continue;
                 generateSphereLeaves(log, Math.min(i / 3, 5));
@@ -98,12 +96,12 @@ public class GermanOakGenerator extends TreeGenerator {
             Block log = root.getRelative(branch.toFace());
             if (!isRootTarget(log))
                 continue;
-            log.setType(Material.OAK_WOOD);
+            setRoot(log);
             Block below = log.getRelative(BlockFace.DOWN);
             if (isRootTarget(below))
-                below.setType(Material.DARK_OAK_WOOD);
+                setRoot(below);
             if (StadtServer.RANDOM.nextInt(2) == 0)
-                log.getRelative(BlockFace.UP).setType(Material.OAK_WOOD);
+                setRoot(log.getRelative(BlockFace.UP));
         }
     }
 
