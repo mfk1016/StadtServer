@@ -41,10 +41,22 @@ public class Keys {
     private static final String IS_ANCIENT_TOME_s = "is_ancient_tome";
     // Set if a netherite item is repaired through a ritual
     private static final String IS_RITUAL_REPAIRED_s = "is_ritual_repaired";
+    // Set to determine a special potion
+    private static final String SPECIAL_POTION_ID_s = "special_potion_id";
+    // Set if the given Barrel is a fluid barrel
+    private static final String IS_FLUID_BARREL_s = "is_fluid_barrel";
+    // Contains the liquid type of the barrel
+    private static final String BARREL_LIQUID_TYPE_s = "barrel_liquid_type";
+    // Contains the amount of liquid in the barrel
+    private static final String BARREL_LIQUID_AMOUNT_s = "barrel_liquid_amount";
 
     public static NamespacedKey IS_WRENCHED;
     public static NamespacedKey IS_ANCIENT_TOME;
     public static NamespacedKey IS_RITUAL_REPAIRED;
+    public static NamespacedKey SPECIAL_POTION_ID;
+    public static NamespacedKey IS_FLUID_BARREL;
+    public static NamespacedKey BARREL_LIQUID_TYPE;
+    public static NamespacedKey BARREL_LIQUID_AMOUNT;
 
 
     public static void initialize() {
@@ -53,5 +65,9 @@ public class Keys {
         IS_WRENCHED = new NamespacedKey(StadtServer.getInstance(), IS_WRENCHED_s);
         IS_ANCIENT_TOME = new NamespacedKey(StadtServer.getInstance(), IS_ANCIENT_TOME_s);
         IS_RITUAL_REPAIRED = new NamespacedKey(StadtServer.getInstance(), IS_RITUAL_REPAIRED_s);
+        SPECIAL_POTION_ID = new NamespacedKey(StadtServer.getInstance(), SPECIAL_POTION_ID_s);
+        IS_FLUID_BARREL = new NamespacedKey(StadtServer.getInstance(), IS_FLUID_BARREL_s);
+        BARREL_LIQUID_TYPE = new NamespacedKey(StadtServer.getInstance(), BARREL_LIQUID_TYPE_s);
+        BARREL_LIQUID_AMOUNT = new NamespacedKey(StadtServer.getInstance(), BARREL_LIQUID_AMOUNT_s);
     }
 }

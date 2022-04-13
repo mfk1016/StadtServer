@@ -1,8 +1,8 @@
 package me.mfk1016.stadtserver.brewing;
 
 import io.papermc.paper.potion.PotionMix;
-import me.mfk1016.stadtserver.brewing.PotionManager;
 import me.mfk1016.stadtserver.brewing.recipe.*;
+import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -10,7 +10,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.inventory.BrewEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
@@ -34,6 +38,12 @@ public class PotionRecipeManager implements Listener {
         recipes.add(new WarpedFungusRecipe());
         recipes.add(new AmethystShardRecipe());
 
+        recipes.add(new SpecialPotionRecipe("hefe_normal", Material.BROWN_MUSHROOM,
+                                            new ItemStack(Material.HONEY_BOTTLE), "hefe_normal"));
+        recipes.add(new SpecialPotionRecipe("hefe_nether", Material.CRIMSON_FUNGUS,
+                                            new ItemStack(Material.HONEY_BOTTLE), "hefe_nether"));
+        recipes.add(new SpecialPotionRecipe("hefe_end", Material.CHORUS_FRUIT,
+                                            new ItemStack(Material.HONEY_BOTTLE), "hefe_end"));
 
         for (var recipe : recipes) {
             for (PotionMix mix : recipe.buildBaseRecipes()) {
@@ -70,4 +80,15 @@ public class PotionRecipeManager implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerDrinkSpecialPotion(PlayerItemConsumeEvent event) {
+        ItemMeta meta = event.getItem().getItemMeta();
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        if (!pdc.has(Keys.SPECIAL_POTION_ID))
+            return;
+        String specialPotionID = pdc.get(Keys.SPECIAL_POTION_ID, PersistentDataType.STRING);
+        assert PotionManager.SPECIAL_POTION_TYPE.containsKey(specialPotionID);
+        SpecialPotionType type = PotionManager.SPECIAL_POTION_TYPE.get(specialPotionID);
+        type.onPlayerDrink(event.getPlayer());
+    }
 }

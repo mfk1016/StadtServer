@@ -60,7 +60,20 @@
     { "id" : "instant_heal:0_3", "name" : "Healing", "effects" : [{ "type" : "heal", "level" : 3 }] },
     { "id" : "instant_damage:0_3", "name" : "Harming", "effects" : [{ "type" : "harm", "level" : 3 }] }
   ],
-  "special_types": [
 
+  "special_types": [
+    { "id" : "hefe_normal", "name": "Hefe", "color" : "FFE5CC", "effects" : [] },
+    { "id" : "hefe_nether", "name": "Karmesinhefe", "color" : "FFCCFF", "effects" : [] },
+    { "id" : "hefe_end", "name": "Chorushefe", "color" : "98C4F6", "effects" : [] },
+
+    { "id" : "weizen_hell", "name": "Weizen der Sicherheit", "color": "EFCA50", "effects": [{ "type" : "nausea", "duration" : 1800, "level" : 1 }, { "type" : "resistance", "duration" : 1200, "level" : 1 }] },
+    { "id" : "bier_hell", "name": "Schnelles Helles", "color": "E9AE61", "effects": [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "speed", "duration" : 2400, "level" : 1 }] },
+    { "id" : "weizen_dunkel", "name": "Dunkles Weizen der Kraft", "color": "CC6600", "effects": [{ "type" : "nausea", "duration" : 1800, "level" : 1 }, { "type" : "strength", "duration" : 2400, "level" : 1 }] },
+    { "id" : "bier_dunkel", "name": "Nächtliches Dunkel", "color": "994C00", "effects": [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "night_vision", "duration" : 2400, "level" : 1 }] },
+    { "id" : "bock_hell", "name": "Feilschender Bergbock", "color": "FF8000", "effects": [{ "type" : "nausea", "duration" : 3600, "level" : 1 }, { "type" : "heroism", "duration" : 2400, "level" : 1 }] },
+    { "id" : "bock_dunkel", "name": "Dunkler Bergbock der Feder", "color": "331900", "effects": [{ "type" : "nausea", "duration" : 2400, "level" : 1 }, { "type" : "slow_falling", "duration" : 4800, "level" : 1 }] },
+
+    { "id" : "sternburg", "name": "Vergiftetes Sternburg", "color": "66FF66", "effects": [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "poison", "duration" : 400, "level" : 1 }] },
+    { "id" : "oettinger", "name": "Schwächliches Oettinger", "color": "9999FF", "effects": [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "fatigue", "duration" : 1200, "level" : 2 }] }
   ]
 }

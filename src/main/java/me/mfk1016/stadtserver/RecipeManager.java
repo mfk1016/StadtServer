@@ -1,5 +1,6 @@
 package me.mfk1016.stadtserver;
 
+import me.mfk1016.stadtserver.brewing.barrel.BarrelManager;
 import me.mfk1016.stadtserver.brewing.recipe.*;
 import me.mfk1016.stadtserver.spells.SpellManager;
 import org.bukkit.Bukkit;
@@ -32,6 +33,7 @@ public class RecipeManager {
             Bukkit.addRecipe(wrenchRecipe);
         }
         Bukkit.addRecipe(getMediumRecipe());
+        Bukkit.addRecipe(BarrelManager.fluidBarrelRecipe());
 
         SpellManager.ALL_SPELLS.forEach((spell) -> {
             for (Recipe recipe : spell.getRecipes())

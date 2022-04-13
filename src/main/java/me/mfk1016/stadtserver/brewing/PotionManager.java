@@ -19,6 +19,7 @@ import static org.bukkit.potion.PotionEffectType.WITHER;
 public class PotionManager {
 
     public static final HashMap<String, CustomPotionType> CUSTOM_POTION_TYPE = new HashMap<>();
+    public static final HashMap<String, SpecialPotionType> SPECIAL_POTION_TYPE = new HashMap<>();
 
     public static boolean isValidPotionID(String id) {
         if (CUSTOM_POTION_TYPE.containsKey(id))
@@ -58,6 +59,12 @@ public class PotionManager {
         return result;
     }
 
+    public static ItemStack brewSpecialPotion(String id) {
+        assert SPECIAL_POTION_TYPE.containsKey(id);
+        SpecialPotionType spt = Objects.requireNonNull(SPECIAL_POTION_TYPE.get(id));
+        return spt.createPotion();
+    }
+
     public static Optional<CustomPotionType> matchCustomPotion(ItemStack input) {
         for (var potionType : CUSTOM_POTION_TYPE.values()) {
             if (potionType.isMatched(input))
@@ -83,6 +90,11 @@ public class PotionManager {
             for (JsonElement jsonElement : customs) {
                 CustomPotionType toAdd = CustomPotionType.fromJson(jsonElement.getAsJsonObject());
                 CUSTOM_POTION_TYPE.put(toAdd.id(), toAdd);
+            }
+            JsonArray specials = root.getAsJsonArray("special_types");
+            for (JsonElement jsonElement : specials) {
+                SpecialPotionType toAdd = SpecialPotionType.fromJson(jsonElement.getAsJsonObject());
+                SPECIAL_POTION_TYPE.put(toAdd.id(), toAdd);
             }
         } catch (Exception e) {
             StadtServer.LOGGER.severe("origins.json loading error: origins not available");
