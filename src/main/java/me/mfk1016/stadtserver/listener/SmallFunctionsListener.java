@@ -70,7 +70,8 @@ public class SmallFunctionsListener implements Listener {
             return;
         if (!(event.getDestination().getHolder() instanceof Dropper dropperState))
             return;
-
+        if (dropperState.getInventory().firstEmpty() == -1)
+            return;
         DispenserDropperLogic.tryChuteAction(dropperState, event);
     }
 

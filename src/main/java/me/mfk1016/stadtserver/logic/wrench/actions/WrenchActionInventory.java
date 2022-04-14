@@ -1,5 +1,6 @@
 package me.mfk1016.stadtserver.logic.wrench.actions;
 
+import me.mfk1016.stadtserver.brewing.BarrelManager;
 import me.mfk1016.stadtserver.logic.InventorySorter;
 import me.mfk1016.stadtserver.logic.wrench.WrenchAction;
 import org.bukkit.block.Block;
@@ -19,6 +20,8 @@ public class WrenchActionInventory extends WrenchAction {
 
     @Override
     protected Result wrenchBlock(Player player, Block target) {
+        if (BarrelManager.isFluidBarrel(target))
+            return Result.FALSE;
         if (target.getState() instanceof Lootable lootable) {
             if (lootable.hasLootTable())
                 return Result.FALSE;

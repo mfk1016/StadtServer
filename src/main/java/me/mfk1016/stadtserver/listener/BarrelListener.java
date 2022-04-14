@@ -105,7 +105,7 @@ public class BarrelListener implements Listener {
                     success = true;
                 break;
             case 4:
-                if (item.getAmount() == 1) {
+                if (item.getAmount() == 1 && item.getType().getMaxStackSize() != 1) {
                     success = true;
                     BarrelManager.startBarrelBrewing(event.getClickedBlock());
                 }
