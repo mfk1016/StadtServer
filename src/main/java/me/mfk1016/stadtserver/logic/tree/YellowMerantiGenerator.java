@@ -1,13 +1,11 @@
 package me.mfk1016.stadtserver.logic.tree;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import me.mfk1016.stadtserver.util.Pair;
 import org.bukkit.Axis;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Orientable;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;

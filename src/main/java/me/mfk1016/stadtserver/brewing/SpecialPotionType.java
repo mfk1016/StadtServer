@@ -19,6 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 
+import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 public record SpecialPotionType(String id, String name, Color color, PotionEffect... effects) {
@@ -46,7 +47,7 @@ public record SpecialPotionType(String id, String name, Color color, PotionEffec
     }
 
     public boolean isMatched(ItemStack item) {
-        if (!PluginCategories.isPotion(item.getType()))
+        if (stackEmpty(item) || !PluginCategories.isPotion(item.getType()))
             return false;
         ItemMeta potion = item.getItemMeta();
         PersistentDataContainer pdc = potion.getPersistentDataContainer();

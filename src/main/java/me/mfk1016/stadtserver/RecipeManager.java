@@ -1,7 +1,6 @@
 package me.mfk1016.stadtserver;
 
-import me.mfk1016.stadtserver.brewing.barrel.BarrelManager;
-import me.mfk1016.stadtserver.brewing.recipe.*;
+import me.mfk1016.stadtserver.brewing.BarrelManager;
 import me.mfk1016.stadtserver.spells.SpellManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

@@ -8,12 +8,11 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import static org.bukkit.potion.PotionEffectType.*;
-import static org.bukkit.potion.PotionEffectType.WITHER;
 
 
 public class PotionManager {
@@ -73,19 +72,21 @@ public class PotionManager {
         return Optional.empty();
     }
 
+    public static Optional<SpecialPotionType> matchSpecialPotion(ItemStack input) {
+        for (var potionType : SPECIAL_POTION_TYPE.values()) {
+            if (potionType.isMatched(input))
+                return Optional.of(potionType);
+        }
+        return Optional.empty();
+    }
+
     /* --- JSON --- */
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public static void initialize(boolean setDefault) {
-        File originsConfig = new File(StadtServer.getInstance().getDataFolder(), "potions.json");
-        if (!originsConfig.exists()) {
-            StadtServer.getInstance().saveResource(originsConfig.getName(), false);
-        } else if (setDefault) {
-            if (originsConfig.delete())
-                StadtServer.getInstance().saveResource(originsConfig.getName(), false);
-        }
+    public static void initialize() {
+        InputStream configStream = StadtServer.getInstance().getResource("potions.json");
         try {
-            JsonObject root = gson.fromJson(new FileReader(originsConfig), JsonObject.class);
+            JsonObject root = gson.fromJson(new InputStreamReader(configStream), JsonObject.class);
             JsonArray customs = root.getAsJsonArray("custom_types");
             for (JsonElement jsonElement : customs) {
                 CustomPotionType toAdd = CustomPotionType.fromJson(jsonElement.getAsJsonObject());
@@ -103,6 +104,7 @@ public class PotionManager {
     }
 
     public static final Map<String, PotionEffectType> POTION_EFFECT_TYPE = new HashMap<>();
+
     static {
         POTION_EFFECT_TYPE.put("absorption", ABSORPTION);
         POTION_EFFECT_TYPE.put("bad_omen", BAD_OMEN);

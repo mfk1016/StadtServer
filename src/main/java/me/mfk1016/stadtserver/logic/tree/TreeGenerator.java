@@ -207,11 +207,11 @@ public abstract class TreeGenerator {
                 || PluginCategories.isLeaves(block.getType())
                 || PluginCategories.isSapling(block.getType())
                 || switch (block.getType()) {
-                        case DIRT, GRASS_BLOCK, PODZOL, MYCELIUM, ROOTED_DIRT,
-                                GRASS, TALL_GRASS, WATER, VINE, SAND, GRAVEL,
-                                RED_SAND, NETHERRACK, CRIMSON_NYLIUM, WARPED_NYLIUM -> true;
-                        default -> false;
-                };
+            case DIRT, GRASS_BLOCK, PODZOL, MYCELIUM, ROOTED_DIRT,
+                    GRASS, TALL_GRASS, WATER, VINE, SAND, GRAVEL,
+                    RED_SAND, NETHERRACK, CRIMSON_NYLIUM, WARPED_NYLIUM -> true;
+            default -> false;
+        };
     }
 
     public abstract void generateTree();

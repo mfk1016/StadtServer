@@ -43,7 +43,8 @@ public class MultiPotionRecipe extends AdvancedPotionRecipe {
     }
 
     @Override
-    public void applyAdvancedRecipe(BrewEvent event) {}
+    public void applyAdvancedRecipe(BrewEvent event) {
+    }
 
     /* --- Vanilla additions --- */
 

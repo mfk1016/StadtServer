@@ -34,5 +34,6 @@ public class SpecialPotionRecipe extends AdvancedPotionRecipe {
     }
 
     @Override
-    public void applyAdvancedRecipe(BrewEvent event) {}
+    public void applyAdvancedRecipe(BrewEvent event) {
+    }
 }

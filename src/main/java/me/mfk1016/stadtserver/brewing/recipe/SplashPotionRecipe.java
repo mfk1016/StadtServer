@@ -14,7 +14,9 @@ import java.util.List;
 
 public class SplashPotionRecipe extends AdvancedPotionRecipe {
 
-    public SplashPotionRecipe() { super("splash", new RecipeChoice.MaterialChoice(Material.GUNPOWDER)); }
+    public SplashPotionRecipe() {
+        super("splash", new RecipeChoice.MaterialChoice(Material.GUNPOWDER));
+    }
 
     @Override
     protected boolean isInputMatched(ItemStack stack) {
@@ -35,5 +37,6 @@ public class SplashPotionRecipe extends AdvancedPotionRecipe {
     }
 
     @Override
-    public void applyAdvancedRecipe(BrewEvent event) {}
+    public void applyAdvancedRecipe(BrewEvent event) {
+    }
 }

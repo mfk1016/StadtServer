@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -19,10 +20,12 @@ import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PotionRecipeManager implements Listener {
 
     private static final List<AdvancedPotionRecipe> recipes = new ArrayList<>();
+    private static final List<BarrelBeerRecipe> barrelRecipes = new ArrayList<>();
 
     public static void initialize() {
         recipes.clear();
@@ -38,12 +41,12 @@ public class PotionRecipeManager implements Listener {
         recipes.add(new WarpedFungusRecipe());
         recipes.add(new AmethystShardRecipe());
 
-        recipes.add(new SpecialPotionRecipe("hefe_normal", Material.BROWN_MUSHROOM,
-                                            new ItemStack(Material.HONEY_BOTTLE), "hefe_normal"));
-        recipes.add(new SpecialPotionRecipe("hefe_nether", Material.CRIMSON_FUNGUS,
-                                            new ItemStack(Material.HONEY_BOTTLE), "hefe_nether"));
-        recipes.add(new SpecialPotionRecipe("hefe_end", Material.CHORUS_FRUIT,
-                                            new ItemStack(Material.HONEY_BOTTLE), "hefe_end"));
+        recipes.add(new SpecialPotionRecipe("yeast_normal", Material.BROWN_MUSHROOM,
+                new ItemStack(Material.HONEY_BOTTLE), "yeast_normal"));
+        recipes.add(new SpecialPotionRecipe("yeast_nether", Material.CRIMSON_FUNGUS,
+                new ItemStack(Material.HONEY_BOTTLE), "yeast_nether"));
+        recipes.add(new SpecialPotionRecipe("yeast_end", Material.CHORUS_FRUIT,
+                new ItemStack(Material.HONEY_BOTTLE), "yeast_end"));
 
         for (var recipe : recipes) {
             for (PotionMix mix : recipe.buildBaseRecipes()) {
@@ -51,8 +54,23 @@ public class PotionRecipeManager implements Listener {
                 Bukkit.getServer().getPotionBrewer().addPotionMix(mix);
             }
         }
+
+        barrelRecipes.clear();
+        barrelRecipes.add(new BarrelBeerRecipe("yeast_normal", Material.APPLE, "weizen_hell"));
+        barrelRecipes.add(new BarrelBeerRecipe("yeast_end", Material.VINE, "bier_hell"));
+        barrelRecipes.add(new BarrelBeerRecipe("yeast_nether", Material.POPPY, "weizen_dunkel"));
+        barrelRecipes.add(new BarrelBeerRecipe("yeast_normal", Material.BEETROOT_SEEDS, "bier_dunkel"));
+        barrelRecipes.add(new BarrelBeerRecipe("yeast_end", Material.FLOWERING_AZALEA, "bock_hell"));
+        barrelRecipes.add(new BarrelBeerRecipe("yeast_nether", Material.GRASS, "bock_dunkel"));
     }
 
+    public static Optional<BarrelBeerRecipe> matchBarrelRecipe(Inventory barrel) {
+        for (BarrelBeerRecipe recipe : barrelRecipes) {
+            if (recipe.isMatched(barrel))
+                return Optional.of(recipe);
+        }
+        return Optional.empty();
+    }
 
 
     @EventHandler(priority = EventPriority.NORMAL)

@@ -25,5 +25,6 @@ public class WarpedFungusRecipe extends MultiPotionRecipe {
     }
 
     @Override
-    public void applyAdvancedRecipe(BrewEvent event) {}
+    public void applyAdvancedRecipe(BrewEvent event) {
+    }
 }

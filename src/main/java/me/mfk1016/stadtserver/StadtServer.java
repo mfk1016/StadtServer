@@ -1,8 +1,8 @@
 package me.mfk1016.stadtserver;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import me.mfk1016.stadtserver.brewing.PotionRecipeManager;
 import me.mfk1016.stadtserver.brewing.PotionManager;
+import me.mfk1016.stadtserver.brewing.PotionRecipeManager;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.*;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
@@ -43,7 +43,7 @@ public class StadtServer extends JavaPlugin {
         LOGGER.info(getDescription().getName() + ": register spells...");
         SpellManager.onPluginEnable();
         LOGGER.info(getDescription().getName() + ": register potions...");
-        PotionManager.initialize(false);
+        PotionManager.initialize();
         PotionRecipeManager.initialize();
         LOGGER.info(getDescription().getName() + ": enable origins...");
         OriginManager.initialize(false);
@@ -61,6 +61,7 @@ public class StadtServer extends JavaPlugin {
         pm.registerEvents(new PotionRecipeManager(), this);
         pm.registerEvents(new TreeListener(), this);
         pm.registerEvents(new VineListener(), this);
+        pm.registerEvents(new BarrelListener(), this);
         ProtocolLibrary.getProtocolManager().addPacketListener(signPacketListener);
 
         LOGGER.info(getDescription().getName() + ": register recipes...");

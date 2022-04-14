@@ -26,5 +26,6 @@ public class AmethystShardRecipe extends MultiPotionRecipe {
     }
 
     @Override
-    public void applyAdvancedRecipe(BrewEvent event) {}
+    public void applyAdvancedRecipe(BrewEvent event) {
+    }
 }

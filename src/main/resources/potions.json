@@ -62,9 +62,9 @@
   ],
 
   "special_types": [
-    { "id" : "hefe_normal", "name": "Hefe", "color" : "FFE5CC", "effects" : [] },
-    { "id" : "hefe_nether", "name": "Karmesinhefe", "color" : "FFCCFF", "effects" : [] },
-    { "id" : "hefe_end", "name": "Chorushefe", "color" : "98C4F6", "effects" : [] },
+    { "id" : "yeast_normal", "name": "Yeast", "color" : "FFE5CC", "effects" : [] },
+    { "id" : "yeast_nether", "name": "Crimson Yeast", "color" : "FFCCFF", "effects" : [] },
+    { "id" : "yeast_end", "name": "Chorus Yeast", "color" : "98C4F6", "effects" : [] },
 
     { "id" : "weizen_hell", "name": "Weizen der Sicherheit", "color": "EFCA50", "effects": [{ "type" : "nausea", "duration" : 1800, "level" : 1 }, { "type" : "resistance", "duration" : 1200, "level" : 1 }] },
     { "id" : "bier_hell", "name": "Schnelles Helles", "color": "E9AE61", "effects": [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "speed", "duration" : 2400, "level" : 1 }] },
