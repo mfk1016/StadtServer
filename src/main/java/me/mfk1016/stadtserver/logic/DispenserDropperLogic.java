@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.block.Dropper;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.entity.Item;
@@ -17,6 +18,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.Objects;
+
+import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class DispenserDropperLogic {
 
@@ -27,37 +31,24 @@ public class DispenserDropperLogic {
                 tryPlanting(dispenserBlock, item);
     }
 
-    public static void tryChuteAction(Dropper dropperState, InventoryMoveItemEvent event) {
-        if (!WrenchEnchantment.isWrenched(dropperState))
-            return;
+    // Called after the InventoryMoveItemEvent is cancelled
+    // this means, that the hopper has its original state
+    public static void tryChuteAction(Block source, ItemStack item, Block target) {
+        Hopper hopper = (Hopper) source.getState();
+        int slot = hopper.getInventory().first(item.getType());
+        ItemStack newItem = Objects.requireNonNull(hopper.getInventory().getItem(slot)).clone();
+        newItem.setAmount(newItem.getAmount() - 1);
+        newItem = newItem.getAmount() > 0 ? newItem : null;
 
-        Block dropperBlock = dropperState.getBlock();
-        Directional dropperData = (Directional) dropperBlock.getBlockData();
-        Block target = dropperBlock.getRelative(dropperData.getFacing());
         if (target.getState() instanceof Container container) {
-            HashMap<Integer, ItemStack> invalid = container.getInventory().addItem(event.getItem());
-            if (invalid.isEmpty()) {
-                BukkitRunnable runnable = new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        dropperState.update();
-                    }
-                };
-                runnable.runTaskLater(StadtServer.getInstance(), 1L);
-            } else {
-                event.setCancelled(true);
+            if (container.getInventory().addItem(item).isEmpty()) {
+                hopper.getInventory().setItem(slot, newItem);
             }
         } else {
             Location targetPos = target.getLocation().clone().add(TO_BLOCK_CENTER);
-            Item result = dropperBlock.getWorld().dropItem(targetPos, event.getItem());
-            BukkitRunnable runnable = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    result.setVelocity(new Vector());
-                    dropperState.update();
-                }
-            };
-            runnable.runTaskLater(StadtServer.getInstance(), 1L);
+            Item result = target.getWorld().dropItem(targetPos, item);
+            result.setVelocity(new Vector());
+            hopper.getInventory().setItem(slot, newItem);
         }
     }
 

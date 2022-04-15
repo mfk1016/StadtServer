@@ -6,6 +6,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.enchantments.WrenchEnchantment;
 import me.mfk1016.stadtserver.logic.DispenserDropperLogic;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import org.bukkit.GameMode;
@@ -26,6 +27,7 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -66,13 +68,24 @@ public class SmallFunctionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onItemEnterChute(InventoryMoveItemEvent event) {
-        if (!(event.getSource().getHolder() instanceof Hopper))
+        if (!(event.getSource().getHolder() instanceof Hopper hopper))
             return;
         if (!(event.getDestination().getHolder() instanceof Dropper dropperState))
             return;
-        if (dropperState.getInventory().firstEmpty() == -1)
+        if (!WrenchEnchantment.isWrenched(dropperState))
             return;
-        DispenserDropperLogic.tryChuteAction(dropperState, event);
+        Block source = hopper.getBlock();
+        ItemStack item = event.getItem().clone();
+        Block dropperBlock = dropperState.getBlock();
+        Directional dropperData = (Directional) dropperBlock.getBlockData();
+        Block target = dropperBlock.getRelative(dropperData.getFacing());
+        event.setCancelled(true);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                DispenserDropperLogic.tryChuteAction(source, item, target);
+            }
+        }.runTaskLater(StadtServer.getInstance(), 1L);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
