@@ -2,6 +2,9 @@ package me.mfk1016.stadtserver.brewing;
 
 import io.papermc.paper.potion.PotionMix;
 import me.mfk1016.stadtserver.brewing.recipe.*;
+import me.mfk1016.stadtserver.brewing.recipe.barrel.BarrelBeerRecipe;
+import me.mfk1016.stadtserver.brewing.recipe.BarrelRecipe;
+import me.mfk1016.stadtserver.brewing.recipe.potion.*;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,7 +28,7 @@ import java.util.Optional;
 public class PotionRecipeManager implements Listener {
 
     private static final List<AdvancedPotionRecipe> recipes = new ArrayList<>();
-    private static final List<BarrelBeerRecipe> barrelRecipes = new ArrayList<>();
+    private static final List<BarrelRecipe> barrelRecipes = new ArrayList<>();
 
     public static void initialize() {
         recipes.clear();
@@ -64,8 +67,8 @@ public class PotionRecipeManager implements Listener {
         barrelRecipes.add(new BarrelBeerRecipe("yeast_nether", Material.GRASS, "bock_dunkel"));
     }
 
-    public static Optional<BarrelBeerRecipe> matchBarrelRecipe(Inventory barrel) {
-        for (BarrelBeerRecipe recipe : barrelRecipes) {
+    public static Optional<BarrelRecipe> matchBarrelRecipe(Inventory barrel) {
+        for (BarrelRecipe recipe : barrelRecipes) {
             if (recipe.isMatched(barrel))
                 return Optional.of(recipe);
         }

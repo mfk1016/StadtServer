@@ -1,7 +1,8 @@
-package me.mfk1016.stadtserver.brewing.recipe;
+package me.mfk1016.stadtserver.brewing.recipe.barrel;
 
 import me.mfk1016.stadtserver.brewing.PotionManager;
 import me.mfk1016.stadtserver.brewing.SpecialPotionType;
+import me.mfk1016.stadtserver.brewing.recipe.BarrelRecipe;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -10,15 +11,20 @@ import java.util.Optional;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
-public record BarrelBeerRecipe(String yeastID, Material herb, String resultID) {
+public class BarrelBeerRecipe extends BarrelRecipe {
 
+    private final String yeastID;
+    private final Material herb;
+
+    public BarrelBeerRecipe(String yeastID, Material herb, String resultID) {
+        super(resultID);
+        this.yeastID = yeastID;
+        this.herb = herb;
+    }
+
+    @Override
     public boolean isMatched(Inventory barrel) {
-        // slot 0/1 = water, slot 2 = 3 wheat, slot 3 = yeast, slot 4 = herb
-        ItemStack water1 = barrel.getItem(0);
-        ItemStack water2 = barrel.getItem(1);
-        if (stackEmpty(water1) || stackEmpty(water2))
-            return false;
-        if (water1.getType() != Material.WATER_BUCKET || water2.getType() != Material.WATER_BUCKET)
+        if(!super.isMatched(barrel))
             return false;
         ItemStack wheat = barrel.getItem(2);
         if (stackEmpty(wheat) || wheat.getType() != Material.WHEAT)

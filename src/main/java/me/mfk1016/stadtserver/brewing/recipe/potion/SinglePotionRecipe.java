@@ -1,8 +1,9 @@
-package me.mfk1016.stadtserver.brewing.recipe;
+package me.mfk1016.stadtserver.brewing.recipe.potion;
 
 import io.papermc.paper.potion.PotionMix;
 import me.mfk1016.stadtserver.brewing.BottleType;
 import me.mfk1016.stadtserver.brewing.PotionManager;
+import me.mfk1016.stadtserver.brewing.recipe.AdvancedPotionRecipe;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.inventory.ItemStack;

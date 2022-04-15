@@ -1,7 +1,7 @@
 package me.mfk1016.stadtserver.brewing;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.brewing.recipe.BarrelBeerRecipe;
+import me.mfk1016.stadtserver.brewing.recipe.BarrelRecipe;
 import me.mfk1016.stadtserver.util.Keys;
 import me.mfk1016.stadtserver.util.Pair;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -159,10 +159,10 @@ public class BarrelManager {
         assert isFluidBarrel(block);
         Barrel barrel = (Barrel) block.getState();
         Inventory barrelInventory = barrel.getInventory();
-        Optional<BarrelBeerRecipe> recipe = PotionRecipeManager.matchBarrelRecipe(barrelInventory);
+        Optional<BarrelRecipe> recipe = PotionRecipeManager.matchBarrelRecipe(barrelInventory);
         String id = StadtServer.RANDOM.nextInt(2) == 0 ? "oettinger" : "sternburg";
         if (recipe.isPresent())
-            id = recipe.get().resultID();
+            id = recipe.get().getResultID();
         barrelInventory.clear();
         setFluidOfBarrel(block, id, 20);
     }

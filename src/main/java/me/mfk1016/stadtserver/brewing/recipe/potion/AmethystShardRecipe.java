@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.brewing.recipe;
+package me.mfk1016.stadtserver.brewing.recipe.potion;
 
 import me.mfk1016.stadtserver.brewing.CustomPotionType;
 import me.mfk1016.stadtserver.brewing.PotionManager;
