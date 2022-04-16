@@ -5,10 +5,7 @@ import me.mfk1016.stadtserver.logic.AncientTome;
 import me.mfk1016.stadtserver.origin.mob.MobOrigin;
 import me.mfk1016.stadtserver.util.BossName;
 import me.mfk1016.stadtserver.util.Keys;
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
@@ -55,27 +52,28 @@ public class BossMobListener implements Listener {
             return;
 
         LivingEntity mob = event.getEntity();
-
-        // End: No boss mobs while the dragon is alive
-        if (mob.getWorld().getEnvironment() == World.Environment.THE_END) {
-            for (LivingEntity e : mob.getWorld().getLivingEntities()) {
-                if (e instanceof EnderDragon)
-                    return;
-            }
-        }
+        Location loc = event.getLocation();
         if (!isValidBossMobType(mob.getType()))
             return;
 
-        int bossChance = 5;
+        int bossChance = 8;
         if (mob.getWorld().getEnvironment() == World.Environment.NORMAL) {
-            if (event.getLocation().getBlockY() < 20)
-                bossChance = 10;
-            if (event.getLocation().getBlockY() < -20)
-                bossChance = 15;
+            // Overworld: 5% chance, 10% below 20, 15% below -20
+            bossChance = loc.getBlockY() < -20 ? 15 : (loc.getBlockY() < 20 ? 10 : 5);
+        } else if (mob.getWorld().getEnvironment() == World.Environment.NETHER) {
+            // Nether: 8% chance, no boss mobs above the nether roof
+            bossChance = loc.getBlockY() > 125 ? 0 : bossChance;
         } else {
-            bossChance = 8;
+            // End: 8% chance, bo boss mobs while the dragon is alive
+            if (Math.abs(loc.getBlockX()) < 1000 && Math.abs(loc.getBlockZ()) < 1000)
+                for (LivingEntity e : mob.getWorld().getLivingEntities()) {
+                    if (e instanceof EnderDragon) {
+                        bossChance = 0;
+                        break;
+                    }
+                }
         }
-        if (StadtServer.RANDOM.nextInt(100) > bossChance)
+        if (bossChance == 0 || StadtServer.RANDOM.nextInt(100) > bossChance)
             return;
 
         // Boss level: 50% / 35% / 15% chance for level 1 - 3
