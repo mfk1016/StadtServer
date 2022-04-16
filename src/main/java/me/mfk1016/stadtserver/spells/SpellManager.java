@@ -28,6 +28,7 @@ public class SpellManager {
     public static DarknessSpell DARKNESS;
     public static SummonSpell SUMMON;
     public static MagnetSpell MAGNET;
+    public static DestructorSpell DESTRUCTOR;
 
     /* --- INIT + STOP --- */
 
@@ -37,11 +38,13 @@ public class SpellManager {
         DARKNESS = new DarknessSpell();
         SUMMON = new SummonSpell();
         MAGNET = new MagnetSpell();
+        DESTRUCTOR = new DestructorSpell();
 
         // Add them here
         ALL_SPELLS.add(DARKNESS);
         ALL_SPELLS.add(SUMMON);
         ALL_SPELLS.add(MAGNET);
+        ALL_SPELLS.add(DESTRUCTOR);
 
         // Registering
         registerSpells();

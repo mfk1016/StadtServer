@@ -9,6 +9,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -50,6 +51,8 @@ public class MagnetSpell extends CustomSpell {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onMagnetUse(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+            return;
         ItemStack axe = event.getItem();
         if (stackEmpty(axe) || SpellManager.getSpellCharges(axe, this) == 0)
             return;
