@@ -27,12 +27,16 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PiglinBarterEvent;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 import java.util.Objects;
@@ -163,35 +167,12 @@ public class EnchantmentListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onUseInfinityWaterBucket(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !event.hasItem())
+    public void onUseInfinityWaterBucket(PlayerBucketEmptyEvent event) {
+        if (event.getBucket() != Material.WATER_BUCKET)
             return;
-        ItemStack bucket = Objects.requireNonNull(event.getItem());
-        if (bucket.getType() != Material.WATER_BUCKET || !bucket.containsEnchantment(Enchantment.ARROW_INFINITE))
-            return;
-
-        Block clicked = Objects.requireNonNull(event.getClickedBlock());
-        if (clicked.getBlockData() instanceof Waterlogged waterlogged) {
-            waterlogged.setWaterlogged(true);
-            clicked.setBlockData(waterlogged);
-            clicked.getWorld().playSound(event.getPlayer().getLocation(), Sound.ITEM_BUCKET_EMPTY, 1f, 1f);
-            event.setCancelled(true);
-            return;
-        } else if (clicked.isLiquid()) {
-            event.setCancelled(true);
-            return;
-        }
-
-        Block target = clicked.getRelative(event.getBlockFace());
-        if (target.getBlockData() instanceof Waterlogged waterlogged) {
-            waterlogged.setWaterlogged(true);
-            target.setBlockData(waterlogged);
-            target.getWorld().playSound(event.getPlayer().getLocation(), Sound.ITEM_BUCKET_EMPTY, 1f, 1f);
-        } else if (target.isEmpty()) {
-            target.setType(Material.WATER);
-            target.getWorld().playSound(event.getPlayer().getLocation(), Sound.ITEM_BUCKET_EMPTY, 1f, 1f);
-
-        }
-        event.setCancelled(true);
+        Player player = event.getPlayer();
+        EquipmentSlot hand = Objects.requireNonNull(event.getHand());
+        ItemStack bucket = player.getInventory().getItem(hand).clone();
+        event.setItemStack(bucket);
     }
 }
