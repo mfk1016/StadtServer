@@ -27,7 +27,7 @@ public class DestructorSpell extends CustomSpell {
     public DestructorSpell() { super("Destructor", "destructor"); }
 
     @Override
-    public Level spellLevel() { return Level.COMMON; }
+    public @NotNull Level spellLevel() { return Level.COMMON; }
 
     @Override
     public int getMaxCharges() { return 8; }

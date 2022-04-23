@@ -27,7 +27,7 @@ public class SummonSpell extends CustomSpell {
     }
 
     @Override
-    public Level spellLevel() {
+    public @NotNull Level spellLevel() {
         return Level.COMMON;
     }
 

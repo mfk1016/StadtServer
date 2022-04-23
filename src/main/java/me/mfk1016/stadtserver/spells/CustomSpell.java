@@ -22,7 +22,7 @@ public abstract class CustomSpell extends CustomEnchantment {
         super(name, namespace);
     }
 
-    public abstract Level spellLevel();
+    public abstract @NotNull Level spellLevel();
 
     @Override
     public @NotNull Component displayName(int i) {
