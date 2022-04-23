@@ -173,6 +173,8 @@ public class EnchantmentListener implements Listener {
         Player player = event.getPlayer();
         EquipmentSlot hand = Objects.requireNonNull(event.getHand());
         ItemStack bucket = player.getInventory().getItem(hand).clone();
+        if (!EnchantmentManager.isEnchantedWith(bucket, Enchantment.ARROW_INFINITE))
+            return;
         event.setItemStack(bucket);
     }
 }

@@ -161,13 +161,13 @@
   ],
   "wandering_trader:spell" : [
     {
-      "chance" : 6,
+      "chance" : 10,
       "spell" : "magnet",
       "weights" : [2, 2, 1, 1],
       "costs" : [5, 10, 15, 20]
     },
     {
-      "chance" : 3,
+      "chance" : 5,
       "spell" : "darkness",
       "weights" : [2, 1],
       "costs" : [20, 40]

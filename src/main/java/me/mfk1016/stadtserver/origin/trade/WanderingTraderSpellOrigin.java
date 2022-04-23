@@ -22,6 +22,7 @@ public class WanderingTraderSpellOrigin extends WanderingTraderOrigin {
     private final int[] chargeWeights;
     private final int[] chargeCosts;
     private final int chargeWeightsSum;
+    private final int maxRecipeUses;
 
     public WanderingTraderSpellOrigin(int chance, @NotNull CustomSpell spell, int[] chargeWeights, int[] chargeCosts) {
         super(chance);
@@ -32,6 +33,11 @@ public class WanderingTraderSpellOrigin extends WanderingTraderOrigin {
         assert spell.getMaxLevel() == chargeCosts.length;
         chargeWeightsSum = Arrays.stream(chargeWeights).sum();
         assert chargeWeightsSum > 0;
+        maxRecipeUses = switch (spell.spellLevel()) {
+            case COMMON -> 12;
+            case RARE -> 6;
+            case LEGENDARY -> 3;
+        };
     }
 
     protected int getSpellCharges() {
@@ -49,7 +55,7 @@ public class WanderingTraderSpellOrigin extends WanderingTraderOrigin {
         int charges = getSpellCharges();
         ItemStack result = SpellManager.createSpellMedium(spell, charges);
         MerchantRecipe newRecipe = copyRecipe(oldRecipe, result);
-        newRecipe.setMaxUses(3);
+        newRecipe.setMaxUses(maxRecipeUses);
         newRecipe.setPriceMultiplier(0.2f);
         newRecipe.setIngredients(List.of(new ItemStack(Material.EMERALD, chargeCosts[charges - 1])));
         return newRecipe;
