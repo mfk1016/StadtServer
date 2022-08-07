@@ -86,12 +86,13 @@ public class TrowelEnchantment extends CustomEnchantment {
         int slot = hotbarSlots.get(StadtServer.RANDOM.nextInt(hotbarSlots.size()));
         ItemStack toPlace = Objects.requireNonNull(inventory.getItem(slot));
         target.setType(toPlace.getType());
-        toPlace.setAmount(toPlace.getAmount() - 1);
-        toPlace = toPlace.getAmount() == 0 ? null : toPlace;
-        inventory.setItem(slot, toPlace);
         target.getWorld().playSound(target.getLocation(), Sound.BLOCK_GRASS_PLACE, 1f, 1f);
-        if (player.getGameMode() == GameMode.SURVIVAL)
+        if (player.getGameMode() == GameMode.SURVIVAL) {
+            toPlace.setAmount(toPlace.getAmount() - 1);
+            toPlace = toPlace.getAmount() == 0 ? null : toPlace;
+            inventory.setItem(slot, toPlace);
             damageTrowel(event.getItem());
+        }
         event.setCancelled(true);
     }
 

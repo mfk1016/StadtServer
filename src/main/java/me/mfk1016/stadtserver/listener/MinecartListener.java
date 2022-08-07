@@ -2,7 +2,7 @@ package me.mfk1016.stadtserver.listener;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.MinecartLogic;
-import me.mfk1016.stadtserver.nms.v1_18_2.MinecartFix;
+import me.mfk1016.stadtserver.nms.v1_19_1.MinecartFix;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
 import org.bukkit.Sound;
