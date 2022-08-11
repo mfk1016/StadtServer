@@ -1,5 +1,6 @@
 package me.mfk1016.stadtserver;
 
+import me.mfk1016.stadtserver.candlestore.CandleStoreManager;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.BossMobListener;
@@ -63,6 +64,10 @@ public class StadtServerCommand implements CommandExecutor {
         } else if (Objects.equals(section, "spell")) {
             if (sender instanceof Player player) {
                 return onCommandSpell(player, args);
+            }
+        } else if (Objects.equals(section, "candle_tool")) {
+            if (sender instanceof Player player) {
+                return onCommandCandleTool(player);
             }
         }
         return false;
@@ -172,6 +177,12 @@ public class StadtServerCommand implements CommandExecutor {
         ItemStack target = player.getInventory().getItemInMainHand();
         SpellManager.addSpell(target, spell, charges);
         player.sendMessage("Spell '" + enchStr + "' added.");
+        return true;
+    }
+
+    private boolean onCommandCandleTool(Player player) {
+        player.getWorld().dropItem(player.getLocation(), CandleStoreManager.getCandleTool());
+        player.sendMessage("Candle tool created.");
         return true;
     }
 }

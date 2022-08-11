@@ -21,9 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockDispenseEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -137,7 +135,7 @@ public class SmallFunctionsListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPistonTrigger(BlockPhysicsEvent event) {
+    public void onPistonTrigger(BlockPistonExtendEvent event) {
         if (event.getBlock().getType() != Material.STICKY_PISTON)
             return;
         if (!event.getBlock().isBlockIndirectlyPowered())

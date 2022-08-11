@@ -8,6 +8,7 @@ public class Keys {
     // Configuration
     public static final String CONFIG_PLAYER_MESSAGE = "send_player_message";
     public static final String CONFIG_MAX_LOGS = "chop_max_logs";
+    public static final String CONFIG_CANDLE_STORE_CHEST_SLOTS = "candle_store.chest_slots";
 
     // Entitites: Strings
 
@@ -58,6 +59,12 @@ public class Keys {
     public static NamespacedKey BARREL_LIQUID_TYPE;
     public static NamespacedKey BARREL_LIQUID_AMOUNT;
 
+    // Candle Store
+    private static final String CANDLE_STORE_s = "candle_store";
+    public static NamespacedKey CANDLE_STORE;
+    private static final String CANDLE_STORE_MEMBER_TYPE_s = "candle_store_member_type";
+    public static NamespacedKey CANDLE_STORE_MEMBER_TYPE;
+
 
     public static void initialize() {
         StadtServer.getInstance().getConfig().addDefault(CONFIG_PLAYER_MESSAGE, true);
@@ -69,5 +76,7 @@ public class Keys {
         IS_FLUID_BARREL = new NamespacedKey(StadtServer.getInstance(), IS_FLUID_BARREL_s);
         BARREL_LIQUID_TYPE = new NamespacedKey(StadtServer.getInstance(), BARREL_LIQUID_TYPE_s);
         BARREL_LIQUID_AMOUNT = new NamespacedKey(StadtServer.getInstance(), BARREL_LIQUID_AMOUNT_s);
+        CANDLE_STORE = new NamespacedKey(StadtServer.getInstance(), CANDLE_STORE_s);
+        CANDLE_STORE_MEMBER_TYPE = new NamespacedKey(StadtServer.getInstance(), CANDLE_STORE_MEMBER_TYPE_s);
     }
 }

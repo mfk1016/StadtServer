@@ -3,6 +3,7 @@ package me.mfk1016.stadtserver;
 import com.comphenix.protocol.ProtocolLibrary;
 import me.mfk1016.stadtserver.brewing.PotionManager;
 import me.mfk1016.stadtserver.brewing.PotionRecipeManager;
+import me.mfk1016.stadtserver.candlestore.CandleStoreManager;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.*;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
@@ -38,6 +39,8 @@ public class StadtServer extends JavaPlugin {
         Keys.initialize();
         CategoryManager.initialize(false);
 
+        LOGGER.info(getDescription().getName() + ": load candle stores...");
+        CandleStoreManager.loadStores();
         LOGGER.info(getDescription().getName() + ": register enchantments...");
         EnchantmentManager.onPluginEnable();
         LOGGER.info(getDescription().getName() + ": register spells...");
@@ -62,6 +65,7 @@ public class StadtServer extends JavaPlugin {
         pm.registerEvents(new TreeListener(), this);
         pm.registerEvents(new VineListener(), this);
         pm.registerEvents(new BarrelListener(), this);
+        pm.registerEvents(new CandleStoreListener(), this);
         ProtocolLibrary.getProtocolManager().addPacketListener(signPacketListener);
 
         LOGGER.info(getDescription().getName() + ": register recipes...");
@@ -73,6 +77,7 @@ public class StadtServer extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        LOGGER.info(getDescription().getName() + ": stop managers and handlers...");
         RitualManager.onPluginDisable();
         HandlerList.unregisterAll(this);
         if (signPacketListener != null)
@@ -80,8 +85,9 @@ public class StadtServer extends JavaPlugin {
         signPacketListener = null;
         EnchantmentManager.onPluginDisable();
         SpellManager.onPluginDisable();
-        //RecipeManager.unregisterBrewingRecipes();
+        LOGGER.info(getDescription().getName() + ": save config and candle stores...");
         saveConfig();
+        CandleStoreManager.saveStoresOnPluginStop();
         LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " stopped.");
     }
 

@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.candlestore.CandleStoreManager;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -36,6 +37,12 @@ public abstract class MobOrigin {
         for (JsonElement jsonElement : loot) {
             ORIGINS.add(BossMobItemOrigin.fromJson(jsonElement.getAsJsonObject(), gson));
         }
+
+        // Candle Tool: Witch Boss Level 4 (ritual), 25% chance
+        BossMobItemOrigin candleToolOrigin = new BossMobItemOrigin(
+                25, EntityType.WITCH, 4,
+                World.Environment.NORMAL, CandleStoreManager.getCandleTool());
+        ORIGINS.add(candleToolOrigin);
     }
 
 
