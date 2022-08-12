@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -16,8 +17,8 @@ import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 public class CandleStore {
 
-    public static CandleStore createStore(String key, boolean hasChest) {
-        return new CandleStore(key, 1, hasChest ? getConfigSlotsOfChest() : 0, 0, new EnumMap<>(Material.class));
+    public static CandleStore createStore(String key, boolean hasChest, Vector centerLocation) {
+        return new CandleStore(key, 1, hasChest ? getConfigSlotsOfChest() : 0, 0, new EnumMap<>(Material.class), centerLocation);
     }
 
     private static int getConfigSlotsOfChest() {
@@ -28,14 +29,16 @@ public class CandleStore {
     private int memberCount;
     private int storageSlots;
     private int usedSlots;
+    private final Vector centerLocation;
     private final EnumMap<Material, Long> storage;
     private final Inventory view;
 
-    public CandleStore(String key, int memberCount, int storageSlots, int usedSlots, EnumMap<Material, Long> storage) {
+    public CandleStore(String key, int memberCount, int storageSlots, int usedSlots, EnumMap<Material, Long> storage, Vector centerLocation) {
         this.key = key;
         this.memberCount = memberCount;
         this.storageSlots = storageSlots;
         this.usedSlots = usedSlots;
+        this.centerLocation = centerLocation;
         this.storage = storage;
         view = Bukkit.createInventory(null, 54, undecoratedText("Candle Store Index"));
         updateView(true);
@@ -73,7 +76,10 @@ public class CandleStore {
         return stack;
     }
 
-    public void addMember(boolean hasChest) {
+    public void addMember(Vector position, boolean hasChest) {
+        centerLocation.setX((centerLocation.getX() * memberCount + position.getX()) / (memberCount + 1));
+        centerLocation.setY((centerLocation.getY() * memberCount + position.getY()) / (memberCount + 1));
+        centerLocation.setZ((centerLocation.getZ() * memberCount + position.getZ()) / (memberCount + 1));
         memberCount++;
         updateMember(hasChest, false);
     }
@@ -108,7 +114,10 @@ public class CandleStore {
         }
     }
 
-    public void deleteMember(boolean hasChest) {
+    public void deleteMember(Vector position, boolean hasChest) {
+        centerLocation.setX((centerLocation.getX() * memberCount - position.getX()) / (memberCount - 1));
+        centerLocation.setY((centerLocation.getY() * memberCount - position.getY()) / (memberCount - 1));
+        centerLocation.setZ((centerLocation.getZ() * memberCount - position.getZ()) / (memberCount - 1));
         memberCount--;
         updateMember(false, hasChest);
     }
@@ -127,6 +136,10 @@ public class CandleStore {
 
     public int getUsedSlots() {
         return usedSlots;
+    }
+
+    public Vector getCenterLocation() {
+        return centerLocation;
     }
 
     public EnumMap<Material, Long> getStorage() {

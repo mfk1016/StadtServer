@@ -155,9 +155,9 @@ public class CandleStoreListener implements Listener {
                         CandleStoreManager.STORE_MEMBER_VIEW;
 
         List<Block> dispensers = new ArrayList<>();
-        for (int x = -16; x <= 16; x++) {
-            for (int y = -16; y <= 16; y++) {
-                for (int z = -16; z <= 16; z++) {
+        for (int x = -8; x <= 8; x++) {
+            for (int y = -8; y <= 8; y++) {
+                for (int z = -8; z <= 8; z++) {
                     if (x == 0 && y == 0 && z == 0)
                         continue;
                     Block relative = target.getRelative(x, y, z);
@@ -174,6 +174,11 @@ public class CandleStoreListener implements Listener {
             Dispenser partner = (Dispenser) partnerBlock.getState();
             Optional<CandleStore> optStore = CandleStoreManager.getStore(partner);
             if (optStore.isPresent()) {
+                if (optStore.get().getCenterLocation().distance(dispenser.getLocation().toVector()) > 16D) {
+                    playerMessage(event.getPlayer(),
+                            "Too near to " + candleName + " store while further than 16 blocks away from the store center.");
+                    return;
+                }
                 CandleStoreManager.addToStore(dispenser, partner, hasChest, memberType);
                 playerMessage(event.getPlayer(), "New Member added to " + candleName + " store.");
                 return;

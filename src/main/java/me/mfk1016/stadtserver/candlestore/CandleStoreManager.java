@@ -8,6 +8,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -46,12 +47,12 @@ public class CandleStoreManager {
         if (partner == null) {
             while (ALL_STORES.containsKey(key))
                 key = UUID.randomUUID().toString();
-            CandleStore store = CandleStore.createStore(key, hasChest);
+            CandleStore store = CandleStore.createStore(key, hasChest, dispenser.getLocation().toVector());
             VIEW_MAP.put(store.getView(), store);
             ALL_STORES.put(key, store);
         } else {
             CandleStore store = Objects.requireNonNull(getStore(partner).orElse(null));
-            store.addMember(hasChest);
+            store.addMember(dispenser.getLocation().toVector(), hasChest);
             key = store.getKey();
         }
         pdc.set(Keys.CANDLE_STORE, PersistentDataType.STRING, key);
@@ -79,7 +80,7 @@ public class CandleStoreManager {
         assert ALL_STORES.containsKey(key);
         CandleStore store = ALL_STORES.get(key);
         if (store.getMemberCount() > 1) {
-            store.deleteMember(hasChest);
+            store.deleteMember(dispenser.getLocation().toVector(), hasChest);
         } else {
             ALL_STORES.remove(key);
             VIEW_MAP.remove(store.getView());
@@ -148,6 +149,9 @@ public class CandleStoreManager {
             obj.add("member_count", new JsonPrimitive(store.getMemberCount()));
             obj.add("storage_slots", new JsonPrimitive(store.getStorageSlots()));
             obj.add("used_slots", new JsonPrimitive(store.getUsedSlots()));
+            obj.add("center_x", new JsonPrimitive(store.getCenterLocation().getX()));
+            obj.add("center_y", new JsonPrimitive(store.getCenterLocation().getY()));
+            obj.add("center_z", new JsonPrimitive(store.getCenterLocation().getZ()));
             JsonObject storage = new JsonObject();
             for (Map.Entry<Material, Long> elem : store.getStorage().entrySet()) {
                 storage.add(elem.getKey().name(), new JsonPrimitive(elem.getValue()));
@@ -163,6 +167,9 @@ public class CandleStoreManager {
             int memberCount = obj.get("member_count").getAsInt();
             int storageSlots = obj.get("storage_slots").getAsInt();
             int usedSlots = obj.get("used_slots").getAsInt();
+            double centerX = obj.get("center_x").getAsDouble();
+            double centerY = obj.get("center_y").getAsDouble();
+            double centerZ = obj.get("center_z").getAsDouble();
 
             EnumMap<Material, Long> storage = new EnumMap<>(Material.class);
             JsonObject storageObj = obj.getAsJsonObject("storage");
@@ -172,7 +179,7 @@ public class CandleStoreManager {
                 storage.put(mat, amount);
             }
 
-            return new CandleStore(key, memberCount, storageSlots, usedSlots, storage);
+            return new CandleStore(key, memberCount, storageSlots, usedSlots, storage, new Vector(centerX, centerY, centerZ));
         }
     }
 }
