@@ -120,7 +120,8 @@ public class FarmingEnchantment extends CustomEnchantment {
             farmingLevel = 1;
         boolean result = switch (target.getType()) {
             case GRASS_BLOCK, DIRT, DIRT_PATH -> onTillFarmland(player, hoe, target, farmingLevel);
-            case WHEAT, POTATOES, CARROTS, BEETROOTS, NETHER_WART -> onReplantNormalCrop(player, hoe, target, farmingLevel);
+            case WHEAT, POTATOES, CARROTS, BEETROOTS, NETHER_WART ->
+                    onReplantNormalCrop(player, hoe, target, farmingLevel);
             case FARMLAND, SOUL_SAND -> onPlantNormalCrop(player, hoe, target, farmingLevel);
             default -> false;
         };
@@ -128,6 +129,7 @@ public class FarmingEnchantment extends CustomEnchantment {
             event.setCancelled(true);
     }
 
+    @SuppressWarnings("SameReturnValue")
     private boolean onTillFarmland(Player player, ItemStack hoe, Block target, int farmingLevel) {
         int unbreakingFactor = hoe.getEnchantments().getOrDefault(Enchantment.DURABILITY, 0) + 1;
         List<Block> toTill = farmingTargets(target, farmingLevel - 1, true);

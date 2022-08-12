@@ -7,7 +7,6 @@ import me.mfk1016.stadtserver.spells.CustomSpell;
 import me.mfk1016.stadtserver.spells.SpellManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +50,7 @@ public class WanderingTraderSpellOrigin extends WanderingTraderOrigin {
     }
 
     @Override
-    protected MerchantRecipe createRecipe(Merchant merchant, MerchantRecipe oldRecipe) {
+    protected MerchantRecipe createRecipe(MerchantRecipe oldRecipe) {
         int charges = getSpellCharges();
         ItemStack result = SpellManager.createSpellMedium(spell, charges);
         MerchantRecipe newRecipe = copyRecipe(oldRecipe, result);

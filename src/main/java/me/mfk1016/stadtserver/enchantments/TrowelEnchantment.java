@@ -11,6 +11,7 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -69,7 +70,7 @@ public class TrowelEnchantment extends CustomEnchantment {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerTrowelBlock(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getItem() == null || event.isCancelled())
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getItem() == null || event.useInteractedBlock() == Event.Result.DENY)
             return;
         if (!EnchantmentManager.isEnchantedWith(event.getItem(), this))
             return;

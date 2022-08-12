@@ -24,7 +24,7 @@ public class BarrelBeerRecipe extends BarrelRecipe {
 
     @Override
     public boolean isMatched(Inventory barrel) {
-        if(!super.isMatched(barrel))
+        if (!super.isMatched(barrel))
             return false;
         ItemStack wheat = barrel.getItem(2);
         if (stackEmpty(wheat) || wheat.getType() != Material.WHEAT)

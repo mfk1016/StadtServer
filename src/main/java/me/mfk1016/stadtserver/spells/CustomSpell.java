@@ -49,6 +49,7 @@ public abstract class CustomSpell extends CustomEnchantment {
         return 1;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public @NotNull EnchantmentTarget getItemTarget() {
         return EnchantmentTarget.ALL;

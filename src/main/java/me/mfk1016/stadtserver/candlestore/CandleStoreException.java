@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.candlestore.util;
+package me.mfk1016.stadtserver.candlestore;
 
 public class CandleStoreException extends Exception {
 
@@ -16,7 +16,9 @@ public class CandleStoreException extends Exception {
 
     private static final String MESSAGE_INVALID_ITEM = "Candle stores can only store stackable unenchanted items";
 
-    public static CandleStoreException invalidItem() { return new CandleStoreException(MESSAGE_INVALID_ITEM); }
+    public static CandleStoreException invalidItem() {
+        return new CandleStoreException(MESSAGE_INVALID_ITEM);
+    }
 
     private CandleStoreException(String message) {
         super(message);

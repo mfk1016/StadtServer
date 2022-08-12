@@ -86,7 +86,7 @@ public class PotionManager {
     public static void initialize() {
         InputStream configStream = StadtServer.getInstance().getResource("potions.json");
         try {
-            JsonObject root = gson.fromJson(new InputStreamReader(configStream), JsonObject.class);
+            JsonObject root = gson.fromJson(new InputStreamReader(Objects.requireNonNull(configStream)), JsonObject.class);
             JsonArray customs = root.getAsJsonArray("custom_types");
             for (JsonElement jsonElement : customs) {
                 CustomPotionType toAdd = CustomPotionType.fromJson(jsonElement.getAsJsonObject());

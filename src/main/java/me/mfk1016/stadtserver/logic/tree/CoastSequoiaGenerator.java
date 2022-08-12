@@ -33,7 +33,7 @@ public class CoastSequoiaGenerator extends TreeGenerator {
         trunkHeight = (int) ((double) treeHeight * TRUNK_FACTOR);
         minBranch = (trunkHeight / 5) * 3;
         int branchLength = treeHeight - trunkHeight;
-        // 3x3 Spruce Tree; height = highest log
+        // 3x3 Spruce Tree; height = the highest log
         // trunk
         for (int y = 0; y < trunkHeight; y++) {
             for (int x = 0; x < 3; x++) {

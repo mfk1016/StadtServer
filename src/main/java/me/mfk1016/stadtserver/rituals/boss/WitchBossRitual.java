@@ -28,7 +28,7 @@ public class WitchBossRitual extends BossRitual {
 
     @Override
     public boolean hasProperShape() {
-        // Must be night time in the overworld
+        // Must be nighttime in the overworld
         World world = focusBlock.getWorld();
         if (world.getEnvironment() != World.Environment.NORMAL)
             return false;

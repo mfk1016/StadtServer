@@ -39,7 +39,7 @@ public class LibrarianBookOrigin extends VillagerEnchantmentOrigin {
         return villager.getVillagerLevel() == 5 || recipe.getResult().getType() == Material.ENCHANTED_BOOK;
     }
 
-    private MerchantRecipe createRecipe(MerchantRecipe oldRecipe) {
+    private MerchantRecipe createRecipe() {
         ItemStack newBook = new ItemStack(Material.ENCHANTED_BOOK);
         int enchLevel = getEnchantmentLevel();
         EnchantmentManager.enchantItem(newBook, enchantment, enchLevel);
@@ -57,11 +57,11 @@ public class LibrarianBookOrigin extends VillagerEnchantmentOrigin {
         // Level 5: Add a new trade instead of replacing the old one
         if (villager.getVillagerLevel() == 5) {
             List<MerchantRecipe> recipes = villager.getRecipes();
-            recipes.add(createRecipe(oldRecipe));
+            recipes.add(createRecipe());
             villager.setRecipes(recipes);
             return oldRecipe;
         } else {
-            return createRecipe(oldRecipe);
+            return createRecipe();
         }
     }
 

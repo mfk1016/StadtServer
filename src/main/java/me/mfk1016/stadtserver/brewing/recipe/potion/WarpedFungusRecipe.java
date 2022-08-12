@@ -24,6 +24,7 @@ public class WarpedFungusRecipe extends MultiPotionRecipe {
         addRandomOutput(1, "luck:0_2");
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void applyAdvancedRecipe(BrewEvent event) {
     }

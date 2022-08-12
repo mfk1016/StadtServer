@@ -77,6 +77,6 @@ public abstract class AdvancedPotionRecipe {
     public abstract Collection<PotionMix> buildBaseRecipes();
 
     // Optional behaviour after the brewing is finished
+    @SuppressWarnings({"EmptyMethod", "unused"})
     public abstract void applyAdvancedRecipe(BrewEvent event);
-
 }

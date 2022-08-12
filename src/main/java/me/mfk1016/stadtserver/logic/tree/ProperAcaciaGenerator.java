@@ -31,7 +31,7 @@ public class ProperAcaciaGenerator extends TreeGenerator {
     public void generateTree() {
         trunkHeight = (int) ((double) treeHeight * TRUNK_FACTOR);
         int branchLength = treeHeight - trunkHeight;
-        // 2x2 Acacia Tree; height = highest log
+        // 2x2 Acacia Tree; height = the highest log
         // trunk
         for (int y = 0; y < trunkHeight; y++) {
             for (int x = 0; x < 2; x++) {

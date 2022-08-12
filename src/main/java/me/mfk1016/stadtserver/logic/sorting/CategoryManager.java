@@ -30,7 +30,8 @@ public class CategoryManager {
             if (sortingConfig.delete())
                 StadtServer.getInstance().saveResource(sortingConfig.getName(), false);
         }
-        Type empMapType = new TypeToken<Map<String, List<String>>>() {}.getType();
+        Type empMapType = new TypeToken<Map<String, List<String>>>() {
+        }.getType();
         try {
             Map<String, List<String>> sortingData = gson.fromJson(new FileReader(sortingConfig), empMapType);
             if (!sortingData.containsKey("_order")) {

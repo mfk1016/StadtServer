@@ -76,6 +76,7 @@ public class SpellManager {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static void unregisterSpells() {
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");

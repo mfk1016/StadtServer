@@ -40,7 +40,7 @@ public abstract class BossRitual extends BasicRitual {
         super(focusBlock);
         this.spawnTime = spawnTime;
         this.bossType = bossType;
-        bossName = BossName.randomName(4);
+        bossName = BossName.randomName();
         bossBarKey = new NamespacedKey(StadtServer.getInstance(), UUID.randomUUID().toString());
     }
 

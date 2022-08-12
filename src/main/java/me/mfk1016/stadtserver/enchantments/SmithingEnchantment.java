@@ -50,7 +50,7 @@ public class SmithingEnchantment extends CustomEnchantment {
     }
 
     public static void tryApplySmithingEnchantment(PrepareAnvilEvent event) {
-        // Assumes, that the anvil state (items, enchantments, costs) is correct and it is only repairing
+        // Assumes, that the anvil state (items, enchantments, costs) is correct, and it is only repairing
         AnvilInventory anvil = event.getInventory();
         ItemStack result = Objects.requireNonNull(event.getResult());
 

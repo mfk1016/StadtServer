@@ -1,6 +1,6 @@
 package me.mfk1016.stadtserver;
 
-import me.mfk1016.stadtserver.candlestore.CandleStoreManager;
+import me.mfk1016.stadtserver.candlestore.CandleStoreUtils;
 import me.mfk1016.stadtserver.enchantments.CustomEnchantment;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.listener.BossMobListener;
@@ -59,7 +59,8 @@ public class StadtServerCommand implements CommandExecutor {
             }
         } else if (Objects.equals(section, "ancient")) {
             if (sender instanceof Player player) {
-                return onCommandAncientTome(player);
+                onCommandAncientTome(player);
+                return true;
             }
         } else if (Objects.equals(section, "spell")) {
             if (sender instanceof Player player) {
@@ -67,7 +68,8 @@ public class StadtServerCommand implements CommandExecutor {
             }
         } else if (Objects.equals(section, "candle_tool")) {
             if (sender instanceof Player player) {
-                return onCommandCandleTool(player);
+                onCommandCandleTool(player);
+                return true;
             }
         }
         return false;
@@ -134,15 +136,14 @@ public class StadtServerCommand implements CommandExecutor {
             return false;
 
         LivingEntity mob = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), targetType);
-        BossMobListener.createBoss(mob, targetLevel, BossName.randomName(targetLevel));
+        BossMobListener.createBoss(mob, targetLevel, BossName.randomName());
         player.sendMessage("Boss spawned.");
         return true;
     }
 
-    private boolean onCommandAncientTome(Player player) {
+    private void onCommandAncientTome(Player player) {
         player.getWorld().dropItem(player.getLocation(), AncientTome.randomAncientTome());
         player.sendMessage("Ancient tome dropped.");
-        return true;
     }
 
     private boolean onCommandSpell(Player player, String[] args) {
@@ -180,9 +181,8 @@ public class StadtServerCommand implements CommandExecutor {
         return true;
     }
 
-    private boolean onCommandCandleTool(Player player) {
-        player.getWorld().dropItem(player.getLocation(), CandleStoreManager.getCandleTool());
+    private void onCommandCandleTool(Player player) {
+        player.getWorld().dropItem(player.getLocation(), CandleStoreUtils.getCandleTool());
         player.sendMessage("Candle tool created.");
-        return true;
     }
 }

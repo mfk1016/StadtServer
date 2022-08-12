@@ -1,7 +1,7 @@
 package me.mfk1016.stadtserver.util;
 
 import me.mfk1016.stadtserver.StadtServer;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class BossName {
 
@@ -26,16 +26,16 @@ public class BossName {
     private static final String SPLIT_M = " der ";
     private static final String SPLIT_W = " die ";
 
-    private static String colorPrefix(int level) {
+    public static NamedTextColor getBossColor(int level) {
         return switch (level) {
-            case 4 -> ChatColor.LIGHT_PURPLE.toString();
-            case 3 -> ChatColor.BLUE.toString();
-            case 2 -> ChatColor.YELLOW.toString();
-            default -> "";
+            case 4 -> NamedTextColor.LIGHT_PURPLE;
+            case 3 -> NamedTextColor.BLUE;
+            case 2 -> NamedTextColor.YELLOW;
+            default -> NamedTextColor.WHITE;
         };
     }
 
-    public static String randomName(int level) {
+    public static String randomName() {
         boolean mw = StadtServer.RANDOM.nextInt(2) == 0;
         String name, split;
         if (mw) {
@@ -46,6 +46,6 @@ public class BossName {
             split = SPLIT_W;
         }
         String subname = SUBNAMES[StadtServer.RANDOM.nextInt(SUBNAMES.length)];
-        return colorPrefix(level) + name + split + subname;
+        return name + split + subname;
     }
 }

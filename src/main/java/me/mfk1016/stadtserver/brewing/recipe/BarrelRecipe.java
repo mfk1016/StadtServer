@@ -8,7 +8,7 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public abstract class BarrelRecipe {
 
-    protected String resultID;
+    protected final String resultID;
 
     public BarrelRecipe(String resultID) {
         this.resultID = resultID;

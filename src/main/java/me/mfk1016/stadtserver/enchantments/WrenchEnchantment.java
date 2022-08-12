@@ -30,6 +30,7 @@ public class WrenchEnchantment extends CustomEnchantment {
         super("Wrench", "wrench");
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isWrenched(TileState state) {
         PersistentDataContainer pdc = state.getPersistentDataContainer();
         int result = pdc.getOrDefault(Keys.IS_WRENCHED, PersistentDataType.INTEGER, 0);

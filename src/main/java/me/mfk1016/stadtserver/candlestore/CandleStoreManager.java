@@ -3,21 +3,15 @@ package me.mfk1016.stadtserver.candlestore;
 import com.google.gson.*;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Keys;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
-
-import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
-import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 public class CandleStoreManager {
 
@@ -37,8 +31,12 @@ public class CandleStoreManager {
         return Optional.of(ALL_STORES.get(key));
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isStoreView(Inventory view) {
+        return VIEW_MAP.containsKey(view);
+    }
+
     public static CandleStore getStore(Inventory view) {
-        assert VIEW_MAP.containsKey(view);
         return VIEW_MAP.get(view);
     }
 
@@ -91,25 +89,6 @@ public class CandleStoreManager {
         dispenser.update();
     }
 
-    /* --- Candle Tool --- */
-
-    public static ItemStack getCandleTool() {
-        ItemStack tool = new ItemStack(Material.GOLDEN_SWORD);
-        ItemMeta meta = tool.getItemMeta();
-        meta.displayName(undecoratedText("Candle Tool").color(NamedTextColor.LIGHT_PURPLE));
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(Keys.CANDLE_STORE, PersistentDataType.INTEGER, 1);
-        tool.setItemMeta(meta);
-        return tool;
-    }
-
-    public static boolean isCandleTool(ItemStack item) {
-        if (stackEmpty(item) || item.getType() != Material.GOLDEN_SWORD)
-            return false;
-        ItemMeta meta = item.getItemMeta();
-        return meta.getPersistentDataContainer().has(Keys.CANDLE_STORE);
-    }
-
     /* --- Persistence --- */
 
     public static void loadStores() {
@@ -133,6 +112,7 @@ public class CandleStoreManager {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void saveStoresOnPluginStop() {
         try {
             Gson gson = getGsonInstance();

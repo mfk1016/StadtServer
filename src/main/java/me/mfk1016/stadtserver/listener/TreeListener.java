@@ -59,7 +59,7 @@ public class TreeListener implements Listener {
             return null;
         Material sap = test.getType();
         Block nwBase = test;
-        // Go to the north west edge
+        // Go to the north-west edge
         int steps = 0;
         while (steps < 20) {
             if (nwBase.getRelative(BlockFace.NORTH).getType() == sap) {

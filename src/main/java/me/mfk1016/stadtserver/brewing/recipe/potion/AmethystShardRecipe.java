@@ -25,6 +25,7 @@ public class AmethystShardRecipe extends MultiPotionRecipe {
         addRandomOutput(1, "bad_omen:0_4");
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void applyAdvancedRecipe(BrewEvent event) {
     }

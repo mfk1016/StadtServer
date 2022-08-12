@@ -35,7 +35,7 @@ public class GermanOakGenerator extends TreeGenerator {
         trunkHeight = (int) ((double) treeHeight * TRUNK_FACTOR);
         minBranch = Math.max(trunkHeight / 3, 6);
         int branchLength = treeHeight - trunkHeight;
-        // 2x2 Oak Tree; height = highest log
+        // 2x2 Oak Tree; height = the highest log
         // trunk
         for (int y = 0; y < trunkHeight; y++) {
             for (int x = 0; x < 2; x++) {

@@ -43,7 +43,7 @@ public abstract class TreeGenerator {
         if (nwBase.getLocation().getBlockY() + treeHeight > 310)
             return false;
         int validHeight = 1;
-        // Get the north west corner of the check area
+        // Get the north-west corner of the check area
         Block corner = nwBase;
         if (checkSquare > 2) {
             int offset = (checkSquare - 1) / 2;

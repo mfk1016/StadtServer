@@ -20,7 +20,7 @@ public class DoorListener implements Listener {
         Block doorBlock = event.getClickedBlock();
         if (doorBlock == null || doorBlock.getType() == Material.IRON_DOOR)
             return;
-        if (doorBlock.getBlockData() instanceof Door door) {
+        if (doorBlock.getBlockData() instanceof Door) {
             Block matchBlock = getMatchingDoor(doorBlock);
             if (matchBlock == null)
                 return;

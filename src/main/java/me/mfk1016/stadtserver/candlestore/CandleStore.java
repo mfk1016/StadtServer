@@ -1,15 +1,15 @@
 package me.mfk1016.stadtserver.candlestore;
 
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.candlestore.util.CandleStoreException;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
@@ -27,9 +27,7 @@ public class CandleStore {
     private final String key;
     private int memberCount;
     private int storageSlots;
-
     private int usedSlots;
-
     private final EnumMap<Material, Long> storage;
     private final Inventory view;
 
@@ -40,20 +38,15 @@ public class CandleStore {
         this.usedSlots = usedSlots;
         this.storage = storage;
         view = Bukkit.createInventory(null, 54, undecoratedText("Candle Store Index"));
-        view.setMaxStackSize(Integer.MAX_VALUE);
         updateView(true);
-    }
-
-    public long getItemAmount(Material material) {
-        return storage.getOrDefault(material, 0L);
     }
 
     public void pushItemStack(ItemStack stack) throws CandleStoreException {
         assert !stackEmpty(stack);
-        if (!isValidStoreItem(stack)) {
+        if (!CandleStoreUtils.isValidStoreItem(stack)) {
             throw CandleStoreException.invalidItem();
         }
-        long currentAmount = getItemAmount(stack.getType());
+        long currentAmount = storage.getOrDefault(stack.getType(), 0L);
         if (usedSlots == storageSlots && currentAmount == 0) {
             throw CandleStoreException.storeFull();
         }
@@ -63,7 +56,7 @@ public class CandleStore {
     }
 
     public ItemStack pullItemStack(Material material, int amount) throws CandleStoreException {
-        long currentAmount = getItemAmount(material);
+        long currentAmount = storage.getOrDefault(material, 0L);
         if (currentAmount == 0) {
             throw CandleStoreException.itemNotFound();
         }
@@ -72,9 +65,9 @@ public class CandleStore {
         if (newAmount <= 0) {
             usedSlots--;
             stack.setAmount((int) currentAmount);
-            storage.remove(stack.getType());
+            storage.remove(material);
         } else {
-            storage.put(stack.getType(), newAmount);
+            storage.put(material, newAmount);
         }
         updateView(false);
         return stack;
@@ -97,6 +90,7 @@ public class CandleStore {
                 storage.remove(mat);
                 usedSlots--;
             }
+            updateView(false);
         }
     }
 
@@ -104,19 +98,12 @@ public class CandleStore {
         if (view.getViewers().isEmpty() && !force)
             return;
         view.clear();
-        List<ItemStack> elements = storage.entrySet().stream()
-                .sorted(Comparator.comparingLong(Map.Entry::getValue))
-                .map(entry -> {
-                    ItemStack elem = new ItemStack(entry.getKey());
-                    ItemMeta meta = elem.getItemMeta();
-                    meta.displayName(undecoratedText(entry.getValue().toString()));
-                    elem.setItemMeta(meta);
-                    return elem;
-                }).toList();
+        Iterator<Map.Entry<Material, Long>> iterator =
+                storage.entrySet().stream().sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue())).iterator();
         int slot = 0;
-        for (int i = elements.size() - 1; i >= 0; i--) {
-            if (slot == 54) break;
-            view.setItem(slot, elements.get(i));
+        while (iterator.hasNext() && slot < 54) {
+            Map.Entry<Material, Long> entry = iterator.next();
+            view.setItem(slot, CandleStoreUtils.getViewStack(entry.getKey(), entry.getValue()));
             slot++;
         }
     }
@@ -148,16 +135,5 @@ public class CandleStore {
 
     public Inventory getView() {
         return view;
-    }
-
-    public static boolean isValidStoreItem(ItemStack item) {
-        if (item.getEnchantments().size() > 0)
-            return false;
-        if (item.getMaxStackSize() > 1)
-            return true;
-        return switch (item.getType()) {
-            case CLOCK, COMPASS -> true;
-            default -> false;
-        };
     }
 }

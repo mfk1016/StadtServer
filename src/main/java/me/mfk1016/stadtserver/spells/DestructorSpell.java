@@ -24,16 +24,24 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class DestructorSpell extends CustomSpell {
 
-    public DestructorSpell() { super("Destructor", "destructor"); }
+    public DestructorSpell() {
+        super("Destructor", "destructor");
+    }
 
     @Override
-    public @NotNull Level spellLevel() { return Level.COMMON; }
+    public @NotNull Level spellLevel() {
+        return Level.COMMON;
+    }
 
     @Override
-    public int getMaxCharges() { return 8; }
+    public int getMaxCharges() {
+        return 8;
+    }
 
     @Override
-    public boolean canEnchantItem(@NotNull ItemStack item) { return item.getType() == Material.BLAZE_ROD; }
+    public boolean canEnchantItem(@NotNull ItemStack item) {
+        return item.getType() == Material.BLAZE_ROD;
+    }
 
     private static NamespacedKey destructorRecipeKey() {
         return new NamespacedKey(StadtServer.getInstance(), "spell_destructor");

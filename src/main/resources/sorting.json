@@ -1,9 +1,9 @@
 {
-  "important": [
+  "important" : [
     "stick",
     "torch"
   ],
-  "tool.pickaxe": [
+  "tool.pickaxe" : [
     "netherite_pickaxe",
     "diamond_pickaxe",
     "iron_pickaxe",
@@ -11,7 +11,7 @@
     "stone_pickaxe",
     "wooden_pickaxe"
   ],
-  "tool.shovel": [
+  "tool.shovel" : [
     "netherite_shovel",
     "diamond_shovel",
     "iron_shovel",
@@ -19,7 +19,7 @@
     "stone_shovel",
     "wooden_shovel"
   ],
-  "tool.axe": [
+  "tool.axe" : [
     "netherite_axe",
     "diamond_axe",
     "iron_axe",
@@ -27,7 +27,7 @@
     "stone_axe",
     "wooden_axe"
   ],
-  "tool.weapon.sword": [
+  "tool.weapon.sword" : [
     "netherite_sword",
     "diamond_sword",
     "iron_sword",
@@ -35,13 +35,13 @@
     "stone_sword",
     "wooden_sword"
   ],
-  "tool.weapon": [
+  "tool.weapon" : [
     "bow",
     "crossbow",
     "trident",
     "shield"
   ],
-  "tool.hoe": [
+  "tool.hoe" : [
     "netherite_hoe",
     "diamond_hoe",
     "iron_hoe",
@@ -49,7 +49,7 @@
     "stone_hoe",
     "wooden_hoe"
   ],
-  "tool.misc": [
+  "tool.misc" : [
     "flint_and_steel",
     "fishing_rod",
     "shears",
@@ -59,7 +59,7 @@
     "carrot_on_a_stick",
     "warped_fungus_on_a_stick"
   ],
-  "tool.armor.helmet": [
+  "tool.armor.helmet" : [
     "netherite_helmet",
     "diamond_helmet",
     "turtle_helmet",
@@ -68,7 +68,7 @@
     "golden_helmet",
     "leather_helmet"
   ],
-  "tool.armor.chest": [
+  "tool.armor.chest" : [
     "elytra",
     "firework_rocket",
     "netherite_chestplate",
@@ -78,7 +78,7 @@
     "golden_chestplate",
     "leather_chestplate"
   ],
-  "tool.armor.leggins": [
+  "tool.armor.leggins" : [
     "netherite_leggings",
     "diamond_leggings",
     "iron_leggings",
@@ -86,7 +86,7 @@
     "golden_leggings",
     "leather_leggings"
   ],
-  "tool.armor.boots": [
+  "tool.armor.boots" : [
     "netherite_boots",
     "diamond_boots",
     "iron_boots",
@@ -94,14 +94,14 @@
     "golden_boots",
     "leather_boots"
   ],
-  "tool.armor": [
+  "tool.armor" : [
     "armor_stand"
   ],
-  "tool.map": [
+  "tool.map" : [
     "map",
     "filled_map"
   ],
-  "tool.potion": [
+  "tool.potion" : [
     "glass_bottle",
     "experience_bottle",
     "potion",
@@ -109,7 +109,7 @@
     "lingering_potion",
     "bowl"
   ],
-  "tool.projectile": [
+  "tool.projectile" : [
     "ender_pearl",
     "ender_eye",
     "arrow",
@@ -117,7 +117,7 @@
     "tipped_arrow",
     "fire_charge"
   ],
-  "tool.stack.sign": [
+  "tool.stack.sign" : [
     "oak_sign",
     "spruce_sign",
     "birch_sign",
@@ -127,7 +127,7 @@
     "crimson_sign",
     "warped_sign"
   ],
-  "tool.stack.bucket": [
+  "tool.stack.bucket" : [
     "bucket",
     "water_bucket",
     "lava_bucket",
@@ -139,7 +139,7 @@
     "tropical_fish_bucket",
     "axolotl_bucket"
   ],
-  "tool.stack": [
+  "tool.stack" : [
     "ladder",
     "scaffolding",
     "lead",
@@ -155,14 +155,14 @@
     "tnt",
     "bundle"
   ],
-  "tool": [
+  "tool" : [
     "saddle",
     "diamond_horse_armor",
     "golden_horse_armor",
     "iron_horse_armor",
     "leather_horse_armor"
   ],
-  "valuable": [
+  "valuable" : [
     "dragon_egg",
     "dragon_head",
     "player_head",
@@ -185,7 +185,7 @@
     "emerald_block",
     "emerald"
   ],
-  "work.station": [
+  "work.station" : [
     "crafting_table",
     "stonecutter",
     "smithing_table",
@@ -201,7 +201,7 @@
     "composter",
     "beehive"
   ],
-  "work.inventory": [
+  "work.inventory" : [
     "ender_chest",
     "chest",
     "trapped_chest",
@@ -226,7 +226,7 @@
     "black_shulker_box",
     "hopper"
   ],
-  "work.enchant": [
+  "work.enchant" : [
     "enchanting_table",
     "bookshelf",
     "anvil",
@@ -236,7 +236,7 @@
     "book",
     "enchanted_book"
   ],
-  "work.brew": [
+  "work.brew" : [
     "brewing_stand",
     "cauldron",
     "nether_wart",
@@ -253,7 +253,7 @@
     "sugar",
     "glow_berries"
   ],
-  "work": [
+  "work" : [
     "jukebox",
     "music_disc_13",
     "music_disc_cat",
@@ -270,7 +270,7 @@
     "music_disc_otherside",
     "music_disc_pigstep"
   ],
-  "vehicle.boat": [
+  "vehicle.boat" : [
     "oak_boat",
     "spruce_boat",
     "birch_boat",
@@ -278,20 +278,20 @@
     "acacia_boat",
     "dark_oak_boat"
   ],
-  "vehicle.minecart": [
+  "vehicle.minecart" : [
     "minecart",
     "chest_minecart",
     "hopper_minecart",
     "furnace_minecart",
     "tnt_minecart"
   ],
-  "vehicle": [
+  "vehicle" : [
     "rail",
     "powered_rail",
     "detector_rail",
     "activator_rail"
   ],
-  "redstone.basic": [
+  "redstone.basic" : [
     "redstone_block",
     "redstone",
     "redstone_torch",
@@ -313,7 +313,7 @@
     "daylight_detector",
     "sculk_sensor"
   ],
-  "redstone.button": [
+  "redstone.button" : [
     "stone_button",
     "polished_blackstone_button",
     "oak_button",
@@ -325,7 +325,7 @@
     "crimson_button",
     "warped_button"
   ],
-  "redstone.door": [
+  "redstone.door" : [
     "iron_door",
     "oak_door",
     "spruce_door",
@@ -336,7 +336,7 @@
     "crimson_door",
     "warped_door"
   ],
-  "redstone.trapdoor": [
+  "redstone.trapdoor" : [
     "iron_trapdoor",
     "oak_trapdoor",
     "spruce_trapdoor",
@@ -347,7 +347,7 @@
     "crimson_trapdoor",
     "warped_trapdoor"
   ],
-  "redstone": [
+  "redstone" : [
     "stone_pressure_plate",
     "polished_blackstone_pressure_plate",
     "light_weighted_pressure_plate",
@@ -361,7 +361,7 @@
     "crimson_pressure_plate",
     "warped_pressure_plate"
   ],
-  "farm.food": [
+  "farm.food" : [
     "cooked_beef",
     "cooked_porkchop",
     "cooked_mutton",
@@ -379,7 +379,7 @@
     "mushroom_stew",
     "suspicious_stew"
   ],
-  "farm.animal.meat": [
+  "farm.animal.meat" : [
     "beef",
     "porkchop",
     "mutton",
@@ -390,14 +390,14 @@
     "pufferfish",
     "tropical_fish"
   ],
-  "farm.animal.honey": [
+  "farm.animal.honey" : [
     "bee_nest",
     "honey_block",
     "honey_bottle",
     "honeycomb_block",
     "honeycomb"
   ],
-  "farm.animal.wool": [
+  "farm.animal.wool" : [
     "white_wool",
     "white_carpet",
     "string",
@@ -432,7 +432,7 @@
     "black_wool",
     "black_carpet"
   ],
-  "farm.animal": [
+  "farm.animal" : [
     "leather",
     "rabbit_hide",
     "feather",
@@ -443,7 +443,7 @@
     "glow_ink_sac",
     "nautilus_shell"
   ],
-  "farm.monster": [
+  "farm.monster" : [
     "zombie_head",
     "rotten_flesh",
     "skeleton_skull",
@@ -455,7 +455,7 @@
     "cobweb",
     "phantom_membrane"
   ],
-  "farm.dye": [
+  "farm.dye" : [
     "white_dye",
     "orange_dye",
     "magenta_dye",
@@ -473,7 +473,7 @@
     "red_dye",
     "black_dye"
   ],
-  "farm.plant.crop": [
+  "farm.plant.crop" : [
     "hay_block",
     "wheat",
     "carrot",
@@ -485,7 +485,7 @@
     "melon",
     "melon_slice"
   ],
-  "farm.plant.grow": [
+  "farm.plant.grow" : [
     "sugar_cane",
     "paper",
     "cactus",
@@ -499,13 +499,13 @@
     "sweet_berries",
     "cocoa_beans"
   ],
-  "farm.plant.seed": [
+  "farm.plant.seed" : [
     "wheat_seeds",
     "beetroot_seeds",
     "pumpkin_seeds",
     "melon_seeds"
   ],
-  "farm.plant.coral": [
+  "farm.plant.coral" : [
     "dead_tube_coral_block",
     "dead_brain_coral_block",
     "dead_bubble_coral_block",
@@ -547,7 +547,7 @@
     "fire_coral_wall_fan",
     "horn_coral_wall_fan"
   ],
-  "farm.plant": [
+  "farm.plant" : [
     "moss_block",
     "moss_carpet",
     "grass",
@@ -589,7 +589,7 @@
     "warped_roots",
     "nether_sprouts"
   ],
-  "farm.tree.sapling": [
+  "farm.tree.sapling" : [
     "oak_sapling",
     "spruce_sapling",
     "birch_sapling",
@@ -603,7 +603,7 @@
     "crimson_fungus",
     "warped_fungus"
   ],
-  "farm.tree.leaves": [
+  "farm.tree.leaves" : [
     "oak_leaves",
     "spruce_leaves",
     "birch_leaves",
@@ -616,7 +616,7 @@
     "red_mushroom_block",
     "mushroom_stem"
   ],
-  "farm.tree.oak": [
+  "farm.tree.oak" : [
     "oak_log",
     "oak_wood",
     "stripped_oak_log",
@@ -627,7 +627,7 @@
     "oak_fence_gate",
     "oak_fence"
   ],
-  "farm.tree.birch": [
+  "farm.tree.birch" : [
     "birch_log",
     "birch_wood",
     "stripped_birch_log",
@@ -638,7 +638,7 @@
     "birch_fence_gate",
     "birch_fence"
   ],
-  "farm.tree.spruce": [
+  "farm.tree.spruce" : [
     "spruce_log",
     "spruce_wood",
     "stripped_spruce_log",
@@ -649,7 +649,7 @@
     "spruce_fence_gate",
     "spruce_fence"
   ],
-  "farm.tree.jungle": [
+  "farm.tree.jungle" : [
     "jungle_log",
     "jungle_wood",
     "stripped_jungle_log",
@@ -660,7 +660,7 @@
     "jungle_fence_gate",
     "jungle_fence"
   ],
-  "farm.tree.acacia": [
+  "farm.tree.acacia" : [
     "acacia_log",
     "acacia_wood",
     "stripped_acacia_log",
@@ -671,7 +671,7 @@
     "acacia_fence_gate",
     "acacia_fence"
   ],
-  "farm.tree.dark_oak": [
+  "farm.tree.dark_oak" : [
     "dark_oak_log",
     "dark_oak_wood",
     "stripped_dark_oak_log",
@@ -682,7 +682,7 @@
     "dark_oak_fence_gate",
     "dark_oak_fence"
   ],
-  "farm.tree.crimson": [
+  "farm.tree.crimson" : [
     "crimson_stem",
     "crimson_hyphae",
     "stripped_crimson_stem",
@@ -693,7 +693,7 @@
     "crimson_fence_gate",
     "crimson_fence"
   ],
-  "farm.tree": [
+  "farm.tree" : [
     "warped_stem",
     "warped_hyphae",
     "stripped_warped_stem",
@@ -704,12 +704,12 @@
     "warped_fence_gate",
     "warped_fence"
   ],
-  "mine.coal": [
+  "mine.coal" : [
     "coal_block",
     "coal",
     "charcoal"
   ],
-  "mine.amethyst": [
+  "mine.amethyst" : [
     "amethyst_block",
     "amethyst_shard",
     "budding_amethyst",
@@ -718,19 +718,19 @@
     "large_amethyst_bud",
     "amethyst_cluster"
   ],
-  "mine.gold": [
+  "mine.gold" : [
     "raw_gold_block",
     "gold_block",
     "gold_ingot",
     "gold_nugget"
   ],
-  "mine.iron": [
+  "mine.iron" : [
     "raw_iron_block",
     "iron_block",
     "iron_ingot",
     "iron_nugget"
   ],
-  "mine.copper": [
+  "mine.copper" : [
     "raw_copper_block",
     "copper_block",
     "copper_ingot",
@@ -766,11 +766,11 @@
     "waxed_oxidized_cut_copper_slab",
     "waxed_oxidized_cut_copper_stairs"
   ],
-  "mine.lapis": [
+  "mine.lapis" : [
     "lapis_block",
     "lapis_lazuli"
   ],
-  "mine.quartz": [
+  "mine.quartz" : [
     "quartz_block",
     "quartz",
     "quartz_slab",
@@ -782,11 +782,11 @@
     "smooth_quartz_slab",
     "smooth_quartz_stairs"
   ],
-  "mine.glow": [
+  "mine.glow" : [
     "glowstone",
     "glowstone_dust"
   ],
-  "mine.smelt": [
+  "mine.smelt" : [
     "coal_ore",
     "deepslate_coal_ore",
     "iron_ore",
@@ -810,12 +810,12 @@
     "raw_copper",
     "raw_gold"
   ],
-  "mine": [
+  "mine" : [
     "obsidian",
     "crying_obsidian",
     "magma_block"
   ],
-  "build.bed": [
+  "build.bed" : [
     "white_bed",
     "orange_bed",
     "magenta_bed",
@@ -833,7 +833,7 @@
     "red_bed",
     "black_bed"
   ],
-  "build.banner": [
+  "build.banner" : [
     "white_banner",
     "orange_banner",
     "magenta_banner",
@@ -857,7 +857,7 @@
     "globe_banner_pattern",
     "piglin_banner_pattern"
   ],
-  "build.furniture": [
+  "build.furniture" : [
     "lantern",
     "soul_torch",
     "soul_lantern",
@@ -886,7 +886,7 @@
     "painting",
     "jack_o_lantern"
   ],
-  "build.soil.dirt": [
+  "build.soil.dirt" : [
     "dirt",
     "grass_block",
     "coarse_dirt",
@@ -898,7 +898,7 @@
     "gravel",
     "flint"
   ],
-  "build.soil.clay": [
+  "build.soil.clay" : [
     "clay",
     "clay_ball",
     "terracotta",
@@ -935,14 +935,14 @@
     "black_terracotta",
     "black_glazed_terracotta"
   ],
-  "build.soil.claybrick": [
+  "build.soil.claybrick" : [
     "bricks",
     "brick",
     "brick_slab",
     "brick_stairs",
     "brick_wall"
   ],
-  "build.soil.concrete": [
+  "build.soil.concrete" : [
     "white_concrete",
     "white_concrete_powder",
     "orange_concrete",
@@ -976,7 +976,7 @@
     "black_concrete",
     "black_concrete_powder"
   ],
-  "build.soil": [
+  "build.soil" : [
     "snow_block",
     "snow",
     "snowball",
@@ -984,7 +984,7 @@
     "packed_ice",
     "blue_ice"
   ],
-  "build.normal.cobble": [
+  "build.normal.cobble" : [
     "cobblestone",
     "cobblestone_slab",
     "cobblestone_stairs",
@@ -995,7 +995,7 @@
     "mossy_cobblestone_wall",
     "infested_cobblestone"
   ],
-  "build.normal.stone": [
+  "build.normal.stone" : [
     "stone",
     "stone_slab",
     "stone_stairs",
@@ -1020,7 +1020,7 @@
     "dripstone_block",
     "pointed_dripstone"
   ],
-  "build.normal.granite": [
+  "build.normal.granite" : [
     "granite",
     "granite_slab",
     "granite_stairs",
@@ -1029,7 +1029,7 @@
     "polished_granite_slab",
     "polished_granite_stairs"
   ],
-  "build.normal.diorite": [
+  "build.normal.diorite" : [
     "diorite",
     "diorite_slab",
     "diorite_stairs",
@@ -1038,7 +1038,7 @@
     "polished_diorite_slab",
     "polished_diorite_stairs"
   ],
-  "build.normal.andesite": [
+  "build.normal.andesite" : [
     "andesite",
     "andesite_slab",
     "andesite_stairs",
@@ -1047,7 +1047,7 @@
     "polished_andesite_slab",
     "polished_andesite_stairs"
   ],
-  "build.normal.deepslate": [
+  "build.normal.deepslate" : [
     "cobbled_deepslate",
     "cobbled_deepslate_slab",
     "cobbled_deepslate_stairs",
@@ -1071,7 +1071,7 @@
     "cracked_deepslate_tiles",
     "tuff"
   ],
-  "build.normal.sandstone": [
+  "build.normal.sandstone" : [
     "sand",
     "sandstone",
     "sandstone_slab",
@@ -1084,7 +1084,7 @@
     "smooth_sandstone_slab",
     "smooth_sandstone_stairs"
   ],
-  "build.normal.red_sandstone": [
+  "build.normal.red_sandstone" : [
     "red_sand",
     "red_sandstone",
     "red_sandstone_slab",
@@ -1097,7 +1097,7 @@
     "smooth_red_sandstone_slab",
     "smooth_red_sandstone_stairs"
   ],
-  "build.normal.glass": [
+  "build.normal.glass" : [
     "glass",
     "tinted_glass",
     "glass_pane",
@@ -1134,7 +1134,7 @@
     "black_stained_glass",
     "black_stained_glass_pane"
   ],
-  "build.normal": [
+  "build.normal" : [
     "sea_lantern",
     "prismarine",
     "prismarine_slab",
@@ -1149,12 +1149,12 @@
     "prismarine_shard",
     "prismarine_crystals"
   ],
-  "build.nether.rack": [
+  "build.nether.rack" : [
     "netherrack",
     "crimson_nylium",
     "warped_nylium"
   ],
-  "build.nether.brick": [
+  "build.nether.brick" : [
     "nether_bricks",
     "nether_brick",
     "nether_brick_slab",
@@ -1168,7 +1168,7 @@
     "red_nether_brick_stairs",
     "red_nether_brick_wall"
   ],
-  "build.nether.blackstone": [
+  "build.nether.blackstone" : [
     "blackstone",
     "blackstone_slab",
     "blackstone_stairs",
@@ -1185,28 +1185,28 @@
     "polished_blackstone_brick_wall",
     "cracked_polished_blackstone_bricks"
   ],
-  "build.nether": [
+  "build.nether" : [
     "soul_sand",
     "soul_soil",
     "basalt",
     "polished_basalt",
     "smooth_basalt"
   ],
-  "build.end.stone": [
+  "build.end.stone" : [
     "end_stone",
     "end_stone_bricks",
     "end_stone_brick_slab",
     "end_stone_brick_stairs",
     "end_stone_brick_wall"
   ],
-  "build.end": [
+  "build.end" : [
     "popped_chorus_fruit",
     "purpur_block",
     "purpur_slab",
     "purpur_stairs",
     "purpur_pillar"
   ],
-  "": [
+  "" : [
     "end_portal_frame",
     "barrier",
     "light",
@@ -1220,7 +1220,7 @@
     "end_portal",
     "end_gateway"
   ],
-  "_order": [
+  "_order" : [
     "important",
     "tool.pickaxe",
     "tool.shovel",

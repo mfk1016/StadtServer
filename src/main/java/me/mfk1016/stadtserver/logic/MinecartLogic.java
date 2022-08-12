@@ -268,7 +268,7 @@ public class MinecartLogic {
     private static void adjustMinecartVelocity(@NotNull Minecart cart, @NotNull Minecart follower) {
 
         // Act only if the angle between the cart yaws is 0 or 45 degree and both angles can be divided by 45
-        // This means, that carts are adjusted, which run no 90 or 180 degree turn
+        // This means, that carts are adjusted, which run no 90 or 180-degree turn
         Vector cartLocation = cart.getLocation().toVector();
         Vector followerLocation = follower.getLocation().toVector();
         Vector directionToFollower = followerLocation.clone().subtract(cartLocation).setY(0);

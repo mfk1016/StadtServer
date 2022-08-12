@@ -289,21 +289,24 @@ public class AnvilLogic {
             return true;
         return switch (item.getType()) {
             case NETHERITE_AXE, NETHERITE_HOE, NETHERITE_PICKAXE, NETHERITE_SHOVEL, NETHERITE_SWORD,
-                    NETHERITE_BOOTS, NETHERITE_CHESTPLATE, NETHERITE_HELMET, NETHERITE_LEGGINGS -> repair == Material.NETHERITE_SCRAP;
+                    NETHERITE_BOOTS, NETHERITE_CHESTPLATE, NETHERITE_HELMET, NETHERITE_LEGGINGS ->
+                    repair == Material.NETHERITE_SCRAP;
             case DIAMOND_AXE, DIAMOND_HOE, DIAMOND_PICKAXE, DIAMOND_SHOVEL, DIAMOND_SWORD,
                     DIAMOND_BOOTS, DIAMOND_CHESTPLATE, DIAMOND_HELMET, DIAMOND_LEGGINGS -> repair == Material.DIAMOND;
             case GOLDEN_AXE, GOLDEN_HOE, GOLDEN_PICKAXE, GOLDEN_SHOVEL, GOLDEN_SWORD,
                     GOLDEN_BOOTS, GOLDEN_CHESTPLATE, GOLDEN_LEGGINGS, GOLDEN_HELMET -> repair == Material.GOLD_INGOT;
             case IRON_AXE, IRON_HOE, IRON_PICKAXE, IRON_SHOVEL, IRON_SWORD, SHEARS,
                     IRON_BOOTS, IRON_CHESTPLATE, IRON_LEGGINGS, IRON_HELMET,
-                    CHAINMAIL_BOOTS, CHAINMAIL_CHESTPLATE, CHAINMAIL_HELMET, CHAINMAIL_LEGGINGS -> repair == Material.IRON_INGOT;
+                    CHAINMAIL_BOOTS, CHAINMAIL_CHESTPLATE, CHAINMAIL_HELMET, CHAINMAIL_LEGGINGS ->
+                    repair == Material.IRON_INGOT;
             case STONE_AXE, STONE_HOE, STONE_PICKAXE, STONE_SHOVEL, STONE_SWORD -> switch (repair) {
                 case COBBLESTONE, COBBLED_DEEPSLATE, BLACKSTONE, GRANITE,
                         DIORITE, ANDESITE -> true;
                 default -> false;
             };
             case LEATHER_BOOTS, LEATHER_CHESTPLATE, LEATHER_LEGGINGS, LEATHER_HELMET -> repair == Material.LEATHER;
-            case WOODEN_AXE, WOODEN_HOE, WOODEN_PICKAXE, WOODEN_SHOVEL, WOODEN_SWORD, SHIELD -> PluginCategories.isPlanks(repair);
+            case WOODEN_AXE, WOODEN_HOE, WOODEN_PICKAXE, WOODEN_SHOVEL, WOODEN_SWORD, SHIELD ->
+                    PluginCategories.isPlanks(repair);
             case TURTLE_HELMET -> repair == Material.SCUTE;
             case ELYTRA -> repair == Material.PHANTOM_MEMBRANE;
             case TRIDENT -> repair == Material.NAUTILUS_SHELL;

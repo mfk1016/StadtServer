@@ -22,11 +22,11 @@ public abstract class WanderingTraderOrigin extends MerchantOrigin {
     @Override
     public MerchantRecipe applyOrigin(Merchant merchant, MerchantRecipe oldRecipe) {
         List<MerchantRecipe> recipes = new ArrayList<>(merchant.getRecipes());
-        recipes.add(createRecipe(merchant, oldRecipe));
+        recipes.add(createRecipe(oldRecipe));
         Collections.shuffle(recipes);
         merchant.setRecipes(recipes);
         return oldRecipe;
     }
 
-    protected abstract MerchantRecipe createRecipe(Merchant merchant, MerchantRecipe oldRecipe);
+    protected abstract MerchantRecipe createRecipe(MerchantRecipe oldRecipe);
 }

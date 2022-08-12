@@ -21,8 +21,12 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Objects;
 
+import static me.mfk1016.stadtserver.util.BossName.getBossColor;
+import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
+
 public class BossMobListener implements Listener {
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isValidBossMobType(EntityType type) {
         return switch (type) {
             case BLAZE, CREEPER, DROWNED, ENDERMAN, EVOKER, GUARDIAN, HUSK, PIGLIN, PIGLIN_BRUTE, PILLAGER, SHULKER,
@@ -41,7 +45,7 @@ public class BossMobListener implements Listener {
         mob.setHealth(mob.getHealth() * (level + 1));
 
         // Name the boss
-        mob.setCustomName(bossName);
+        mob.customName(undecoratedText(bossName).color(getBossColor(level)));
         mob.setCustomNameVisible(true);
     }
 
@@ -79,7 +83,7 @@ public class BossMobListener implements Listener {
         // Boss level: 50% / 35% / 15% chance for level 1 - 3
         int rand = StadtServer.RANDOM.nextInt(100);
         int bossLevel = rand < 15 ? 3 : (rand < 50 ? 2 : 1);
-        createBoss(mob, bossLevel, BossName.randomName(bossLevel));
+        createBoss(mob, bossLevel, BossName.randomName());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -154,9 +158,7 @@ public class BossMobListener implements Listener {
                 drop.setAmount(drop.getAmount() * (bossLevel + 1));
         }
 
-        MobOrigin.match(event.getEntity()).forEach((origin) -> {
-            event.getDrops().add(origin.applyOrigin());
-        });
+        MobOrigin.match(event.getEntity()).forEach((origin) -> event.getDrops().add(origin.applyOrigin()));
 
         // Ancient Tome: 25% at level 3, 100% at level 4
         if (bossLevel == 4 || (bossLevel == 3 && StadtServer.RANDOM.nextInt(100) < 25))

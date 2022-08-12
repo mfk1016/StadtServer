@@ -1,9 +1,9 @@
 package me.mfk1016.stadtserver.brewing;
 
 import io.papermc.paper.potion.PotionMix;
-import me.mfk1016.stadtserver.brewing.recipe.*;
-import me.mfk1016.stadtserver.brewing.recipe.barrel.BarrelBeerRecipe;
+import me.mfk1016.stadtserver.brewing.recipe.AdvancedPotionRecipe;
 import me.mfk1016.stadtserver.brewing.recipe.BarrelRecipe;
+import me.mfk1016.stadtserver.brewing.recipe.barrel.BarrelBeerRecipe;
 import me.mfk1016.stadtserver.brewing.recipe.potion.*;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;

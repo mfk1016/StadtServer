@@ -2,8 +2,7 @@
   "custom_types" : [
     { "id" : "failure", "name" : "", "effects" : [] },
     { "id" : "luck:0_2", "name" : "Luck", "effects" : [{ "type" : "luck", "duration" : 6000, "level" : 2 }] },
-    { "id" : "bad_omen:0_4", "name": "Negativity", "effects" : [{ "type" : "bad_omen", "duration" : 18000, "level" : 4 }] },
-
+    { "id" : "bad_omen:0_4", "name" : "Negativity", "effects" : [{ "type" : "bad_omen", "duration" : 18000, "level" : 4 }] },
     { "id" : "haste:1_1", "name" : "Stamina", "effects" : [{ "type" : "haste", "duration" : 3600, "level" : 1 }] },
     { "id" : "haste:2_1", "name" : "Stamina", "effects" : [{ "type" : "haste", "duration" : 9600, "level" : 1 }] },
     { "id" : "haste:0_2", "name" : "Stamina", "effects" : [{ "type" : "haste", "duration" : 1800, "level" : 2 }] },
@@ -16,7 +15,6 @@
     { "id" : "levitation:1_1", "name" : "Heavenly Height", "effects" : [{ "type" : "levitation", "duration" : 1800, "level" : 1 }] },
     { "id" : "levitation:2_1", "name" : "Heavenly Height", "effects" : [{ "type" : "levitation", "duration" : 4800, "level" : 1 }] },
     { "id" : "levitation:0_2", "name" : "Heavenly Height", "effects" : [{ "type" : "levitation", "duration" : 900, "level" : 2 }] },
-
     { "id" : "fire_resistance:3_1", "name" : "Fire Resistance", "effects" : [{ "type" : "fire_resistance", "duration" : 18000, "level" : 1 }] },
     { "id" : "invisibility:3_1", "name" : "Invisibility", "effects" : [{ "type" : "invisibility", "duration" : 18000, "level" : 1 }] },
     { "id" : "jump:3_1", "name" : "Leaping", "effects" : [{ "type" : "jump", "duration" : 18000, "level" : 1 }] },
@@ -33,7 +31,6 @@
     { "id" : "levitation:3_1", "name" : "Heavenly Height", "effects" : [{ "type" : "levitation", "duration" : 9000, "level" : 1 }] },
     { "id" : "poison:3_1", "name" : "Poison", "effects" : [{ "type" : "poison", "duration" : 4500, "level" : 1 }] },
     { "id" : "regen:3_1", "name" : "Regeneration", "effects" : [{ "type" : "regeneration", "duration" : 4500, "level" : 1 }] },
-
     { "id" : "jump:1_2", "name" : "Leaping", "effects" : [{ "type" : "jump", "duration" : 3600, "level" : 2 }] },
     { "id" : "speed:1_2", "name" : "Swiftness", "effects" : [{ "type" : "speed", "duration" : 3600, "level" : 2 }] },
     { "id" : "strength:1_2", "name" : "Strength", "effects" : [{ "type" : "strength", "duration" : 3600, "level" : 2 }] },
@@ -45,7 +42,6 @@
     { "id" : "levitation:1_2", "name" : "Heavenly Height", "effects" : [{ "type" : "levitation", "duration" : 1800, "level" : 2 }] },
     { "id" : "poison:1_2", "name" : "Poison", "effects" : [{ "type" : "poison", "duration" : 900, "level" : 2 }] },
     { "id" : "regen:1_2", "name" : "Regeneration", "effects" : [{ "type" : "regeneration", "duration" : 900, "level" : 2 }] },
-
     { "id" : "jump:0_3", "name" : "Leaping", "effects" : [{ "type" : "jump", "duration" : 1800, "level" : 3 }] },
     { "id" : "speed:0_3", "name" : "Swiftness", "effects" : [{ "type" : "speed", "duration" : 1800, "level" : 3 }] },
     { "id" : "strength:0_3", "name" : "Strength", "effects" : [{ "type" : "strength", "duration" : 1800, "level" : 3 }] },
@@ -60,20 +56,17 @@
     { "id" : "instant_heal:0_3", "name" : "Healing", "effects" : [{ "type" : "heal", "level" : 3 }] },
     { "id" : "instant_damage:0_3", "name" : "Harming", "effects" : [{ "type" : "harm", "level" : 3 }] }
   ],
-
-  "special_types": [
-    { "id" : "yeast_normal", "name": "Yeast", "color" : "FFE5CC", "effects" : [] },
-    { "id" : "yeast_nether", "name": "Crimson Yeast", "color" : "FFCCFF", "effects" : [] },
-    { "id" : "yeast_end", "name": "Chorus Yeast", "color" : "98C4F6", "effects" : [] },
-
-    { "id" : "weizen_hell", "name": "Weizen der Sicherheit", "color": "EFCA50", "effects": [{ "type" : "nausea", "duration" : 1800, "level" : 1 }, { "type" : "resistance", "duration" : 1200, "level" : 1 }] },
-    { "id" : "bier_hell", "name": "Schnelles Helles", "color": "E9AE61", "effects": [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "speed", "duration" : 2400, "level" : 1 }] },
-    { "id" : "weizen_dunkel", "name": "Dunkles Weizen der Kraft", "color": "CC6600", "effects": [{ "type" : "nausea", "duration" : 1800, "level" : 1 }, { "type" : "strength", "duration" : 2400, "level" : 1 }] },
-    { "id" : "bier_dunkel", "name": "Nächtliches Dunkel", "color": "994C00", "effects": [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "night_vision", "duration" : 2400, "level" : 1 }] },
-    { "id" : "bock_hell", "name": "Feilschender Bergbock", "color": "FF8000", "effects": [{ "type" : "nausea", "duration" : 3600, "level" : 1 }, { "type" : "heroism", "duration" : 2400, "level" : 1 }] },
-    { "id" : "bock_dunkel", "name": "Dunkler Bergbock der Feder", "color": "331900", "effects": [{ "type" : "nausea", "duration" : 2400, "level" : 1 }, { "type" : "slow_falling", "duration" : 4800, "level" : 1 }] },
-
-    { "id" : "sternburg", "name": "Vergiftetes Sternburg", "color": "66FF66", "effects": [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "poison", "duration" : 400, "level" : 1 }] },
-    { "id" : "oettinger", "name": "Schwächliches Oettinger", "color": "9999FF", "effects": [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "fatigue", "duration" : 1200, "level" : 2 }] }
+  "special_types" : [
+    { "id" : "yeast_normal", "name" : "Yeast", "color" : "FFE5CC", "effects" : [] },
+    { "id" : "yeast_nether", "name" : "Crimson Yeast", "color" : "FFCCFF", "effects" : [] },
+    { "id" : "yeast_end", "name" : "Chorus Yeast", "color" : "98C4F6", "effects" : [] },
+    { "id" : "weizen_hell", "name" : "Weizen der Sicherheit", "color" : "EFCA50", "effects" : [{ "type" : "nausea", "duration" : 1800, "level" : 1 }, { "type" : "resistance", "duration" : 1200, "level" : 1 }] },
+    { "id" : "bier_hell", "name" : "Schnelles Helles", "color" : "E9AE61", "effects" : [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "speed", "duration" : 2400, "level" : 1 }] },
+    { "id" : "weizen_dunkel", "name" : "Dunkles Weizen der Kraft", "color" : "CC6600", "effects" : [{ "type" : "nausea", "duration" : 1800, "level" : 1 }, { "type" : "strength", "duration" : 2400, "level" : 1 }] },
+    { "id" : "bier_dunkel", "name" : "Nächtliches Dunkel", "color" : "994C00", "effects" : [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "night_vision", "duration" : 2400, "level" : 1 }] },
+    { "id" : "bock_hell", "name" : "Feilschender Bergbock", "color" : "FF8000", "effects" : [{ "type" : "nausea", "duration" : 3600, "level" : 1 }, { "type" : "heroism", "duration" : 2400, "level" : 1 }] },
+    { "id" : "bock_dunkel", "name" : "Dunkler Bergbock der Feder", "color" : "331900", "effects" : [{ "type" : "nausea", "duration" : 2400, "level" : 1 }, { "type" : "slow_falling", "duration" : 4800, "level" : 1 }] },
+    { "id" : "sternburg", "name" : "Vergiftetes Sternburg", "color" : "66FF66", "effects" : [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "poison", "duration" : 400, "level" : 1 }] },
+    { "id" : "oettinger", "name" : "Schwächliches Oettinger", "color" : "9999FF", "effects" : [{ "type" : "nausea", "duration" : 1200, "level" : 1 }, { "type" : "fatigue", "duration" : 1200, "level" : 2 }] }
   ]
 }

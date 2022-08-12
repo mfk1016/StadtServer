@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.origin.mob;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -24,7 +23,7 @@ public class BossMobItemOrigin extends BossMobOrigin {
         return loot.clone();
     }
 
-    public static BossMobItemOrigin fromJson(JsonObject object, Gson gson) {
+    public static BossMobItemOrigin fromJson(JsonObject object) {
         int chance = object.get("chance").getAsInt();
         EntityType entity = EntityType.valueOf(object.get("entity").getAsString());
         int level = object.get("minlevel").getAsInt();

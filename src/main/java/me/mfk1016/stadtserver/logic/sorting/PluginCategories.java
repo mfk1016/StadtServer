@@ -8,7 +8,8 @@ public class PluginCategories {
 
     public static boolean isPickaxe(Material material) {
         return switch (material) {
-            case WOODEN_PICKAXE, STONE_PICKAXE, IRON_PICKAXE, GOLDEN_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE -> true;
+            case WOODEN_PICKAXE, STONE_PICKAXE, IRON_PICKAXE, GOLDEN_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE ->
+                    true;
             default -> false;
         };
     }
@@ -89,6 +90,7 @@ public class PluginCategories {
         };
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isPotion(Material material) {
         return switch (material) {
             case POTION, SPLASH_POTION, LINGERING_POTION -> true;

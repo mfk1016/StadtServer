@@ -3,8 +3,9 @@ package me.mfk1016.stadtserver.listener;
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.candlestore.CandleStore;
+import me.mfk1016.stadtserver.candlestore.CandleStoreException;
 import me.mfk1016.stadtserver.candlestore.CandleStoreManager;
-import me.mfk1016.stadtserver.candlestore.util.CandleStoreException;
+import me.mfk1016.stadtserver.candlestore.CandleStoreUtils;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,7 +20,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -41,7 +41,7 @@ public class CandleStoreListener implements Listener {
         Player player = event.getPlayer();
         if (player.isSneaking())
             return;
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || CandleStoreManager.isCandleTool(event.getItem()))
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || CandleStoreUtils.isCandleTool(event.getItem()))
             return;
         Block target = Objects.requireNonNull(event.getClickedBlock());
         if (!(target.getState() instanceof Dispenser dispenser))
@@ -55,8 +55,6 @@ public class CandleStoreListener implements Listener {
         Optional<CandleStore> currentStore = CandleStoreManager.getStore(dispenser);
         if (currentStore.isPresent()) {
             event.setCancelled(true);
-            PersistentDataContainer playerPdc = player.getPersistentDataContainer();
-            playerPdc.set(Keys.CANDLE_STORE, PersistentDataType.INTEGER, 1);
             player.openInventory(currentStore.get().getView());
             currentStore.get().updateView(true);
         }
@@ -64,111 +62,104 @@ public class CandleStoreListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerClickCandleStoreView(InventoryClickEvent event) {
-        if (event.isShiftClick())
+        Player player = (Player) event.getWhoClicked();
+        Inventory target = event.getClickedInventory();
+        ItemStack clicked = event.getCurrentItem();
+        if (event.isShiftClick() || target == null || target instanceof PlayerInventory)
             return;
-        PersistentDataContainer pdc = event.getWhoClicked().getPersistentDataContainer();
-        if (!pdc.has(Keys.CANDLE_STORE))
-            return;
-        if (event.getClickedInventory() instanceof PlayerInventory || event.getClickedInventory() == null)
+        if (!CandleStoreManager.isStoreView(target))
             return;
 
         event.setCancelled(true);
-        Inventory view = event.getClickedInventory();
-        int slot = event.getSlot();
-        ItemStack stack = view.getItem(slot);
-        Player player = (Player) event.getWhoClicked();
         try {
             if (stackEmpty(player.getItemOnCursor())) {
-                if (stackEmpty(stack))
+                if (stackEmpty(clicked))
                     return;
-                int pullAmount = event.isRightClick() ? stack.getMaxStackSize() : 1;
-                ItemStack pulled = CandleStoreManager.getStore(view).pullItemStack(stack.getType(), pullAmount);
+                int pullAmount = event.isLeftClick() ? clicked.getMaxStackSize() : 1;
+                ItemStack pulled = CandleStoreManager.getStore(target).pullItemStack(clicked.getType(), pullAmount);
                 player.setItemOnCursor(pulled);
             } else {
                 ItemStack toPush = player.getItemOnCursor();
-                CandleStoreManager.getStore(view).pushItemStack(toPush);
+                CandleStoreManager.getStore(target).pushItemStack(toPush);
                 player.setItemOnCursor(null);
             }
-        } catch (CandleStoreException e) {
-            playerMessage(player, e.getMessage());
+        } catch (CandleStoreException ignored) {
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerShiftClickCandleStoreView(InventoryClickEvent event) {
-        if (!event.isShiftClick() || stackEmpty(event.getCurrentItem()))
+        Player player = (Player) event.getWhoClicked();
+        Inventory target = event.getClickedInventory();
+        ItemStack clicked = event.getCurrentItem();
+        if (!event.isShiftClick() || stackEmpty(clicked) || target == null)
             return;
-        PersistentDataContainer pdc = event.getWhoClicked().getPersistentDataContainer();
-        if (!pdc.has(Keys.CANDLE_STORE) || event.getClickedInventory() == null)
+        if (!CandleStoreManager.isStoreView(event.getView().getTopInventory()))
             return;
 
         event.setCancelled(true);
-        Inventory source = event.getClickedInventory();
-        int slot = event.getSlot();
-        ItemStack clicked = event.getCurrentItem();
-        Player player = (Player) event.getWhoClicked();
         try {
-            if (!(source instanceof PlayerInventory)) {
+            if (!(target instanceof PlayerInventory)) {
                 int pullAmount = clicked.getMaxStackSize();
-                ItemStack pulled = CandleStoreManager.getStore(source).pullItemStack(clicked.getType(), pullAmount);
+                ItemStack pulled = CandleStoreManager.getStore(target).pullItemStack(clicked.getType(), pullAmount);
                 Collection<ItemStack> left = player.getInventory().addItem(pulled).values();
                 for (ItemStack leftStack : left)
-                    CandleStoreManager.getStore(source).pushItemStack(leftStack);
+                    CandleStoreManager.getStore(target).pushItemStack(leftStack);
             } else {
                 CandleStoreManager.getStore(event.getView().getTopInventory()).pushItemStack(clicked);
-                source.clear(slot);
+                target.clear(event.getSlot());
             }
-        } catch (CandleStoreException e) {
-            playerMessage(player, e.getMessage());
+        } catch (CandleStoreException ignored) {
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerCloseCandleStoreView(InventoryCloseEvent event) {
-        PersistentDataContainer pdc = event.getPlayer().getPersistentDataContainer();
-        if (pdc.has(Keys.CANDLE_STORE))
-            pdc.remove(Keys.CANDLE_STORE);
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerAddCandleStoreMember(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !CandleStoreManager.isCandleTool(event.getItem()))
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !CandleStoreUtils.isCandleTool(event.getItem()))
             return;
         Block target = Objects.requireNonNull(event.getClickedBlock());
         if (!(target.getState() instanceof Dispenser dispenser))
-            return;
-        if (!(target.getBlockData() instanceof Directional dispenserDirection))
-            return;
-        if (dispenserDirection.getFacing() != BlockFace.DOWN)
-            return;
-        if (!(target.getRelative(BlockFace.UP).getBlockData() instanceof Candle))
             return;
 
         Optional<CandleStore> current = CandleStoreManager.getStore(dispenser);
         if (current.isPresent()) {
             event.setCancelled(true);
+            Material candleMat = target.getRelative(BlockFace.UP).getType();
             playerMessage(event.getPlayer(),
-                    "Candle Store with " + current.get().getMemberCount() + " members and " +
+                    CandleStoreUtils.getCandleName(candleMat, false) + " store with " +
+                            current.get().getMemberCount() + " members and " +
                             current.get().getUsedSlots() + "/" + current.get().getStorageSlots() + " slots used.");
             return;
         }
-
+        if (!dispenser.getInventory().isEmpty()) {
+            playerMessage(event.getPlayer(), "The dispenser must be empty.");
+            return;
+        }
+        Directional dispenserDirection = (Directional) target.getBlockData();
+        if (dispenserDirection.getFacing() != BlockFace.DOWN) {
+            playerMessage(event.getPlayer(), "The dispenser must face down.");
+            return;
+        }
+        if (!(target.getRelative(BlockFace.UP).getBlockData() instanceof Candle)) {
+            playerMessage(event.getPlayer(), "A candle must be placed on the dispenser.");
+            return;
+        }
 
         event.setCancelled(true);
         Material candleMat = target.getRelative(BlockFace.UP).getType();
-        boolean hasChest = target.getRelative(BlockFace.DOWN).getState() instanceof Chest;
-        boolean isExport = target.getRelative(BlockFace.DOWN).getState() instanceof Hopper;
-        String memberType =
-                hasChest ? CandleStoreManager.STORE_MEMBER_CHEST :
-                        isExport ? CandleStoreManager.STORE_MEMBER_EXPORT : CandleStoreManager.STORE_MEMBER_VIEW;
+        BlockState attachedBlockState = target.getRelative(BlockFace.DOWN).getState();
+        boolean hasChest = attachedBlockState instanceof Chest;
+        boolean isExport = attachedBlockState instanceof Hopper;
+        String memberType = hasChest ? CandleStoreManager.STORE_MEMBER_CHEST :
+                isExport ? CandleStoreManager.STORE_MEMBER_EXPORT :
+                        CandleStoreManager.STORE_MEMBER_VIEW;
 
         List<Block> dispensers = new ArrayList<>();
         for (int x = -16; x <= 16; x++) {
             for (int y = -16; y <= 16; y++) {
                 for (int z = -16; z <= 16; z++) {
-                    if (x == 0 && y == 0 && z == 0) {
+                    if (x == 0 && y == 0 && z == 0)
                         continue;
-                    }
                     Block relative = target.getRelative(x, y, z);
                     if (relative.getRelative(BlockFace.UP).getType() != candleMat)
                         continue;
@@ -178,17 +169,18 @@ public class CandleStoreListener implements Listener {
             }
         }
         dispensers.sort(Comparator.comparingDouble(a -> target.getLocation().distance(a.getLocation())));
+        String candleName = CandleStoreUtils.getCandleName(candleMat, true);
         for (Block partnerBlock : dispensers) {
             Dispenser partner = (Dispenser) partnerBlock.getState();
             Optional<CandleStore> optStore = CandleStoreManager.getStore(partner);
             if (optStore.isPresent()) {
                 CandleStoreManager.addToStore(dispenser, partner, hasChest, memberType);
-                playerMessage(event.getPlayer(), "New Member added to store.");
+                playerMessage(event.getPlayer(), "New Member added to " + candleName + " store.");
                 return;
             }
         }
         CandleStoreManager.addToStore(dispenser, null, hasChest, memberType);
-        playerMessage(event.getPlayer(), "New store created.");
+        playerMessage(event.getPlayer(), "New " + candleName + " store created.");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -202,18 +194,24 @@ public class CandleStoreListener implements Listener {
             if (CandleStoreManager.getStore(dispenser).isPresent()) {
                 boolean hasChest = possibleTarget.getRelative(BlockFace.DOWN).getState() instanceof Chest;
                 CandleStoreManager.deleteFromStore(dispenser, hasChest);
-                playerMessage(player, "Candle store member removed");
+                String candleName = CandleStoreUtils.getCandleName(target.getType(), false);
+                playerMessage(player, candleName + " store member removed.");
             }
-        } else if (target.getState() instanceof Chest && target.getRelative(BlockFace.UP).getState() instanceof Dispenser dispenser) {
+        } else if (target.getState() instanceof Chest &&
+                target.getRelative(BlockFace.UP).getState() instanceof Dispenser dispenser) {
             if (CandleStoreManager.getStore(dispenser).isPresent()) {
                 CandleStoreManager.updateStoreMember(dispenser, false, true, CandleStoreManager.STORE_MEMBER_VIEW);
-                playerMessage(player, "Chest removed from candle store member");
+                Material candleMat = target.getRelative(BlockFace.UP, 2).getType();
+                String candleName = CandleStoreUtils.getCandleName(candleMat, true);
+                playerMessage(player, "Chest removed from " + candleName + " store member.");
             }
         } else if (target.getState() instanceof Dispenser dispenser) {
             boolean hasChest = target.getRelative(BlockFace.DOWN).getState() instanceof Chest;
             if (CandleStoreManager.getStore(dispenser).isPresent()) {
                 CandleStoreManager.deleteFromStore(dispenser, hasChest);
-                playerMessage(player, "Candle store member removed");
+                Material candleMat = target.getRelative(BlockFace.UP).getType();
+                String candleName = CandleStoreUtils.getCandleName(candleMat, false);
+                playerMessage(player, candleName + " store member removed.");
             }
         }
     }
@@ -227,7 +225,8 @@ public class CandleStoreListener implements Listener {
                 return;
             boolean hasChest = possibleTarget.getRelative(BlockFace.DOWN).getState() instanceof Chest;
             CandleStoreManager.deleteFromStore(dispenser, hasChest);
-        } else if (target.getState() instanceof Chest && target.getRelative(BlockFace.UP).getState() instanceof Dispenser dispenser) {
+        } else if (target.getState() instanceof Chest &&
+                target.getRelative(BlockFace.UP).getState() instanceof Dispenser dispenser) {
             CandleStoreManager.updateStoreMember(dispenser, false, true, CandleStoreManager.STORE_MEMBER_VIEW);
         } else if (target.getState() instanceof Dispenser dispenser) {
             boolean hasChest = target.getRelative(BlockFace.DOWN).getState() instanceof Chest;
@@ -245,12 +244,30 @@ public class CandleStoreListener implements Listener {
         CandleStoreManager.getStore(dispenser).ifPresent(candleStore -> {
             CandleStoreManager.updateStoreMember(dispenser,
                     true, false, CandleStoreManager.STORE_MEMBER_CHEST);
-            playerMessage(event.getPlayer(), "Chest added to candle store member");
+            Material candleMat = possibleTarget.getRelative(BlockFace.UP, 2).getType();
+            String candleName = CandleStoreUtils.getCandleName(candleMat, true);
+            playerMessage(event.getPlayer(), "Chest added to " + candleName + " store member.");
         });
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPushStackToStore(InventoryMoveItemEvent event) {
+    public void onAddHopperToStoreMember(BlockPlaceEvent event) {
+        if (event.getItemInHand().getType() != Material.HOPPER)
+            return;
+        Block possibleTarget = event.getBlockPlaced();
+        if (!(possibleTarget.getRelative(BlockFace.UP).getState() instanceof Dispenser dispenser))
+            return;
+        CandleStoreManager.getStore(dispenser).ifPresent(candleStore -> {
+            CandleStoreManager.updateStoreMember(dispenser,
+                    false, false, CandleStoreManager.STORE_MEMBER_EXPORT);
+            Material candleMat = possibleTarget.getRelative(BlockFace.UP, 2).getType();
+            String candleName = CandleStoreUtils.getCandleName(candleMat, true);
+            playerMessage(event.getPlayer(), "Hopper added to " + candleName + " candle store member.");
+        });
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onHopperPushStackToStore(InventoryMoveItemEvent event) {
         if (!(event.getSource().getHolder() instanceof Hopper hopper))
             return;
         if (!(event.getDestination().getHolder() instanceof Dispenser dispenser))
@@ -258,18 +275,16 @@ public class CandleStoreListener implements Listener {
         Optional<CandleStore> optCandleStore = CandleStoreManager.getStore(dispenser);
         optCandleStore.ifPresent(candleStore -> {
             event.setCancelled(true);
-            Block hopperBlock = hopper.getBlock();
-            ItemStack item = event.getItem().clone();
-            item.setAmount(1);
+            ItemStack toPush = event.getItem().clone();
+            toPush.setAmount(1);
             Bukkit.getServer().getScheduler().runTaskLater(StadtServer.getInstance(), () -> {
                 try {
-                    candleStore.pushItemStack(item);
-                    Hopper realHopper = (Hopper) hopperBlock.getState();
-                    int slot = realHopper.getInventory().first(item.getType());
-                    ItemStack newItem = Objects.requireNonNull(realHopper.getInventory().getItem(slot)).clone();
+                    candleStore.pushItemStack(toPush);
+                    int slot = hopper.getInventory().first(toPush.getType());
+                    ItemStack newItem = Objects.requireNonNull(hopper.getInventory().getItem(slot));
                     newItem.setAmount(newItem.getAmount() - 1);
-                    newItem = newItem.getAmount() > 0 ? newItem : null;
-                    realHopper.getInventory().setItem(slot, newItem);
+                    if (newItem.getAmount() == 0)
+                        hopper.getInventory().setItem(slot, null);
                 } catch (CandleStoreException ignored) {
                 }
             }, 1L);
@@ -277,7 +292,7 @@ public class CandleStoreListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPullStackFromStore(InventoryMoveItemEvent event) {
+    public void onHopperPullStackFromStore(InventoryMoveItemEvent event) {
         if (!(event.getDestination().getHolder() instanceof Hopper hopper))
             return;
         if (!(event.getSource().getHolder() instanceof Dispenser dispenser))
@@ -285,20 +300,12 @@ public class CandleStoreListener implements Listener {
         Optional<CandleStore> optCandleStore = CandleStoreManager.getStore(dispenser);
         optCandleStore.ifPresent(candleStore -> {
             event.setCancelled(true);
-            Block hopperBlock = hopper.getBlock();
-            Block dispenserBlock = dispenser.getBlock();
+            Material mat = event.getItem().getType();
             Bukkit.getServer().getScheduler().runTaskLater(StadtServer.getInstance(), () -> {
-                Inventory filter = ((Dispenser) dispenserBlock.getState()).getInventory();
-                for (ItemStack item : filter) {
-                    if (stackEmpty(item))
-                        continue;
-                    try {
-                        ItemStack realItem = candleStore.pullItemStack(item.getType(), 1);
-                        Hopper realHopper = (Hopper) hopperBlock.getState();
-                        realHopper.getInventory().addItem(realItem);
-                        break;
-                    } catch (CandleStoreException ignored) {
-                    }
+                try {
+                    ItemStack pulledItem = candleStore.pullItemStack(mat, 1);
+                    hopper.getInventory().addItem(pulledItem);
+                } catch (CandleStoreException ignored) {
                 }
             }, 1L);
         });

@@ -90,6 +90,7 @@ public class WitherSkeletonBossRitual extends BossRitual {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isValidItem(ItemStack item) {
         if (stackEmpty(item))
             return true;

@@ -85,6 +85,7 @@ public class RecipeManager {
         private final float exp;
         private final int time;
 
+        @SuppressWarnings("SameParameterValue")
         SmeltingRecipes(String name, int type, Material result, Material source, float exp, int time) {
             this.name = name;
             this.type = type;
@@ -97,9 +98,12 @@ public class RecipeManager {
         public Recipe toRecipe() {
             ItemStack out = new ItemStack(result);
             return switch (type) {
-                case FURNACE -> new FurnaceRecipe(new NamespacedKey(StadtServer.getInstance(), "smelt_" + name), out, source, exp, time);
-                case SMOKER -> new SmokingRecipe(new NamespacedKey(StadtServer.getInstance(), "smoke_" + name), out, source, exp, time);
-                case BLAST -> new BlastingRecipe(new NamespacedKey(StadtServer.getInstance(), "blast_" + name), out, source, exp, time);
+                case FURNACE ->
+                        new FurnaceRecipe(new NamespacedKey(StadtServer.getInstance(), "smelt_" + name), out, source, exp, time);
+                case SMOKER ->
+                        new SmokingRecipe(new NamespacedKey(StadtServer.getInstance(), "smoke_" + name), out, source, exp, time);
+                case BLAST ->
+                        new BlastingRecipe(new NamespacedKey(StadtServer.getInstance(), "blast_" + name), out, source, exp, time);
                 default -> null;
             };
         }

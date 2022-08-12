@@ -83,6 +83,7 @@ public class EnchantmentManager {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static void unregisterEnchantments() {
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");
