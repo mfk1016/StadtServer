@@ -20,6 +20,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -84,6 +85,14 @@ public class CandleStoreListener implements Listener {
                 player.setItemOnCursor(null);
             }
         } catch (CandleStoreException ignored) {
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerDragAtCandleStoreView(InventoryDragEvent event) {
+        if (CandleStoreManager.isStoreView(event.getView().getTopInventory())) {
+            if (!event.getInventorySlots().stream().filter(value -> value < 54).toList().isEmpty())
+                event.setCancelled(true);
         }
     }
 
