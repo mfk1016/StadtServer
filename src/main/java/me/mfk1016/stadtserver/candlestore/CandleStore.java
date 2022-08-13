@@ -6,8 +6,10 @@ import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -17,9 +19,9 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 @Getter
-public class CandleStore {
+public class CandleStore implements InventoryHolder {
 
-    public static CandleStore createStore(String key, boolean hasChest, Vector centerLocation) {
+    public static CandleStore createStore(Long key, boolean hasChest, Vector centerLocation) {
         return new CandleStore(key, 1, hasChest ? getConfigSlotsOfChest() : 0, 0, new EnumMap<>(Material.class), centerLocation);
     }
 
@@ -27,7 +29,7 @@ public class CandleStore {
         return StadtServer.getInstance().getConfig().getInt(Keys.CONFIG_CANDLE_STORE_CHEST_SLOTS);
     }
 
-    private final String key;
+    private final Long key;
     private int memberCount;
     private int storageSlots;
     private int usedSlots;
@@ -35,14 +37,14 @@ public class CandleStore {
     private final EnumMap<Material, Long> storage;
     private final Inventory view;
 
-    public CandleStore(String key, int memberCount, int storageSlots, int usedSlots, EnumMap<Material, Long> storage, Vector centerLocation) {
+    public CandleStore(Long key, int memberCount, int storageSlots, int usedSlots, EnumMap<Material, Long> storage, Vector centerLocation) {
         this.key = key;
         this.memberCount = memberCount;
         this.storageSlots = storageSlots;
         this.usedSlots = usedSlots;
         this.centerLocation = centerLocation;
         this.storage = storage;
-        view = Bukkit.createInventory(null, 54, undecoratedText("Candle Store Index"));
+        view = Bukkit.createInventory(this, 54, undecoratedText("Candle Store Index"));
         updateView(true);
     }
 
@@ -78,19 +80,19 @@ public class CandleStore {
         return stack;
     }
 
-    public void addMember(Vector position, boolean hasChest) {
+    public void addMember(Vector position, CandleMemberType memberType) {
         centerLocation.setX((centerLocation.getX() * memberCount + position.getX()) / (memberCount + 1));
         centerLocation.setY((centerLocation.getY() * memberCount + position.getY()) / (memberCount + 1));
         centerLocation.setZ((centerLocation.getZ() * memberCount + position.getZ()) / (memberCount + 1));
         memberCount++;
-        updateMember(hasChest, false);
+        updateMember(CandleMemberType.NORMAL, memberType);
     }
 
-    public void updateMember(boolean chestAdded, boolean chestRemoved) {
-        assert !(chestAdded && chestRemoved);
-        if (chestAdded) {
+    public void updateMember(CandleMemberType oldType, CandleMemberType newType) {
+        assert oldType != newType || oldType == CandleMemberType.NORMAL;
+        if (newType == CandleMemberType.CHEST) {
             storageSlots += getConfigSlotsOfChest();
-        } else if (chestRemoved) {
+        } else if (oldType == CandleMemberType.CHEST) {
             storageSlots -= getConfigSlotsOfChest();
             Iterator<Material> materialIterator = storage.keySet().iterator();
             while (usedSlots > storageSlots && materialIterator.hasNext()) {
@@ -116,11 +118,16 @@ public class CandleStore {
         }
     }
 
-    public void deleteMember(Vector position, boolean hasChest) {
+    public void deleteMember(Vector position, CandleMemberType memberType) {
         centerLocation.setX((centerLocation.getX() * memberCount - position.getX()) / (memberCount - 1));
         centerLocation.setY((centerLocation.getY() * memberCount - position.getY()) / (memberCount - 1));
         centerLocation.setZ((centerLocation.getZ() * memberCount - position.getZ()) / (memberCount - 1));
         memberCount--;
-        updateMember(false, hasChest);
+        updateMember(memberType, CandleMemberType.NORMAL);
+    }
+
+    @Override
+    public @NotNull Inventory getInventory() {
+        return view;
     }
 }

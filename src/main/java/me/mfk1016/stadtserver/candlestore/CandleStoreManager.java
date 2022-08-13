@@ -6,10 +6,10 @@ import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -17,70 +17,64 @@ import java.util.*;
 
 public class CandleStoreManager {
 
-    private static final HashMap<String, CandleStore> ALL_STORES = new HashMap<>();
-    private static final HashMap<Inventory, CandleStore> VIEW_MAP = new HashMap<>();
+    private static final HashMap<Long, CandleStore> ALL_STORES = new HashMap<>();
+
+    private static Long NEXT_KEY = 0L;
 
     public static Optional<CandleStore> getStore(Dispenser dispenser) {
         PersistentDataContainer pdc = dispenser.getPersistentDataContainer();
         if (!pdc.has(Keys.CANDLE_STORE))
             return Optional.empty();
-        String key = pdc.get(Keys.CANDLE_STORE, PersistentDataType.STRING);
+        Long key = pdc.get(Keys.CANDLE_STORE, PersistentDataType.LONG);
         assert ALL_STORES.containsKey(key);
         return Optional.of(ALL_STORES.get(key));
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean isStoreView(Inventory view) {
-        return VIEW_MAP.containsKey(view);
-    }
-
-    public static CandleStore getStore(Inventory view) {
-        return VIEW_MAP.get(view);
-    }
-
-    public static void addToStore(Dispenser dispenser, Dispenser partner, boolean hasChest, String memberType) {
+    public static void createStore(@NotNull Dispenser dispenser, @NotNull CandleMemberType memberType) {
         PersistentDataContainer pdc = dispenser.getPersistentDataContainer();
-        String key = UUID.randomUUID().toString();
-        if (partner == null) {
-            while (ALL_STORES.containsKey(key))
-                key = UUID.randomUUID().toString();
-            CandleStore store = CandleStore.createStore(key, hasChest, dispenser.getLocation().toVector());
-            VIEW_MAP.put(store.getView(), store);
-            ALL_STORES.put(key, store);
-        } else {
-            CandleStore store = Objects.requireNonNull(getStore(partner).orElse(null));
-            store.addMember(dispenser.getLocation().toVector(), hasChest);
-            key = store.getKey();
-        }
-        pdc.set(Keys.CANDLE_STORE, PersistentDataType.STRING, key);
-        pdc.set(Keys.CANDLE_STORE_MEMBER_TYPE, PersistentDataType.STRING, memberType);
+        boolean hasChest = memberType == CandleMemberType.CHEST;
+        CandleStore store = CandleStore.createStore(NEXT_KEY, hasChest, dispenser.getLocation().toVector());
+        ALL_STORES.put(NEXT_KEY, store);
+        pdc.set(Keys.CANDLE_STORE, PersistentDataType.LONG, NEXT_KEY);
+        CandleMemberType.setMemberType(pdc, memberType);
+        dispenser.update();
+        NEXT_KEY = NEXT_KEY + 1;
+    }
+
+    public static void addToStore(@NotNull Dispenser dispenser, @NotNull Dispenser partner, @NotNull CandleMemberType memberType) {
+        PersistentDataContainer pdc = dispenser.getPersistentDataContainer();
+        CandleStore store = Objects.requireNonNull(getStore(partner).orElse(null));
+        store.addMember(dispenser.getLocation().toVector(), memberType);
+        pdc.set(Keys.CANDLE_STORE, PersistentDataType.LONG, store.getKey());
+        CandleMemberType.setMemberType(pdc, memberType);
         dispenser.update();
     }
 
-    public static void updateStoreMember(Dispenser dispenser, boolean chestAdded, boolean chestRemoved, String memberType) {
+    public static void updateStoreMember(Dispenser dispenser, CandleMemberType newType) {
         PersistentDataContainer pdc = dispenser.getPersistentDataContainer();
         if (!pdc.has(Keys.CANDLE_STORE))
             return;
-        String key = pdc.get(Keys.CANDLE_STORE, PersistentDataType.STRING);
+        Long key = pdc.get(Keys.CANDLE_STORE, PersistentDataType.LONG);
         assert ALL_STORES.containsKey(key);
         CandleStore store = ALL_STORES.get(key);
-        store.updateMember(chestAdded, chestRemoved);
-        pdc.set(Keys.CANDLE_STORE_MEMBER_TYPE, PersistentDataType.STRING, memberType);
+        CandleMemberType oldType = CandleMemberType.getMemberType(pdc);
+        store.updateMember(oldType, newType);
+        CandleMemberType.setMemberType(pdc, newType);
         dispenser.update();
     }
 
-    public static void deleteFromStore(Dispenser dispenser, boolean hasChest) {
+    public static void deleteFromStore(Dispenser dispenser) {
         PersistentDataContainer pdc = dispenser.getPersistentDataContainer();
         if (!pdc.has(Keys.CANDLE_STORE))
             return;
-        String key = pdc.get(Keys.CANDLE_STORE, PersistentDataType.STRING);
+        Long key = pdc.get(Keys.CANDLE_STORE, PersistentDataType.LONG);
         assert ALL_STORES.containsKey(key);
         CandleStore store = ALL_STORES.get(key);
+        CandleMemberType memberType = CandleMemberType.getMemberType(pdc);
         if (store.getMemberCount() > 1) {
-            store.deleteMember(dispenser.getLocation().toVector(), hasChest);
+            store.deleteMember(dispenser.getLocation().toVector(), memberType);
         } else {
             ALL_STORES.remove(key);
-            VIEW_MAP.remove(store.getView());
         }
         pdc.remove(Keys.CANDLE_STORE);
         pdc.remove(Keys.CANDLE_STORE_MEMBER_TYPE);
@@ -101,8 +95,9 @@ public class CandleStoreManager {
             if (loadedStores != null) {
                 ALL_STORES.clear();
                 for (CandleStore store : loadedStores) {
-                    VIEW_MAP.put(store.getView(), store);
                     ALL_STORES.put(store.getKey(), store);
+                    if (store.getKey() >= NEXT_KEY)
+                        NEXT_KEY = store.getKey() + 1;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -138,7 +133,6 @@ public class CandleStoreManager {
             writer.write(json);
             writer.close();
             ALL_STORES.clear();
-            VIEW_MAP.clear();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -177,7 +171,7 @@ public class CandleStoreManager {
         @Override
         public CandleStore deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject obj = (JsonObject) json;
-            String key = obj.get("key").getAsString();
+            Long key = obj.get("key").getAsLong();
             int memberCount = obj.get("member_count").getAsInt();
             int storageSlots = obj.get("storage_slots").getAsInt();
             int usedSlots = obj.get("used_slots").getAsInt();
