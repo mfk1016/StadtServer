@@ -3,6 +3,7 @@ package me.mfk1016.stadtserver.candlestore;
 import com.google.gson.*;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Keys;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
 import org.bukkit.inventory.Inventory;
@@ -15,10 +16,6 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class CandleStoreManager {
-
-    public static final String STORE_MEMBER_VIEW = "view";
-    public static final String STORE_MEMBER_CHEST = "chest";
-    public static final String STORE_MEMBER_EXPORT = "export";
 
     private static final HashMap<String, CandleStore> ALL_STORES = new HashMap<>();
     private static final HashMap<Inventory, CandleStore> VIEW_MAP = new HashMap<>();
@@ -114,12 +111,29 @@ public class CandleStoreManager {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void saveStoresOnWorldSave() {
+        Gson gson = getGsonInstance();
+        CandleStore[] toPersist = ALL_STORES.values().toArray(new CandleStore[0]);
+        String json = gson.toJson(toPersist);
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(StadtServer.getInstance(), () -> {
+            try {
+                getStoresFile().delete();
+                FileWriter writer = new FileWriter(getStoresFile());
+                writer.write(json);
+                writer.close();
+            } catch (IOException e) {
+                StadtServer.LOGGER.info(e.getMessage());
+            }
+        });
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void saveStoresOnPluginStop() {
+        Gson gson = getGsonInstance();
+        CandleStore[] toPersist = ALL_STORES.values().toArray(new CandleStore[0]);
+        String json = gson.toJson(toPersist);
         try {
-            Gson gson = getGsonInstance();
             getStoresFile().delete();
-            CandleStore[] toPersist = ALL_STORES.values().toArray(new CandleStore[0]);
-            String json = gson.toJson(toPersist);
             FileWriter writer = new FileWriter(getStoresFile());
             writer.write(json);
             writer.close();
@@ -170,6 +184,7 @@ public class CandleStoreManager {
             double centerX = obj.get("center_x").getAsDouble();
             double centerY = obj.get("center_y").getAsDouble();
             double centerZ = obj.get("center_z").getAsDouble();
+            Vector centerLocation = new Vector(centerX, centerY, centerZ);
 
             EnumMap<Material, Long> storage = new EnumMap<>(Material.class);
             JsonObject storageObj = obj.getAsJsonObject("storage");
@@ -179,7 +194,7 @@ public class CandleStoreManager {
                 storage.put(mat, amount);
             }
 
-            return new CandleStore(key, memberCount, storageSlots, usedSlots, storage, new Vector(centerX, centerY, centerZ));
+            return new CandleStore(key, memberCount, storageSlots, usedSlots, storage, centerLocation);
         }
     }
 }

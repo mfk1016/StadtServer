@@ -1,5 +1,6 @@
 package me.mfk1016.stadtserver.candlestore;
 
+import lombok.Getter;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
@@ -15,6 +16,7 @@ import java.util.Map;
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
+@Getter
 public class CandleStore {
 
     public static CandleStore createStore(String key, boolean hasChest, Vector centerLocation) {
@@ -120,33 +122,5 @@ public class CandleStore {
         centerLocation.setZ((centerLocation.getZ() * memberCount - position.getZ()) / (memberCount - 1));
         memberCount--;
         updateMember(false, hasChest);
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public int getMemberCount() {
-        return memberCount;
-    }
-
-    public int getStorageSlots() {
-        return storageSlots;
-    }
-
-    public int getUsedSlots() {
-        return usedSlots;
-    }
-
-    public Vector getCenterLocation() {
-        return centerLocation;
-    }
-
-    public EnumMap<Material, Long> getStorage() {
-        return storage;
-    }
-
-    public Inventory getView() {
-        return view;
     }
 }

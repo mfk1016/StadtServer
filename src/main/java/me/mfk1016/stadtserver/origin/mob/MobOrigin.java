@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import lombok.RequiredArgsConstructor;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.candlestore.CandleStoreUtils;
 import org.bukkit.World;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public abstract class MobOrigin {
 
     public static final ArrayList<MobOrigin> ORIGINS = new ArrayList<>();
@@ -49,12 +51,6 @@ public abstract class MobOrigin {
     protected final int chance;
     protected final EntityType entityType;
     protected final World.Environment environment;
-
-    public MobOrigin(int chance, EntityType entityType, World.Environment environment) {
-        this.chance = chance;
-        this.entityType = entityType;
-        this.environment = environment;
-    }
 
     protected boolean isMatched(Entity entity) {
         return entity.getType() == entityType

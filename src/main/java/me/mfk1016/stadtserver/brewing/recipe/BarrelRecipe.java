@@ -1,18 +1,16 @@
 package me.mfk1016.stadtserver.brewing.recipe;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
+@RequiredArgsConstructor
 public abstract class BarrelRecipe {
 
     protected final String resultID;
-
-    public BarrelRecipe(String resultID) {
-        this.resultID = resultID;
-    }
 
     public boolean isMatched(Inventory barrel) {
         // slot 0/1 = water

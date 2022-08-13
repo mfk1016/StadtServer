@@ -1,5 +1,6 @@
 package me.mfk1016.stadtserver.logic.wrench;
 
+import lombok.RequiredArgsConstructor;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
@@ -7,14 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+@RequiredArgsConstructor
 public class WrenchActionStateChange extends WrenchAction {
 
     private final String blockName, wrenchedName;
-
-    public WrenchActionStateChange(String blockName, String wrenchedName) {
-        this.blockName = blockName;
-        this.wrenchedName = wrenchedName;
-    }
 
     @Override
     protected Result wrenchBlock(Player player, Block target) {

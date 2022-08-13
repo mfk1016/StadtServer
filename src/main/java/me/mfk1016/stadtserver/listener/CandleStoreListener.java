@@ -9,6 +9,7 @@ import me.mfk1016.stadtserver.candlestore.CandleStoreUtils;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.*;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Candle;
@@ -23,11 +24,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.units.qual.N;
 
 import java.util.Comparator;
 import java.util.*;
@@ -51,7 +54,7 @@ public class CandleStoreListener implements Listener {
         if (!pdc.has(Keys.CANDLE_STORE_MEMBER_TYPE))
             return;
         String memberType = pdc.get(Keys.CANDLE_STORE_MEMBER_TYPE, PersistentDataType.STRING);
-        if (CandleStoreManager.STORE_MEMBER_EXPORT.equals(memberType))
+        if (CandleStoreUtils.STORE_MEMBER_EXPORT.equals(memberType))
             return;
         Optional<CandleStore> currentStore = CandleStoreManager.getStore(dispenser);
         if (currentStore.isPresent()) {
@@ -91,7 +94,7 @@ public class CandleStoreListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDragAtCandleStoreView(InventoryDragEvent event) {
         if (CandleStoreManager.isStoreView(event.getView().getTopInventory())) {
-            if (!event.getInventorySlots().stream().filter(value -> value < 54).toList().isEmpty())
+            if (!event.getRawSlots().stream().filter(value -> value < 54).toList().isEmpty())
                 event.setCancelled(true);
         }
     }
@@ -159,9 +162,9 @@ public class CandleStoreListener implements Listener {
         BlockState attachedBlockState = target.getRelative(BlockFace.DOWN).getState();
         boolean hasChest = attachedBlockState instanceof Chest;
         boolean isExport = attachedBlockState instanceof Hopper;
-        String memberType = hasChest ? CandleStoreManager.STORE_MEMBER_CHEST :
-                isExport ? CandleStoreManager.STORE_MEMBER_EXPORT :
-                        CandleStoreManager.STORE_MEMBER_VIEW;
+        String memberType = hasChest ? CandleStoreUtils.STORE_MEMBER_CHEST :
+                isExport ? CandleStoreUtils.STORE_MEMBER_EXPORT :
+                        CandleStoreUtils.STORE_MEMBER_VIEW;
 
         List<Block> dispensers = new ArrayList<>();
         for (int x = -8; x <= 8; x++) {
@@ -214,7 +217,7 @@ public class CandleStoreListener implements Listener {
         } else if (target.getState() instanceof Chest &&
                 target.getRelative(BlockFace.UP).getState() instanceof Dispenser dispenser) {
             if (CandleStoreManager.getStore(dispenser).isPresent()) {
-                CandleStoreManager.updateStoreMember(dispenser, false, true, CandleStoreManager.STORE_MEMBER_VIEW);
+                CandleStoreManager.updateStoreMember(dispenser, false, true, CandleStoreUtils.STORE_MEMBER_VIEW);
                 Material candleMat = target.getRelative(BlockFace.UP, 2).getType();
                 String candleName = CandleStoreUtils.getCandleName(candleMat, true);
                 playerMessage(player, "Chest removed from " + candleName + " store member.");
@@ -241,7 +244,7 @@ public class CandleStoreListener implements Listener {
             CandleStoreManager.deleteFromStore(dispenser, hasChest);
         } else if (target.getState() instanceof Chest &&
                 target.getRelative(BlockFace.UP).getState() instanceof Dispenser dispenser) {
-            CandleStoreManager.updateStoreMember(dispenser, false, true, CandleStoreManager.STORE_MEMBER_VIEW);
+            CandleStoreManager.updateStoreMember(dispenser, false, true, CandleStoreUtils.STORE_MEMBER_VIEW);
         } else if (target.getState() instanceof Dispenser dispenser) {
             boolean hasChest = target.getRelative(BlockFace.DOWN).getState() instanceof Chest;
             CandleStoreManager.deleteFromStore(dispenser, hasChest);
@@ -257,7 +260,7 @@ public class CandleStoreListener implements Listener {
             return;
         CandleStoreManager.getStore(dispenser).ifPresent(candleStore -> {
             CandleStoreManager.updateStoreMember(dispenser,
-                    true, false, CandleStoreManager.STORE_MEMBER_CHEST);
+                    true, false, CandleStoreUtils.STORE_MEMBER_CHEST);
             Material candleMat = possibleTarget.getRelative(BlockFace.UP, 2).getType();
             String candleName = CandleStoreUtils.getCandleName(candleMat, true);
             playerMessage(event.getPlayer(), "Chest added to " + candleName + " store member.");
@@ -273,7 +276,7 @@ public class CandleStoreListener implements Listener {
             return;
         CandleStoreManager.getStore(dispenser).ifPresent(candleStore -> {
             CandleStoreManager.updateStoreMember(dispenser,
-                    false, false, CandleStoreManager.STORE_MEMBER_EXPORT);
+                    false, false, CandleStoreUtils.STORE_MEMBER_EXPORT);
             Material candleMat = possibleTarget.getRelative(BlockFace.UP, 2).getType();
             String candleName = CandleStoreUtils.getCandleName(candleMat, true);
             playerMessage(event.getPlayer(), "Hopper added to " + candleName + " candle store member.");
@@ -323,5 +326,13 @@ public class CandleStoreListener implements Listener {
                 }
             }, 1L);
         });
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onWorldSave(WorldSaveEvent event) {
+        if (event.getWorld().getEnvironment() != World.Environment.NORMAL)
+            return;
+        StadtServer.LOGGER.info("Saving candle stores.");
+        CandleStoreManager.saveStoresOnWorldSave();
     }
 }

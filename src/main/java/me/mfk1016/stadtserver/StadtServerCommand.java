@@ -22,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
+
 public class StadtServerCommand implements CommandExecutor {
 
     @Override
@@ -176,6 +178,10 @@ public class StadtServerCommand implements CommandExecutor {
         charges = Math.min(Math.max(spell.getStartLevel(), charges), spell.getMaxLevel());
 
         ItemStack target = player.getInventory().getItemInMainHand();
+        if (stackEmpty(target)) {
+            target = new ItemStack(Material.STICK);
+            player.getInventory().setItemInMainHand(target);
+        }
         SpellManager.addSpell(target, spell, charges);
         player.sendMessage("Spell '" + enchStr + "' added.");
         return true;

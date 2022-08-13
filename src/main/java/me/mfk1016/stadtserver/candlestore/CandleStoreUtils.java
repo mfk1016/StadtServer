@@ -13,6 +13,10 @@ import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 public class CandleStoreUtils {
 
+    public static final String STORE_MEMBER_VIEW = "view";
+    public static final String STORE_MEMBER_CHEST = "chest";
+    public static final String STORE_MEMBER_EXPORT = "export";
+
     public static boolean isValidStoreItem(ItemStack item) {
         if (item.getEnchantments().size() > 0)
             return false;

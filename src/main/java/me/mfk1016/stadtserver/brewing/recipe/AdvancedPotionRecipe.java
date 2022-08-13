@@ -1,6 +1,7 @@
 package me.mfk1016.stadtserver.brewing.recipe;
 
 import io.papermc.paper.potion.PotionMix;
+import lombok.RequiredArgsConstructor;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.brewing.BottleType;
 import me.mfk1016.stadtserver.brewing.PotionManager;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
+@RequiredArgsConstructor
 public abstract class AdvancedPotionRecipe {
 
     private static final String RECIPE_KEY_PREFIX = "brewing_";
@@ -26,11 +28,6 @@ public abstract class AdvancedPotionRecipe {
 
     private final String recipeKey;
     protected final RecipeChoice ingredient;
-
-    public AdvancedPotionRecipe(String recipeKey, RecipeChoice ingredient) {
-        this.recipeKey = recipeKey;
-        this.ingredient = ingredient;
-    }
 
     protected NamespacedKey getRecipeKey(int index) {
         return new NamespacedKey(StadtServer.getInstance(), RECIPE_KEY_PREFIX + recipeKey + "_" + index);

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import lombok.RequiredArgsConstructor;
 import me.mfk1016.stadtserver.StadtServer;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+@RequiredArgsConstructor
 public abstract class LootOrigin {
 
     public static final ArrayList<LootOrigin> ORIGINS = new ArrayList<>();
@@ -44,14 +46,8 @@ public abstract class LootOrigin {
         }
     }
 
-
     private final String type;
     private final int chance;
-
-    public LootOrigin(String type, int chance) {
-        this.type = type;
-        this.chance = chance;
-    }
 
     private boolean isMatched(String type, Optional<ItemStack> target, World world) {
         return this.type.equals(type)

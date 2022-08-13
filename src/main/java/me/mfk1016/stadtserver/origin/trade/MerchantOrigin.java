@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import lombok.RequiredArgsConstructor;
 import me.mfk1016.stadtserver.StadtServer;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public abstract class MerchantOrigin {
 
     public static final ArrayList<MerchantOrigin> ORIGINS = new ArrayList<>();
@@ -46,10 +48,6 @@ public abstract class MerchantOrigin {
     }
 
     private final int chance;
-
-    public MerchantOrigin(int chance) {
-        this.chance = chance;
-    }
 
     protected boolean isMatched(Merchant merchant, MerchantRecipe recipe) {
         return isApplicable(merchant, recipe)
