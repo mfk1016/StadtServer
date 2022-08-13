@@ -1,20 +1,16 @@
 package me.mfk1016.stadtserver.listener;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.BlockPosition;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.enchantments.WrenchEnchantment;
 import me.mfk1016.stadtserver.logic.DispenserDropperLogic;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.*;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Orientable;
 import org.bukkit.block.data.type.Ladder;
 import org.bukkit.block.data.type.Piston;
 import org.bukkit.entity.Player;
@@ -29,11 +25,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static me.mfk1016.stadtserver.util.Functions.isFaceOfOrientation;
+import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 /*
     - Dispenser can plant wheat, potato, carrot, beetroot, melon, pumpkin and nether wart
@@ -53,7 +48,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SmallFunctionsListener implements Listener {
 
     private static final ItemStack fakePick = new ItemStack(Material.NETHERITE_PICKAXE);
-    private final Set<BlockPosition> editedSigns = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockDispense(BlockDispenseEvent event) {
@@ -95,6 +89,10 @@ public class SmallFunctionsListener implements Listener {
         Block dirt = Objects.requireNonNull(event.getClickedBlock());
         if (dirt.getType() != Material.DIRT || !PluginCategories.isShovel(event.getItem().getType()))
             return;
+        if (EnchantmentManager.isEnchantedWith(event.getItem(), EnchantmentManager.WRENCH))
+            return;
+        if (EnchantmentManager.isEnchantedWith(event.getItem(), EnchantmentManager.TROWEL))
+            return;
 
         dirt.setType(Material.DIRT_PATH);
         dirt.getWorld().playSound(dirt.getLocation(), Sound.ITEM_HOE_TILL, 1f, 1f);
@@ -102,65 +100,36 @@ public class SmallFunctionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSignClick(PlayerInteractEvent event) {
-
         Player p = event.getPlayer();
         if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !p.isSneaking())
             return;
-        if (p.getInventory().getItemInMainHand().getType() == Material.GLOW_INK_SAC)
+        if (!stackEmpty(p.getInventory().getItemInMainHand()))
             return;
-        if (!event.hasBlock())
+        if (!(event.getClickedBlock().getState() instanceof Sign sign))
             return;
-        Block b = Objects.requireNonNull(event.getClickedBlock());
-        if (!(b.getState() instanceof Sign s))
-            return;
-        Location loc = b.getLocation();
-        BlockPosition signPos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        if (s.isEditable() || editedSigns.contains(signPos))
-            return;
-        ProtocolManager pm = ProtocolLibrary.getProtocolManager();
-        PacketContainer packetContainer = new PacketContainer(PacketType.Play.Server.OPEN_SIGN_EDITOR);
-        packetContainer.getBlockPositionModifier().write(0, signPos);
-        try {
-            pm.sendServerPacket(p, packetContainer);
-            editedSigns.add(signPos);
-        } catch (InvocationTargetException e2) {
-            // ignore
-        }
-    }
-
-    public void signEdited(BlockPosition sign) {
-        editedSigns.remove(sign);
-    }
-
-    public boolean isEdited(BlockPosition sign) {
-        return editedSigns.contains(sign);
+        event.setCancelled(true);
+        event.getPlayer().openSign(sign);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPistonTrigger(BlockPistonExtendEvent event) {
         if (event.getBlock().getType() != Material.STICKY_PISTON)
             return;
-        if (!event.getBlock().isBlockIndirectlyPowered())
-            return;
         Piston piston = (Piston) event.getBlock().getBlockData();
-        if (piston.isExtended())
-            return;
         Block pistonTool = event.getBlock().getRelative(piston.getFacing());
 
         if (pistonTool.getType() == Material.LIGHTNING_ROD) {
             Directional rodFace = (Directional) pistonTool.getBlockData();
             if (rodFace.getFacing() != piston.getFacing())
                 return;
-
             Block toBreak = pistonTool.getRelative(piston.getFacing());
             if (toBreak.getPistonMoveReaction() == PistonMoveReaction.MOVE)
                 toBreak.breakNaturally(fakePick);
 
-        } else if (pistonTool.getType() == Material.GRINDSTONE) {
-            Directional grindstoneFace = (Directional) pistonTool.getBlockData();
-            if (grindstoneFace.getFacing() != piston.getFacing())
+        } else if (pistonTool.getType() == Material.CHAIN) {
+            Orientable chain = (Orientable) pistonTool.getBlockData();
+            if (!isFaceOfOrientation(chain.getAxis(), piston.getFacing()))
                 return;
-
             Block toBreak = pistonTool.getRelative(piston.getFacing());
             if (toBreak.getPistonMoveReaction() == PistonMoveReaction.MOVE)
                 grindBlock(toBreak);

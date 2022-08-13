@@ -121,7 +121,6 @@ public class TrowelEnchantment extends CustomEnchantment {
         if (!block.isEmpty())
             return false;
         Collection<Entity> entities = block.getWorld().getNearbyEntities(block.getBoundingBox());
-        if (entities.isEmpty()) return true; // no entity in the way
         for (Entity entity : entities) {
             if (!(entity instanceof Item)) return false; // a non-item entity is in the way
         }

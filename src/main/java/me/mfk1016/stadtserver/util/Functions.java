@@ -9,7 +9,9 @@ import me.mfk1016.stadtserver.StadtServer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Axis;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
@@ -59,5 +61,13 @@ public class Functions {
                 recipe.getPriceMultiplier());
         newRecipe.setIngredients(recipe.getIngredients());
         return newRecipe;
+    }
+
+    public static boolean isFaceOfOrientation(Axis axis, BlockFace face) {
+        return switch (axis) {
+            case X -> face == BlockFace.WEST || face == BlockFace.EAST;
+            case Y -> face == BlockFace.UP || face == BlockFace.DOWN;
+            case Z -> face == BlockFace.NORTH || face == BlockFace.SOUTH;
+        };
     }
 }

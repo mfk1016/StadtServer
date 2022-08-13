@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import me.mfk1016.stadtserver.brewing.PotionManager;
 import me.mfk1016.stadtserver.brewing.PotionRecipeManager;
 import me.mfk1016.stadtserver.candlestore.CandleStoreManager;
@@ -24,7 +23,6 @@ public class StadtServer extends JavaPlugin {
     public static final Logger LOGGER = Logger.getLogger("Minecraft");
     public static final Random RANDOM = new Random();
     private static StadtServer plugin = null;
-    private SignPacketListener signPacketListener = null;
 
     public static StadtServer getInstance() {
         return plugin;
@@ -53,7 +51,6 @@ public class StadtServer extends JavaPlugin {
 
         LOGGER.info(getDescription().getName() + ": enable listeners...");
         SmallFunctionsListener smallFunctionsListener = new SmallFunctionsListener();
-        signPacketListener = new SignPacketListener(smallFunctionsListener);
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new MinecartListener(), this);
         pm.registerEvents(smallFunctionsListener, this);
@@ -66,7 +63,6 @@ public class StadtServer extends JavaPlugin {
         pm.registerEvents(new VineListener(), this);
         pm.registerEvents(new BarrelListener(), this);
         pm.registerEvents(new CandleStoreListener(), this);
-        ProtocolLibrary.getProtocolManager().addPacketListener(signPacketListener);
 
         LOGGER.info(getDescription().getName() + ": register recipes...");
         RecipeManager.registerRecipes();
@@ -80,9 +76,6 @@ public class StadtServer extends JavaPlugin {
         LOGGER.info(getDescription().getName() + ": stop managers and handlers...");
         RitualManager.onPluginDisable();
         HandlerList.unregisterAll(this);
-        if (signPacketListener != null)
-            ProtocolLibrary.getProtocolManager().removePacketListener(signPacketListener);
-        signPacketListener = null;
         EnchantmentManager.onPluginDisable();
         SpellManager.onPluginDisable();
         LOGGER.info(getDescription().getName() + ": save config and candle stores...");

@@ -1,10 +1,10 @@
 package me.mfk1016.stadtserver.logic.wrench;
 
-import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionBeeCheck;
-import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionInventory;
-import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionNoteBlock;
-import me.mfk1016.stadtserver.logic.wrench.actions.WrenchActionRedstoneLamp;
+import me.mfk1016.stadtserver.logic.wrench.actions.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Fence;
+import org.bukkit.block.data.type.Stairs;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -12,7 +12,14 @@ import static me.mfk1016.stadtserver.util.Functions.playerMessage;
 
 public abstract class WrenchAction {
 
-    public static WrenchAction actionFactory(Block block) {
+    public static WrenchAction actionFactory(Block block, boolean isSneak) {
+        BlockData blockData = block.getBlockData();
+        if (blockData instanceof Stairs) {
+            return new WrenchActionStairs(isSneak);
+        } else if (blockData instanceof Fence) {
+            return new WrenchActionFenceLike();
+        }
+
         return switch (block.getType()) {
             case DROPPER -> new WrenchActionStateChange("Dropper", "Chute");
             case DISPENSER -> new WrenchActionStateChange("Dispenser", "Block Placer");

@@ -81,7 +81,7 @@ public class WrenchEnchantment extends CustomEnchantment {
 
         Player player = event.getPlayer();
         Block target = Objects.requireNonNull(event.getClickedBlock());
-        WrenchAction action = WrenchAction.actionFactory(target);
+        WrenchAction action = WrenchAction.actionFactory(target, player.isSneaking());
         if (action instanceof WrenchActionStateChange)
             target.getWorld().playSound(target.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.5F, 1);
         action.onWrenchBlock(player, target, event);
