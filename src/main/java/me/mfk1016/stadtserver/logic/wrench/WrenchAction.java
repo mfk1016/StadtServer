@@ -4,6 +4,7 @@ import me.mfk1016.stadtserver.logic.wrench.actions.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
+import org.bukkit.block.data.type.GlassPane;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -16,7 +17,7 @@ public abstract class WrenchAction {
         BlockData blockData = block.getBlockData();
         if (blockData instanceof Stairs) {
             return new WrenchActionStairs(isSneak);
-        } else if (blockData instanceof Fence) {
+        } else if (blockData instanceof Fence || blockData instanceof GlassPane) {
             return new WrenchActionFenceLike();
         }
 

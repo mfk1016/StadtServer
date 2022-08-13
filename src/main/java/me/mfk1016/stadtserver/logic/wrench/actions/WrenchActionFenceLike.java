@@ -4,23 +4,23 @@ import me.mfk1016.stadtserver.logic.wrench.WrenchAction;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.type.Fence;
+import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.entity.Player;
 
 public class WrenchActionFenceLike extends WrenchAction {
 
     @Override
     protected WrenchAction.Result wrenchBlock(Player player, Block target) {
-        Fence fence = (Fence) target.getBlockData();
-        for (BlockFace face : fence.getAllowedFaces()) {
+        MultipleFacing fenceLike = (MultipleFacing) target.getBlockData();
+        for (BlockFace face : fenceLike.getAllowedFaces()) {
             if (face == BlockFace.UP || face == BlockFace.DOWN)
                 continue;
             Material neighborType = target.getRelative(face).getType();
             if (!neighborType.isSolid())
                 continue;
-            fence.setFace(face, true);
+            fenceLike.setFace(face, true);
         }
-        target.setBlockData(fence, false);
+        target.setBlockData(fenceLike, false);
         return WrenchAction.Result.TRUE;
     }
 
