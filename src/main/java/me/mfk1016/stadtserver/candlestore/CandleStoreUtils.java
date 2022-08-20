@@ -8,6 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Candle;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static me.mfk1016.stadtserver.util.Functions.*;
-import static me.mfk1016.stadtserver.util.Functions.playerMessage;
 
 public class CandleStoreUtils {
 
@@ -35,7 +35,7 @@ public class CandleStoreUtils {
         };
     }
 
-    public static ItemStack getViewStack(Material mat, long amount) {
+    public static ItemStack createViewItem(Material mat, long amount) {
         ItemStack elem = new ItemStack(mat);
         ItemMeta meta = elem.getItemMeta();
         meta.displayName(undecoratedText(String.valueOf(amount)));
@@ -116,5 +116,42 @@ public class CandleStoreUtils {
         }
         dispensers.sort(Comparator.comparingDouble(a -> toSearch.getLocation().distance(a.getLocation())));
         return dispensers;
+    }
+
+    public static void onDestroyCandleStoreMember(Block target, Player destroyer) {
+        if (target.getType().name().endsWith("CANDLE")) {
+            Block possibleTarget = target.getRelative(0, -1, 0);
+            if (possibleTarget.getType() != Material.DISPENSER)
+                return;
+            Dispenser dispenser = (Dispenser) possibleTarget.getState();
+            if (CandleStoreManager.getStore(dispenser).isPresent()) {
+                CandleStoreManager.deleteFromStore(dispenser);
+                if (destroyer != null) {
+                    Material candleMat = target.getType();
+                    String candleName = CandleStoreUtils.getCandleName(candleMat, false);
+                    playerMessage(destroyer, candleName + " store member removed.");
+                }
+            }
+        } else if (target.getRelative(BlockFace.UP).getType() == Material.DISPENSER) {
+            Dispenser dispenser = (Dispenser) target.getRelative(BlockFace.UP).getState();
+            if (CandleStoreManager.getStore(dispenser).isPresent()) {
+                CandleStoreManager.updateStoreMember(dispenser, CandleMemberType.NORMAL);
+                if (destroyer != null) {
+                    Material candleMat = target.getRelative(0, 2, 0).getType();
+                    String candleName = CandleStoreUtils.getCandleName(candleMat, false);
+                    playerMessage(destroyer, candleName + " store member updated.");
+                }
+            }
+        } else if (target.getType() == Material.DISPENSER) {
+            Dispenser dispenser = (Dispenser) target.getState();
+            if (CandleStoreManager.getStore(dispenser).isPresent()) {
+                CandleStoreManager.deleteFromStore(dispenser);
+                if (destroyer != null) {
+                    Material candleMat = target.getRelative(0, 1, 0).getType();
+                    String candleName = CandleStoreUtils.getCandleName(candleMat, false);
+                    playerMessage(destroyer, candleName + " store member removed.");
+                }
+            }
+        }
     }
 }

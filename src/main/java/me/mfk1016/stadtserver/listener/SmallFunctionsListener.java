@@ -41,7 +41,7 @@ import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
     - Editable Signs
 
     - Sticky Piston + Lightning Rod = Block breaker
-    - Sticky Piston + Grindstone = Crusher
+    - Sticky Piston + Chain = Crusher
 
     - Ladder placement helper
  */
@@ -51,7 +51,7 @@ public class SmallFunctionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockDispense(BlockDispenseEvent event) {
-        if (event.getBlock().getType() == Material.DISPENSER) {
+        if (!event.isCancelled() && event.getBlock().getType() == Material.DISPENSER) {
             Block dispenserBlock = event.getBlock();
             ItemStack item = event.getItem();
             if (DispenserDropperLogic.tryAllDispenseActions(dispenserBlock, item)) {
@@ -62,9 +62,9 @@ public class SmallFunctionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onItemEnterChute(InventoryMoveItemEvent event) {
-        if (!(event.getSource().getHolder() instanceof Hopper hopper))
+        if (!(event.getSource().getHolder(false) instanceof Hopper hopper))
             return;
-        if (!(event.getDestination().getHolder() instanceof Dropper dropperState))
+        if (!(event.getDestination().getHolder(false) instanceof Dropper dropperState))
             return;
         if (!WrenchEnchantment.isWrenched(dropperState))
             return;

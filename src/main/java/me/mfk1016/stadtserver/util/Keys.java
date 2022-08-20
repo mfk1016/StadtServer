@@ -8,7 +8,6 @@ public class Keys {
     // Configuration
     public static final String CONFIG_PLAYER_MESSAGE = "send_player_message";
     public static final String CONFIG_MAX_LOGS = "chop_max_logs";
-    public static final String CONFIG_CANDLE_STORE_CHEST_SLOTS = "candle_store.chest_slots";
 
     // Entitites: Strings
 

@@ -40,9 +40,9 @@ public abstract class MobOrigin {
             ORIGINS.add(BossMobItemOrigin.fromJson(jsonElement.getAsJsonObject()));
         }
 
-        // Candle Tool: Witch Boss Level 4 (ritual), 25% chance
+        // Candle Tool: Witch Boss Level 4 (ritual), 10% chance
         BossMobItemOrigin candleToolOrigin = new BossMobItemOrigin(
-                25, EntityType.WITCH, 4,
+                10, EntityType.WITCH, 4,
                 World.Environment.NORMAL, CandleStoreUtils.getCandleTool());
         ORIGINS.add(candleToolOrigin);
     }

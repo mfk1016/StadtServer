@@ -34,7 +34,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:1.18.24")
 
     paperDevBundle("1.19.1-R0.1-SNAPSHOT")
-    implementation("com.comphenix.protocol:ProtocolLib:4.8.0")
+    //implementation("com.comphenix.protocol:ProtocolLib:4.8.0")
     implementation("com.google.code.gson:gson:2.9.0")
 }
 

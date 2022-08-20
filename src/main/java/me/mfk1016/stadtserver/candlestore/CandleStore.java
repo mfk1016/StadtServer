@@ -1,19 +1,16 @@
 package me.mfk1016.stadtserver.candlestore;
 
 import lombok.Getter;
-import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
@@ -21,12 +18,12 @@ import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 @Getter
 public class CandleStore implements InventoryHolder {
 
-    public static CandleStore createStore(Long key, boolean hasChest, Vector centerLocation) {
-        return new CandleStore(key, 1, hasChest ? getConfigSlotsOfChest() : 0, 0, new EnumMap<>(Material.class), centerLocation);
-    }
+    private static final int MAX_STORAGE_SLOTS = 54;
 
-    private static int getConfigSlotsOfChest() {
-        return StadtServer.getInstance().getConfig().getInt(Keys.CONFIG_CANDLE_STORE_CHEST_SLOTS);
+    private static final int SLOTS_PER_CHEST = 9;
+
+    public static CandleStore createStore(Long key, boolean hasChest, Vector centerLocation) {
+        return new CandleStore(key, 1, hasChest ? SLOTS_PER_CHEST : 0, 0, new EnumMap<>(Material.class), centerLocation);
     }
 
     private final Long key;
@@ -35,7 +32,7 @@ public class CandleStore implements InventoryHolder {
     private int usedSlots;
     private final Vector centerLocation;
     private final EnumMap<Material, Long> storage;
-    private final Inventory view;
+    private Inventory view;
 
     public CandleStore(Long key, int memberCount, int storageSlots, int usedSlots, EnumMap<Material, Long> storage, Vector centerLocation) {
         this.key = key;
@@ -44,8 +41,16 @@ public class CandleStore implements InventoryHolder {
         this.usedSlots = usedSlots;
         this.centerLocation = centerLocation;
         this.storage = storage;
-        view = Bukkit.createInventory(this, 54, undecoratedText("Candle Store Index"));
-        updateView(true);
+        recreateView();
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean contains(Material mat, long amount) {
+        return storage.getOrDefault(mat, 0L) >= amount;
+    }
+
+    public boolean accepts(Material mat) {
+        return storage.containsKey(mat) || usedSlots < getStorageSlots();
     }
 
     public void pushItemStack(ItemStack stack) throws CandleStoreException {
@@ -54,7 +59,7 @@ public class CandleStore implements InventoryHolder {
             throw CandleStoreException.invalidItem();
         }
         long currentAmount = storage.getOrDefault(stack.getType(), 0L);
-        if (usedSlots == storageSlots && currentAmount == 0) {
+        if (usedSlots == getStorageSlots() && currentAmount == 0) {
             throw CandleStoreException.storeFull();
         }
         usedSlots = currentAmount == 0 ? usedSlots + 1 : usedSlots;
@@ -91,29 +96,43 @@ public class CandleStore implements InventoryHolder {
     public void updateMember(CandleMemberType oldType, CandleMemberType newType) {
         assert oldType != newType || oldType == CandleMemberType.NORMAL;
         if (newType == CandleMemberType.CHEST) {
-            storageSlots += getConfigSlotsOfChest();
+            storageSlots += SLOTS_PER_CHEST;
+            recreateView();
         } else if (oldType == CandleMemberType.CHEST) {
-            storageSlots -= getConfigSlotsOfChest();
+            storageSlots -= SLOTS_PER_CHEST;
             Iterator<Material> materialIterator = storage.keySet().iterator();
-            while (usedSlots > storageSlots && materialIterator.hasNext()) {
+            while (usedSlots > getStorageSlots() && materialIterator.hasNext()) {
                 Material mat = materialIterator.next();
                 storage.remove(mat);
                 usedSlots--;
             }
-            updateView(false);
+            recreateView();
+        }
+    }
+
+    public void recreateView() {
+        ArrayList<HumanEntity> currentViewers = new ArrayList<>(view == null ? List.of() : view.getViewers());
+        view = null;
+        if (getStorageSlots() > 0)
+            view = Bukkit.createInventory(this, getStorageSlots(), undecoratedText("Candle Store Index"));
+        updateView(true);
+        for (HumanEntity entity : currentViewers) {
+            entity.closeInventory();
+            if (view != null)
+                entity.openInventory(view);
         }
     }
 
     public void updateView(boolean force) {
-        if (view.getViewers().isEmpty() && !force)
+        if (view == null || (view.getViewers().isEmpty() && !force))
             return;
         view.clear();
         Iterator<Map.Entry<Material, Long>> iterator =
                 storage.entrySet().stream().sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue())).iterator();
         int slot = 0;
-        while (iterator.hasNext() && slot < 54) {
+        while (iterator.hasNext() && slot < view.getSize()) {
             Map.Entry<Material, Long> entry = iterator.next();
-            view.setItem(slot, CandleStoreUtils.getViewStack(entry.getKey(), entry.getValue()));
+            view.setItem(slot, CandleStoreUtils.createViewItem(entry.getKey(), entry.getValue()));
             slot++;
         }
     }
@@ -124,6 +143,10 @@ public class CandleStore implements InventoryHolder {
         centerLocation.setZ((centerLocation.getZ() * memberCount - position.getZ()) / (memberCount - 1));
         memberCount--;
         updateMember(memberType, CandleMemberType.NORMAL);
+    }
+
+    public int getStorageSlots() {
+        return Math.min(storageSlots, MAX_STORAGE_SLOTS);
     }
 
     @Override

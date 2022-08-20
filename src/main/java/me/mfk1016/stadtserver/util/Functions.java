@@ -1,10 +1,5 @@
 package me.mfk1016.stadtserver.util;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import me.mfk1016.stadtserver.StadtServer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -16,8 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.Contract;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class Functions {
 
@@ -44,14 +37,7 @@ public class Functions {
 
     public static void playerMessage(Player player, String string) {
         if (StadtServer.getInstance().getConfig().getBoolean(Keys.CONFIG_PLAYER_MESSAGE)) {
-            ProtocolManager pm = ProtocolLibrary.getProtocolManager();
-            PacketContainer packetContainer = new PacketContainer(PacketType.Play.Server.SET_ACTION_BAR_TEXT);
-            packetContainer.getChatComponents().write(0, WrappedChatComponent.fromText(string));
-            try {
-                pm.sendServerPacket(player, packetContainer);
-            } catch (InvocationTargetException e2) {
-                // ignore
-            }
+            player.sendActionBar(undecoratedText(string));
         }
     }
 
