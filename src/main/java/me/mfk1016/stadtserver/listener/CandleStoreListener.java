@@ -2,6 +2,7 @@ package me.mfk1016.stadtserver.listener;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
+import io.papermc.paper.event.block.BlockFailedDispenseEvent;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.candlestore.*;
 import me.mfk1016.stadtserver.util.Keys;
@@ -13,7 +14,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Hopper;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -25,7 +25,6 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -161,7 +160,7 @@ public class CandleStoreListener implements Listener {
         }
         CandleMemberType memberType = switch (target.getRelative(BlockFace.DOWN).getType()) {
             case CHEST -> CandleMemberType.CHEST;
-            case HOPPER, RAIL, POWERED_RAIL, ACTIVATOR_RAIL, DETECTOR_RAIL -> CandleMemberType.EXPORT;
+            case HOPPER -> CandleMemberType.EXPORT;
             default -> CandleMemberType.NORMAL;
         };
         CandleStoreManager.createStore(dispenser, memberType);
@@ -194,7 +193,7 @@ public class CandleStoreListener implements Listener {
                 }
                 CandleMemberType memberType = switch (target.getRelative(BlockFace.DOWN).getType()) {
                     case CHEST -> CandleMemberType.CHEST;
-                    case HOPPER, RAIL, POWERED_RAIL, ACTIVATOR_RAIL, DETECTOR_RAIL -> CandleMemberType.EXPORT;
+                    case HOPPER -> CandleMemberType.EXPORT;
                     default -> CandleMemberType.NORMAL;
                 };
                 CandleStoreManager.addToStore(dispenser, partner, memberType);
@@ -235,12 +234,8 @@ public class CandleStoreListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAddBlockToStoreMember(BlockPlaceEvent event) {
         Material addedType = event.getItemInHand().getType();
-        switch (addedType) {
-            case CHEST, HOPPER, RAIL, POWERED_RAIL, ACTIVATOR_RAIL, DETECTOR_RAIL:
-                break;
-            default:
-                return;
-        }
+        if (addedType != Material.CHEST && addedType != Material.HOPPER)
+            return;
         Block possibleTarget = event.getBlockPlaced();
         if (!(possibleTarget.getRelative(BlockFace.UP).getState() instanceof Dispenser dispenser))
             return;
@@ -282,8 +277,7 @@ public class CandleStoreListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onHopperPullStackFromStore(InventoryMoveItemEvent event) {
-        InventoryHolder destination = event.getDestination().getHolder(false);
-        if (!(destination instanceof Hopper) && !(destination instanceof HopperMinecart))
+        if (!(event.getDestination().getHolder(false) instanceof Hopper hopper))
             return;
         if (!(event.getSource().getHolder(false) instanceof Dispenser dispenser))
             return;
@@ -296,7 +290,7 @@ public class CandleStoreListener implements Listener {
             Bukkit.getServer().getScheduler().runTaskLater(StadtServer.getInstance(), () -> {
                 try {
                     ItemStack pulledItem = candleStore.pullItemStack(mat, 1);
-                    destination.getInventory().addItem(pulledItem);
+                    hopper.getInventory().addItem(pulledItem);
                 } catch (CandleStoreException ignored) {
                 }
             }, 1L);
