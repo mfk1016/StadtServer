@@ -2,7 +2,6 @@ package me.mfk1016.stadtserver.listener;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
-import io.papermc.paper.event.block.BlockFailedDispenseEvent;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.candlestore.*;
 import me.mfk1016.stadtserver.util.Keys;
