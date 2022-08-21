@@ -60,6 +60,7 @@ public class CandleStoreManager {
         CandleMemberType oldType = CandleMemberType.getMemberType(pdc);
         store.updateMember(oldType, newType);
         CandleMemberType.setMemberType(pdc, newType);
+        dispenser.customName(undecoratedText("Filter"));
         dispenser.update();
     }
 
