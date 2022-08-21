@@ -8,6 +8,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
@@ -17,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class SummonSpell extends CustomSpell {
 
@@ -43,11 +42,13 @@ public class SummonSpell extends CustomSpell {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onUseCompass(PlayerInteractEvent event) {
-        ItemStack compass = event.getItem();
-        if (stackEmpty(compass) || SpellManager.getSpellCharges(compass, this) == 0)
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
-        Block focus = event.getClickedBlock();
-        if (focus == null || focus.getType() != Material.PLAYER_HEAD)
+        ItemStack compass = event.getItem();
+        if (event.getMaterial() != Material.COMPASS || SpellManager.getSpellCharges(compass, this) == 0)
+            return;
+        Block focus = Objects.requireNonNull(event.getClickedBlock());
+        if (focus.getType() != Material.PLAYER_HEAD)
             return;
         World world = focus.getWorld();
         if (!focus.getRelative(BlockFace.UP).isEmpty() || !focus.getRelative(0, 2, 0).isEmpty())

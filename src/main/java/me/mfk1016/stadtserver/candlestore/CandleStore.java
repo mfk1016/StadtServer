@@ -1,8 +1,7 @@
 package me.mfk1016.stadtserver.candlestore;
 
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -18,9 +17,8 @@ import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 @Getter
 public class CandleStore implements InventoryHolder {
 
-    private static final int MAX_STORAGE_SLOTS = 54;
-
-    private static final int SLOTS_PER_CHEST = 9;
+    public static final int MAX_STORAGE_SLOTS = 54;
+    public static final int SLOTS_PER_CHEST = 9;
 
     public static CandleStore createStore(Long key, boolean hasChest, Vector centerLocation) {
         return new CandleStore(key, 1, hasChest ? SLOTS_PER_CHEST : 0, 0, new EnumMap<>(Material.class), centerLocation);
@@ -85,7 +83,7 @@ public class CandleStore implements InventoryHolder {
         return stack;
     }
 
-    public void addMember(Vector position, CandleMemberType memberType) {
+    public void addMember(Location position, CandleMemberType memberType) {
         centerLocation.setX((centerLocation.getX() * memberCount + position.getX()) / (memberCount + 1));
         centerLocation.setY((centerLocation.getY() * memberCount + position.getY()) / (memberCount + 1));
         centerLocation.setZ((centerLocation.getZ() * memberCount + position.getZ()) / (memberCount + 1));
@@ -137,7 +135,7 @@ public class CandleStore implements InventoryHolder {
         }
     }
 
-    public void deleteMember(Vector position, CandleMemberType memberType) {
+    public void deleteMember(Location position, CandleMemberType memberType) {
         centerLocation.setX((centerLocation.getX() * memberCount - position.getX()) / (memberCount - 1));
         centerLocation.setY((centerLocation.getY() * memberCount - position.getY()) / (memberCount - 1));
         centerLocation.setZ((centerLocation.getZ() * memberCount - position.getZ()) / (memberCount - 1));

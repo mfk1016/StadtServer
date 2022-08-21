@@ -33,7 +33,7 @@ public class BarrelListener implements Listener {
     public void onPlaceFluidBarrel(BlockPlaceEvent event) {
         if (!BarrelManager.isFluidBarrel(event.getItemInHand()))
             return;
-        ItemStack barrel = event.getItemInHand().clone();
+        ItemStack barrel = event.getItemInHand();
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -137,9 +137,9 @@ public class BarrelListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBarrelMoveInventory(InventoryMoveItemEvent event) {
-        if (event.getSource().getHolder() instanceof Barrel barrelSource)
-            event.setCancelled(BarrelManager.isFluidBarrel(barrelSource.getBlock()));
-        else if (event.getDestination().getHolder() instanceof Barrel barrelTarget)
-            event.setCancelled(BarrelManager.isFluidBarrel(barrelTarget.getBlock()));
+        if (event.getSource().getHolder(false) instanceof Barrel barrelSource)
+            event.setCancelled(BarrelManager.isFluidBarrel(barrelSource));
+        else if (event.getDestination().getHolder(false) instanceof Barrel barrelTarget)
+            event.setCancelled(BarrelManager.isFluidBarrel(barrelTarget));
     }
 }

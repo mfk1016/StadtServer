@@ -84,10 +84,10 @@ public class SmallFunctionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onShovelInteractDirt(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null || event.getItem() == null)
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
         Block dirt = Objects.requireNonNull(event.getClickedBlock());
-        if (dirt.getType() != Material.DIRT || !PluginCategories.isShovel(event.getItem().getType()))
+        if (!PluginCategories.isShovel(event.getMaterial()) || dirt.getType() != Material.DIRT)
             return;
         if (EnchantmentManager.isEnchantedWith(event.getItem(), EnchantmentManager.WRENCH))
             return;
@@ -105,10 +105,11 @@ public class SmallFunctionsListener implements Listener {
             return;
         if (!stackEmpty(p.getInventory().getItemInMainHand()))
             return;
-        if (!(event.getClickedBlock().getState() instanceof Sign sign))
+        Block signBlock = Objects.requireNonNull(event.getClickedBlock());
+        if (!signBlock.getType().name().endsWith("_SIGN"))
             return;
         event.setCancelled(true);
-        event.getPlayer().openSign(sign);
+        event.getPlayer().openSign((Sign) signBlock.getState());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -155,12 +156,10 @@ public class SmallFunctionsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRightClickLadder(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getMaterial() != Material.LADDER)
             return;
-        if (event.getItem() == null || event.getItem().getType() != Material.LADDER)
-            return;
-        Block ladderBlock = event.getClickedBlock();
-        if (ladderBlock == null || ladderBlock.getType() != Material.LADDER)
+        Block ladderBlock = Objects.requireNonNull(event.getClickedBlock());
+        if (ladderBlock.getType() != Material.LADDER)
             return;
         Block targetBlock = getLadderTargetBlock(ladderBlock);
         if (targetBlock == null)
@@ -176,7 +175,7 @@ public class SmallFunctionsListener implements Listener {
         targetBlock.setBlockData(target);
 
         if (event.getPlayer().getGameMode() == GameMode.SURVIVAL || event.getPlayer().getGameMode() == GameMode.ADVENTURE) {
-            ItemStack item = event.getItem();
+            ItemStack item = Objects.requireNonNull(event.getItem());
             item.setAmount(item.getAmount() - 1);
         }
         targetBlock.getWorld().playSound(targetBlock.getLocation(), Sound.BLOCK_LADDER_PLACE, 1f, 1f);

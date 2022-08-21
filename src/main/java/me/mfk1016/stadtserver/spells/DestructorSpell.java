@@ -88,10 +88,10 @@ public class DestructorSpell extends CustomSpell {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
         ItemStack rod = event.getItem();
-        if (stackEmpty(rod) || SpellManager.getSpellCharges(rod, this) == 0)
+        if (stackEmpty(rod) || rod.getType() != Material.BLAZE_ROD || SpellManager.getSpellCharges(rod, this) == 0)
             return;
         Block target = event.getClickedBlock();
-        if (target == null || target.getType() != Material.BEDROCK || rod.getType() != Material.BLAZE_ROD)
+        if (target == null || target.getType() != Material.BEDROCK)
             return;
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SPECTATOR)

@@ -11,6 +11,7 @@ import org.bukkit.block.TileState;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -74,9 +75,9 @@ public class WrenchEnchantment extends CustomEnchantment {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerWrenchBlock(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getItem() == null)
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.useInteractedBlock() == Event.Result.DENY)
             return;
-        if (!EnchantmentManager.isEnchantedWith(event.getItem(), this))
+        if (!PluginCategories.isShovel(event.getMaterial()) || !EnchantmentManager.isEnchantedWith(event.getItem(), this))
             return;
 
         Player player = event.getPlayer();

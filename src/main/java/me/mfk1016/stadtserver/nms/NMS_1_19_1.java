@@ -1,10 +1,10 @@
-package me.mfk1016.stadtserver.nms.v1_19_1;
+package me.mfk1016.stadtserver.nms;
 
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftMinecart;
 import org.bukkit.entity.Minecart;
 
-public class MinecartFix {
+public class NMS_1_19_1 {
 
     public static void fixInitialMinecartYaw(Minecart cart) {
         CraftMinecart craftCart = (CraftMinecart) cart;

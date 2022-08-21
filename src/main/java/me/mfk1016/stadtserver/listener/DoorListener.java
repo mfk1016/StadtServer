@@ -11,23 +11,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.Objects;
+
 public class DoorListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInteractDoor(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getPlayer().isSneaking())
             return;
-        Block doorBlock = event.getClickedBlock();
-        if (doorBlock == null || doorBlock.getType() == Material.IRON_DOOR)
+        Block doorBlock = Objects.requireNonNull(event.getClickedBlock());
+        if (doorBlock.getType() == Material.IRON_DOOR || !doorBlock.getType().name().endsWith("_DOOR"))
             return;
-        if (doorBlock.getBlockData() instanceof Door) {
-            Block matchBlock = getMatchingDoor(doorBlock);
-            if (matchBlock == null)
-                return;
-            Door match = (Door) matchBlock.getBlockData();
-            match.setOpen(!match.isOpen());
-            matchBlock.setBlockData(match);
-        }
+        Block matchBlock = getMatchingDoor(doorBlock);
+        if (matchBlock == null)
+            return;
+        Door match = (Door) matchBlock.getBlockData();
+        match.setOpen(!match.isOpen());
+        matchBlock.setBlockData(match);
     }
 
     private Block getMatchingDoor(Block doorBlock) {

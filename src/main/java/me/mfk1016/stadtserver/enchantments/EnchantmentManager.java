@@ -5,6 +5,7 @@ import me.mfk1016.stadtserver.spells.CustomSpell;
 import me.mfk1016.stadtserver.util.Keys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,8 @@ import org.bukkit.plugin.PluginManager;
 
 import java.lang.reflect.Field;
 import java.util.*;
+
+import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 
 public class EnchantmentManager {
 
@@ -121,11 +124,12 @@ public class EnchantmentManager {
     }
 
     public static Map<Enchantment, Integer> getItemEnchantments(ItemStack item) {
-        if (item.getItemMeta() instanceof EnchantmentStorageMeta) {
+        if (stackEmpty(item) || !item.hasItemMeta())
+            return Map.of();
+        if (item.getType() == Material.ENCHANTED_BOOK)
             return ((EnchantmentStorageMeta) item.getItemMeta()).getStoredEnchants();
-        } else {
-            return item.getEnchantments();
-        }
+
+        return item.getEnchantments();
     }
 
     public static boolean canEnchantItem(ItemStack item, Enchantment enchantment) {

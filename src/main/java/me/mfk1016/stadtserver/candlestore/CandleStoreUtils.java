@@ -24,8 +24,16 @@ import static me.mfk1016.stadtserver.util.Functions.*;
 
 public class CandleStoreUtils {
 
+    public static CandleMemberType getMemberType(Material subBlockMat) {
+        return switch (subBlockMat) {
+            case ENDER_CHEST -> CandleMemberType.CHEST;
+            case HOPPER -> CandleMemberType.EXPORT;
+            default -> CandleMemberType.NORMAL;
+        };
+    }
+
     public static boolean isValidStoreItem(ItemStack item) {
-        if (item.getEnchantments().size() > 0)
+        if (item.hasItemMeta() && item.getItemMeta().hasEnchants())
             return false;
         if (item.getMaxStackSize() > 1)
             return true;
@@ -41,13 +49,6 @@ public class CandleStoreUtils {
         meta.displayName(undecoratedText(String.valueOf(amount)));
         elem.setItemMeta(meta);
         return elem;
-    }
-
-    public static String getCandleName(Material candleMat, boolean lowerCase) {
-        if (lowerCase)
-            return candleMat.name().toLowerCase().replace('_', ' ');
-        return "" + candleMat.name().charAt(0) +
-                candleMat.name().substring(1).toLowerCase().replace('_', ' ');
     }
 
     /* --- Candle Tool --- */
@@ -78,7 +79,7 @@ public class CandleStoreUtils {
             event.setCancelled(true);
             Material candleMat = target.getRelative(BlockFace.UP).getType();
             playerMessage(event.getPlayer(),
-                    CandleStoreUtils.getCandleName(candleMat, false) + " store with " +
+                    getMaterialName(candleMat, false) + " store with " +
                             current.get().getMemberCount() + " members and " +
                             current.get().getUsedSlots() + "/" + current.get().getStorageSlots() + " slots used.");
             return false;
@@ -128,7 +129,7 @@ public class CandleStoreUtils {
                 CandleStoreManager.deleteFromStore(dispenser);
                 if (destroyer != null) {
                     Material candleMat = target.getType();
-                    String candleName = CandleStoreUtils.getCandleName(candleMat, false);
+                    String candleName = getMaterialName(candleMat, false);
                     playerMessage(destroyer, candleName + " store member removed.");
                 }
             }
@@ -138,7 +139,7 @@ public class CandleStoreUtils {
                 CandleStoreManager.updateStoreMember(dispenser, CandleMemberType.NORMAL);
                 if (destroyer != null) {
                     Material candleMat = target.getRelative(0, 2, 0).getType();
-                    String candleName = CandleStoreUtils.getCandleName(candleMat, false);
+                    String candleName = getMaterialName(candleMat, false);
                     playerMessage(destroyer, candleName + " store member updated.");
                 }
             }
@@ -148,7 +149,7 @@ public class CandleStoreUtils {
                 CandleStoreManager.deleteFromStore(dispenser);
                 if (destroyer != null) {
                     Material candleMat = target.getRelative(0, 1, 0).getType();
-                    String candleName = CandleStoreUtils.getCandleName(candleMat, false);
+                    String candleName = getMaterialName(candleMat, false);
                     playerMessage(destroyer, candleName + " store member removed.");
                 }
             }

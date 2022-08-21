@@ -2,7 +2,7 @@ package me.mfk1016.stadtserver.listener;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.MinecartLogic;
-import me.mfk1016.stadtserver.nms.v1_19_1.MinecartFix;
+import me.mfk1016.stadtserver.nms.NMS_1_19_1;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -38,7 +38,7 @@ public class MinecartListener implements Listener {
         if (!(railBlock.getBlockData() instanceof Rail rail))
             return;
         if (rail.getShape() == Rail.Shape.NORTH_SOUTH) {
-            MinecartFix.fixInitialMinecartYaw(cart);
+            NMS_1_19_1.fixInitialMinecartYaw(cart);
         }
     }
 

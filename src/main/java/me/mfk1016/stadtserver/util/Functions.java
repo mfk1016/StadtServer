@@ -16,11 +16,18 @@ public class Functions {
 
     @Contract("null -> true")
     public static boolean stackEmpty(ItemStack stack) {
-        return stack == null || stack.getType() == Material.AIR;
+        return stack == null || stack.getType().isAir();
     }
 
     public static TextComponent undecoratedText(String string) {
         return Component.text(string).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+    }
+
+    public static String getMaterialName(Material candleMat, boolean lowerCase) {
+        if (lowerCase)
+            return candleMat.name().toLowerCase().replace('_', ' ');
+        return "" + candleMat.name().charAt(0) +
+                candleMat.name().substring(1).toLowerCase().replace('_', ' ');
     }
 
     public static String romanNumber(int level) {

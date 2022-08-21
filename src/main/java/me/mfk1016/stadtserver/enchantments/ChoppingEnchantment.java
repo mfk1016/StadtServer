@@ -74,7 +74,7 @@ public class ChoppingEnchantment extends CustomEnchantment {
         if (player.getGameMode() != GameMode.CREATIVE && !player.isSneaking())
             return;
         ItemStack axe = player.getInventory().getItemInMainHand();
-        if (!EnchantmentManager.isEnchantedWith(axe, this, 1))
+        if (!PluginCategories.isAxe(axe.getType()) || !EnchantmentManager.isEnchantedWith(axe, this))
             return;
 
         // Calculate the logs to chop

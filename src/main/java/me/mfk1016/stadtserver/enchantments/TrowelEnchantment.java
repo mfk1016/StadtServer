@@ -74,9 +74,9 @@ public class TrowelEnchantment extends CustomEnchantment {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerTrowelBlock(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getItem() == null || event.useInteractedBlock() == Event.Result.DENY)
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.useInteractedBlock() == Event.Result.DENY)
             return;
-        if (!EnchantmentManager.isEnchantedWith(event.getItem(), this))
+        if (!PluginCategories.isShovel(event.getMaterial()) || !EnchantmentManager.isEnchantedWith(event.getItem(), this))
             return;
 
         Block target = Objects.requireNonNull(event.getClickedBlock()).getRelative(event.getBlockFace());

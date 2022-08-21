@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.candlestore.*;
+import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,8 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static me.mfk1016.stadtserver.util.Functions.playerMessage;
-import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
+import static me.mfk1016.stadtserver.util.Functions.*;
 
 public class CandleStoreListener implements Listener {
 
@@ -52,6 +52,10 @@ public class CandleStoreListener implements Listener {
         if (player.isSneaking())
             return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || CandleStoreUtils.isCandleTool(event.getItem()))
+            return;
+        if (EnchantmentManager.isEnchantedWith(event.getItem(), EnchantmentManager.WRENCH))
+            return;
+        if (EnchantmentManager.isEnchantedWith(event.getItem(), EnchantmentManager.TROWEL))
             return;
         Block target = Objects.requireNonNull(event.getClickedBlock());
         if (!(target.getState(false) instanceof Dispenser dispenser))
@@ -148,7 +152,7 @@ public class CandleStoreListener implements Listener {
 
         event.setCancelled(true);
         Material candleMat = target.getRelative(BlockFace.UP).getType();
-        String candleName = CandleStoreUtils.getCandleName(candleMat, true);
+        String candleName = getMaterialName(candleMat, true);
         List<Dispenser> dispensers = CandleStoreUtils.getNearestPotentialCandleStoreElements(target, candleMat, 64);
         for (Dispenser potentialElement : dispensers) {
             if (CandleStoreManager.getStore(potentialElement).isPresent()) {
@@ -157,11 +161,7 @@ public class CandleStoreListener implements Listener {
                 return;
             }
         }
-        CandleMemberType memberType = switch (target.getRelative(BlockFace.DOWN).getType()) {
-            case CHEST -> CandleMemberType.CHEST;
-            case HOPPER -> CandleMemberType.EXPORT;
-            default -> CandleMemberType.NORMAL;
-        };
+        CandleMemberType memberType = CandleStoreUtils.getMemberType(target.getRelative(BlockFace.DOWN).getType());
         CandleStoreManager.createStore(dispenser, memberType);
         playerMessage(event.getPlayer(), "New " + candleName + " store created.");
     }
@@ -180,7 +180,7 @@ public class CandleStoreListener implements Listener {
 
         event.setCancelled(true);
         Material candleMat = target.getRelative(BlockFace.UP).getType();
-        String candleName = CandleStoreUtils.getCandleName(candleMat, true);
+        String candleName = getMaterialName(candleMat, true);
         List<Dispenser> dispensers = CandleStoreUtils.getNearestPotentialCandleStoreElements(target, candleMat, 8);
         for (Dispenser partner : dispensers) {
             Optional<CandleStore> optStore = CandleStoreManager.getStore(partner);
@@ -190,11 +190,7 @@ public class CandleStoreListener implements Listener {
                             "Too far away from " + candleName + " store center (must be within 16 Blocks)");
                     return;
                 }
-                CandleMemberType memberType = switch (target.getRelative(BlockFace.DOWN).getType()) {
-                    case CHEST -> CandleMemberType.CHEST;
-                    case HOPPER -> CandleMemberType.EXPORT;
-                    default -> CandleMemberType.NORMAL;
-                };
+                CandleMemberType memberType = CandleStoreUtils.getMemberType(target.getRelative(BlockFace.DOWN).getType());
                 CandleStoreManager.addToStore(dispenser, partner, memberType);
                 playerMessage(event.getPlayer(), "New Member added to " + candleName + " store.");
                 return;
@@ -233,18 +229,18 @@ public class CandleStoreListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAddBlockToStoreMember(BlockPlaceEvent event) {
         Material addedType = event.getItemInHand().getType();
-        if (addedType != Material.CHEST && addedType != Material.HOPPER)
+        CandleMemberType newMemberType = CandleStoreUtils.getMemberType(addedType);
+        if (newMemberType == CandleMemberType.NORMAL) // No valid block placed
             return;
         Block possibleTarget = event.getBlockPlaced();
         if (!(possibleTarget.getRelative(BlockFace.UP).getState() instanceof Dispenser dispenser))
             return;
-        CandleMemberType memberType = addedType == Material.CHEST ? CandleMemberType.CHEST : CandleMemberType.EXPORT;
         CandleStoreManager.getStore(dispenser).ifPresent(candleStore -> {
-            CandleStoreManager.updateStoreMember(dispenser, memberType);
+            CandleStoreManager.updateStoreMember(dispenser, newMemberType);
             Material candleMat = possibleTarget.getRelative(BlockFace.UP, 2).getType();
-            String candleName = CandleStoreUtils.getCandleName(candleMat, true);
-            String elementName = addedType.name().charAt(0) + addedType.name().substring(1).toLowerCase().replace("_", " ");
-            playerMessage(event.getPlayer(), elementName + " added to " + candleName + " store member.");
+            String candleName = getMaterialName(candleMat, true);
+            String blockName = getMaterialName(addedType, false);
+            playerMessage(event.getPlayer(), blockName + " added to " + candleName + " store member.");
         });
     }
 
@@ -298,7 +294,7 @@ public class CandleStoreListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onWorldSave(WorldSaveEvent event) {
-        if (event.getWorld().getEnvironment() != World.Environment.NORMAL)
+        if (event.getWorld().getEnvironment() != World.Environment.THE_END)
             return;
         StadtServer.LOGGER.info("Saving candle stores.");
         CandleStoreManager.saveStoresOnWorldSave();

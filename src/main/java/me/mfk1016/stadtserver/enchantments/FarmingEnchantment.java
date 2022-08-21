@@ -76,10 +76,8 @@ public class FarmingEnchantment extends CustomEnchantment {
     public void onHarvestMushroomBlock(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block target = event.getBlock();
-        if (!PluginCategories.isMushroomBlock(target.getType()))
-            return;
         ItemStack hoe = player.getInventory().getItemInMainHand();
-        if (stackEmpty(hoe) || !PluginCategories.isHoe(hoe.getType()))
+        if (!PluginCategories.isHoe(hoe.getType()) || !PluginCategories.isMushroomBlock(target.getType()))
             return;
         int farmingLevel = hoe.getEnchantments().getOrDefault(this, 0);
         if (farmingLevel == 0)
@@ -109,7 +107,7 @@ public class FarmingEnchantment extends CustomEnchantment {
     public void onHoeUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack hoe = player.getInventory().getItemInMainHand();
-        if (stackEmpty(hoe) || !PluginCategories.isHoe(hoe.getType()) || event.getAction() != Action.RIGHT_CLICK_BLOCK)
+        if (!PluginCategories.isHoe(hoe.getType()) || event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
         int farmingLevel = hoe.getEnchantments().getOrDefault(this, 0);
         Block target = event.getClickedBlock();

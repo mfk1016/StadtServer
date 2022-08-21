@@ -21,8 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
-
 public class MagnetSpell extends CustomSpell {
 
     public MagnetSpell() {
@@ -51,15 +49,13 @@ public class MagnetSpell extends CustomSpell {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onMagnetUse(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
-            return;
-        ItemStack axe = event.getItem();
-        if (stackEmpty(axe) || SpellManager.getSpellCharges(axe, this) == 0)
-            return;
-        if (event.getClickedBlock() == null || !PluginCategories.isAxe(axe.getType()))
-            return;
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SPECTATOR)
+            return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null)
+            return;
+        ItemStack axe = event.getItem();
+        if (!PluginCategories.isAxe(event.getMaterial()) || SpellManager.getSpellCharges(axe, this) == 0)
             return;
         Location playerBlockLoc = player.getLocation().getBlock().getRelative(BlockFace.DOWN).getLocation();
         if (!Objects.requireNonNull(event.getClickedBlock()).getLocation().equals(playerBlockLoc))

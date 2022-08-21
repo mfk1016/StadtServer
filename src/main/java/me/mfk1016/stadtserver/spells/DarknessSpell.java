@@ -49,7 +49,7 @@ public class DarknessSpell extends CustomSpell {
         if (player.getGameMode() == GameMode.SPECTATOR)
             return;
         ItemStack pickaxe = player.getInventory().getItemInMainHand();
-        if (!PluginCategories.isPickaxe(pickaxe.getType()) || SpellManager.getSpellCharges(pickaxe, this) == 0)
+        if (!PluginCategories.isPickaxe(pickaxe.getType()))
             return;
         World world = player.getWorld();
         if (world.getEnvironment() != World.Environment.NORMAL || world.getTime() >= 12000)
@@ -57,7 +57,9 @@ public class DarknessSpell extends CustomSpell {
 
         // Block must be glowstone and the sky must be visible (from the glowstone)
         Block focus = event.getBlock();
-        if (focus.getRelative(BlockFace.UP).getLightFromSky() != 15 || focus.getType() != Material.GLOWSTONE)
+        if (focus.getType() != Material.GLOWSTONE || focus.getRelative(BlockFace.UP).getLightFromSky() != 15)
+            return;
+        if (SpellManager.getSpellCharges(pickaxe, this) == 0)
             return;
 
         Location particleSpawn = focus.getLocation().toCenterLocation();

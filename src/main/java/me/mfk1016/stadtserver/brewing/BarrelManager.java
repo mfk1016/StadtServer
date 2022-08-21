@@ -54,6 +54,10 @@ public class BarrelManager {
         if (block.getType() != Material.BARREL)
             return false;
         Barrel barrel = (Barrel) block.getState();
+        return isFluidBarrel(barrel);
+    }
+
+    public static boolean isFluidBarrel(Barrel barrel) {
         return barrel.getPersistentDataContainer().has(Keys.IS_FLUID_BARREL);
     }
 
