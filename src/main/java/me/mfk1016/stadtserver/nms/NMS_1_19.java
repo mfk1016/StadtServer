@@ -4,7 +4,7 @@ import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftMinecart;
 import org.bukkit.entity.Minecart;
 
-public class NMS_1_19_1 {
+public class NMS_1_19 {
 
     public static void fixInitialMinecartYaw(Minecart cart) {
         CraftMinecart craftCart = (CraftMinecart) cart;
