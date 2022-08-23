@@ -122,7 +122,7 @@ public class WitherSkeletonBossRitual extends BossRitual {
             PersistentDataContainer pdc = itemDamage.getPersistentDataContainer();
             pdc.set(Keys.IS_RITUAL_REPAIRED, PersistentDataType.INTEGER, 1);
             item.setItemMeta(itemDamage);
-            EnchantmentManager.updateLore(item);
+            EnchantmentManager.updateItemLore(item);
             frame.setItem(item);
         }
         focusBlock.getWorld().playSound(focusBlock.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 4, 1);

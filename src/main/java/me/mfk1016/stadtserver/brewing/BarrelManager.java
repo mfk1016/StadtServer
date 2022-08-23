@@ -53,7 +53,7 @@ public class BarrelManager {
     public static boolean isFluidBarrel(Block block) {
         if (block.getType() != Material.BARREL)
             return false;
-        Barrel barrel = (Barrel) block.getState();
+        Barrel barrel = (Barrel) block.getState(false);
         return isFluidBarrel(barrel);
     }
 

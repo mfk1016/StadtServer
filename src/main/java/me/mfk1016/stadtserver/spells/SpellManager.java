@@ -15,6 +15,7 @@ import org.bukkit.plugin.PluginManager;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static me.mfk1016.stadtserver.util.Functions.stackEmpty;
 import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
 public class SpellManager {
@@ -110,26 +111,18 @@ public class SpellManager {
         EnchantmentManager.enchantItem(item, spell, newCharges);
     }
 
-    public static void removeSpell(ItemStack item, CustomSpell spell) {
-        EnchantmentManager.disenchantItem(item, spell);
-    }
-
     public static int getSpellCharges(ItemStack item, CustomSpell spell) {
-        return EnchantmentManager.getItemEnchantments(item).getOrDefault(spell, 0);
+        // Spells are never stored in enchanted books
+        return stackEmpty(item) ? 0 : item.getEnchantmentLevel(spell);
     }
 
     public static void useSpellCharge(ItemStack item, CustomSpell spell) {
         int charges = getSpellCharges(item, spell);
-        switch (charges) {
-            case 0:
-                break;
-            case 1:
-                removeSpell(item, spell);
-                break;
-            default:
-                EnchantmentManager.enchantItem(item, spell, charges - 1);
-                break;
-        }
+        assert charges > 0;
+        if (charges > 1)
+            item.addUnsafeEnchantment(spell, charges - 1);
+        else
+            item.removeEnchantment(spell);
     }
 
     /* --- MEDIUMS --- */
@@ -156,13 +149,10 @@ public class SpellManager {
     }
 
     public static Optional<Pair<CustomSpell, Integer>> getMediumSpell(ItemStack item) {
-        boolean isMediumMaterial = false;
-        for (Material mat : SPELL_MEDIUMS) {
-            if (mat == item.getType())
-                isMediumMaterial = true;
-        }
+        if (item.getAmount() != 1 || Arrays.stream(SPELL_MEDIUMS).noneMatch(mat -> mat == item.getType()))
+            return Optional.empty();
         Map<Enchantment, Integer> spells = item.getEnchantments();
-        if (!isMediumMaterial || spells.size() != 1 || item.getAmount() != 1)
+        if (spells.size() != 1)
             return Optional.empty();
         for (var entry : spells.entrySet()) {
             if (entry.getKey() instanceof CustomSpell spell)

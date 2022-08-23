@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.listener;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.MinecartLogic;
 import me.mfk1016.stadtserver.nms.NMS_1_19_1;
 import me.mfk1016.stadtserver.util.Keys;
@@ -17,8 +16,10 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.vehicle.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static me.mfk1016.stadtserver.util.Functions.playerMessage;
@@ -101,6 +102,7 @@ public class MinecartListener implements Listener {
 
         MinecartLogic.checkTrainMember(cart);
         Player player = event.getPlayer();
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
         ItemStack inHand = player.getInventory().getItemInMainHand();
 
         if (inHand.getType() == Material.LEAD) {
@@ -112,7 +114,7 @@ public class MinecartListener implements Listener {
                 boolean yNotEqual = cart.getLocation().getBlockY() != master.getLocation().getBlockY();
                 boolean zNotEqual = cart.getLocation().getBlockZ() != master.getLocation().getBlockZ();
                 if (cart == master) {
-                    player.removeMetadata(Keys.CART_ATTACHED, StadtServer.getInstance());
+                    pdc.remove(Keys.CART_ATTACHED);
                     playDetachSound(cart);
                     playerMessage(player, "Minecart linking cancelled");
                 } else if (master.getLocation().distance(cart.getLocation()) > 3) {
@@ -123,7 +125,7 @@ public class MinecartListener implements Listener {
                     playerMessage(player, "Target Minecart must be connected by uncurved rails");
                 } else if (MinecartLogic.canBeFollower(master, cart)) {
                     MinecartLogic.linkCarts(master, cart);
-                    player.removeMetadata(Keys.CART_ATTACHED, StadtServer.getInstance());
+                    pdc.remove(Keys.CART_ATTACHED);
                     playLinkSound(cart);
                     playerMessage(player, "Minecarts linked");
                 } else {
@@ -142,10 +144,10 @@ public class MinecartListener implements Listener {
             }
             event.setCancelled(true);
 
-        } else if (inHand.getType() == Material.SHEARS && player.hasMetadata(Keys.CART_ATTACHED)) {
+        } else if (inHand.getType() == Material.SHEARS && pdc.has(Keys.CART_ATTACHED)) {
 
             // Cancel attachment
-            player.removeMetadata(Keys.CART_ATTACHED, StadtServer.getInstance());
+            pdc.remove(Keys.CART_ATTACHED);
             playDetachSound(cart);
             playerMessage(player, "Minecart linking cancelled (through shears)");
 
@@ -165,17 +167,20 @@ public class MinecartListener implements Listener {
     }
 
     private boolean hasCartAttached(Player player) {
-        return player.hasMetadata(Keys.CART_ATTACHED) && getAttachedCart(player) != null;
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        return pdc.has(Keys.CART_ATTACHED) && getAttachedCart(player) != null;
     }
 
     private void attachCart(Player player, Minecart cart) {
-        if (player.hasMetadata(Keys.CART_ATTACHED))
-            player.removeMetadata(Keys.CART_ATTACHED, StadtServer.getInstance());
-        player.setMetadata(Keys.CART_ATTACHED, new FixedMetadataValue(StadtServer.getInstance(), cart.getUniqueId().toString()));
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        if (pdc.has(Keys.CART_ATTACHED))
+            pdc.remove(Keys.CART_ATTACHED);
+        pdc.set(Keys.CART_ATTACHED, PersistentDataType.STRING, cart.getUniqueId().toString());
     }
 
     private Minecart getAttachedCart(Player player) {
-        String cartID = player.getMetadata(Keys.CART_ATTACHED).get(0).asString();
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        String cartID = Objects.requireNonNull(pdc.get(Keys.CART_ATTACHED, PersistentDataType.STRING));
         return (Minecart) player.getWorld().getEntity(UUID.fromString(cartID));
     }
 

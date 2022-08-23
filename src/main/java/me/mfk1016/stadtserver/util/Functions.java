@@ -30,6 +30,19 @@ public class Functions {
                 candleMat.name().substring(1).toLowerCase().replace('_', ' ');
     }
 
+    public static String largeAmountString(long value) {
+        if (value >= 1000000L) {
+            long num = value / 1000000L;
+            long point = (value % 1000000L) / 100000L;
+            return num + "." + point + "m";
+        } else if (value >= 10000L) {
+            long num = value / 1000L;
+            long point = (value % 1000L) / 100L;
+            return num + "." + point + "k";
+        }
+        return String.valueOf(value);
+    }
+
     public static String romanNumber(int level) {
         return "I".repeat(level)
                 .replace("IIIII", "V")
@@ -48,7 +61,7 @@ public class Functions {
         }
     }
 
-    public static MerchantRecipe copyRecipe(MerchantRecipe recipe, ItemStack result) {
+    public static MerchantRecipe copyMerchantRecipe(MerchantRecipe recipe, ItemStack result) {
         MerchantRecipe newRecipe = new MerchantRecipe(result, recipe.getUses(), recipe.getMaxUses(),
                 recipe.hasExperienceReward(), recipe.getVillagerExperience(),
                 recipe.getPriceMultiplier());

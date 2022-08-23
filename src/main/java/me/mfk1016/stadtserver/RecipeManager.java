@@ -118,6 +118,7 @@ public class RecipeManager {
         ACACIA("acacia", Material.ACACIA_SLAB, Material.ACACIA_PLANKS),
         CRIMSON("crimson", Material.CRIMSON_SLAB, Material.CRIMSON_PLANKS),
         WARPED("warped", Material.WARPED_SLAB, Material.WARPED_PLANKS),
+        MANGROVE("mangrove", Material.MANGROVE_SLAB, Material.MANGROVE_PLANKS),
 
         COBBLE("cobble", Material.COBBLESTONE_SLAB, Material.COBBLESTONE),
         SANDSTONE("sandstone", Material.SANDSTONE_SLAB, Material.SANDSTONE),
@@ -194,7 +195,8 @@ public class RecipeManager {
         JUNGLE_OAK_STAIRS("jungle_stairs", Material.JUNGLE_PLANKS, new ItemStack(Material.JUNGLE_STAIRS)),
         ACACIA_OAK_STAIRS("acacia_stairs", Material.ACACIA_PLANKS, new ItemStack(Material.ACACIA_STAIRS)),
         CRIMSON_OAK_STAIRS("crimson_stairs", Material.CRIMSON_PLANKS, new ItemStack(Material.CRIMSON_STAIRS)),
-        WARPED_OAK_STAIRS("warped_stairs", Material.WARPED_PLANKS, new ItemStack(Material.WARPED_STAIRS));
+        WARPED_OAK_STAIRS("warped_stairs", Material.WARPED_PLANKS, new ItemStack(Material.WARPED_STAIRS)),
+        MANGROVE_STAIRS("mangrove_stairs", Material.MANGROVE_PLANKS, new ItemStack(Material.MANGROVE_STAIRS));
 
         private final String name;
         private final Material input;

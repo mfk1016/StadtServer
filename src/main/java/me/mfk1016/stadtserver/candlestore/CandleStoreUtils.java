@@ -46,7 +46,7 @@ public class CandleStoreUtils {
     public static ItemStack createViewItem(Material mat, long amount) {
         ItemStack elem = new ItemStack(mat);
         ItemMeta meta = elem.getItemMeta();
-        meta.displayName(undecoratedText(String.valueOf(amount)));
+        meta.displayName(undecoratedText(largeAmountString(amount)));
         elem.setItemMeta(meta);
         return elem;
     }

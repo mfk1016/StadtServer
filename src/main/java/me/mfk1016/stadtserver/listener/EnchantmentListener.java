@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static me.mfk1016.stadtserver.util.Functions.copyRecipe;
+import static me.mfk1016.stadtserver.util.Functions.copyMerchantRecipe;
 
 public class EnchantmentListener implements Listener {
 
@@ -73,7 +73,7 @@ public class EnchantmentListener implements Listener {
         if (EnchantmentManager.isEnchantedWith(result, Enchantment.MENDING)) {
             EnchantmentManager.disenchantItem(result, Enchantment.MENDING);
             EnchantmentManager.enchantItem(result, EnchantmentManager.SMITHING, 4);
-            MerchantRecipe newRecipe = copyRecipe(recipe, result);
+            MerchantRecipe newRecipe = copyMerchantRecipe(recipe, result);
             event.setRecipe(newRecipe);
             return;
         }

@@ -245,7 +245,7 @@ public class AnvilLogic {
         }
 
         result.setItemMeta(resultDamage);
-        EnchantmentManager.updateLore(result);
+        EnchantmentManager.updateItemLore(result);
         event.setResult(result);
     }
 

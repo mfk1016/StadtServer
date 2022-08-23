@@ -5,6 +5,10 @@ import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Objects;
 
 public abstract class BossMobOrigin extends MobOrigin {
 
@@ -25,9 +29,10 @@ public abstract class BossMobOrigin extends MobOrigin {
 
     @Override
     protected boolean isApplicable(Entity entity) {
-        if (!entity.hasMetadata(Keys.IS_BOSS))
+        PersistentDataContainer pdc = entity.getPersistentDataContainer();
+        if (!pdc.has(Keys.IS_BOSS))
             return false;
-        int bossLevel = entity.getMetadata(Keys.IS_BOSS).get(0).asInt();
+        int bossLevel = Objects.requireNonNull(pdc.get(Keys.IS_BOSS, PersistentDataType.INTEGER));
         int newChance = chance * Math.max((bossLevel - minlevel + 1), 1);
         return bossLevel >= minlevel && StadtServer.RANDOM.nextInt(100) < newChance;
     }

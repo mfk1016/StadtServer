@@ -1,6 +1,5 @@
 package me.mfk1016.stadtserver.logic;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,11 +10,13 @@ import org.bukkit.block.data.type.RedstoneRail;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MinecartLogic {
@@ -187,39 +188,40 @@ public class MinecartLogic {
         Material railMat = rail.getType();
         Block foundation = rail.getRelative(0, -1, 0);
         Material foundationMat = foundation.getType();
+        PersistentDataContainer pdc = cart.getPersistentDataContainer();
         if (railMat == Material.POWERED_RAIL) {
 
             if (foundationMat == Material.LAPIS_BLOCK && cart.getMaxSpeed() < MINECART_SPEED_LIMIT) {
                 // Retrieve the last location at which the cart was boosted (to prevent double boosting)
-                if (!cart.getMetadata(Keys.LAST_RAIL_X).isEmpty()) {
-                    int lastX = cart.getMetadata(Keys.LAST_RAIL_X).get(0).asInt();
-                    int lastZ = cart.getMetadata(Keys.LAST_RAIL_Z).get(0).asInt();
+                if (pdc.has(Keys.LAST_RAIL_X)) {
+                    int lastX = Objects.requireNonNull(pdc.get(Keys.LAST_RAIL_X, PersistentDataType.INTEGER));
+                    int lastZ = Objects.requireNonNull(pdc.get(Keys.LAST_RAIL_Z, PersistentDataType.INTEGER));
                     if (rail.getLocation().getBlockX() == lastX && rail.getLocation().getBlockZ() == lastZ)
                         return false;
                 }
                 // Lapis Block: Increase max speed by 25%
                 cart.setMaxSpeed(cart.getMaxSpeed() + MINECART_SPEED_FACTOR);
-                cart.setMetadata(Keys.LAST_RAIL_X, new FixedMetadataValue(StadtServer.getInstance(), rail.getLocation().getBlockX()));
-                cart.setMetadata(Keys.LAST_RAIL_Z, new FixedMetadataValue(StadtServer.getInstance(), rail.getLocation().getBlockZ()));
+                pdc.set(Keys.LAST_RAIL_X, PersistentDataType.INTEGER, rail.getLocation().getBlockX());
+                pdc.set(Keys.LAST_RAIL_Z, PersistentDataType.INTEGER, rail.getLocation().getBlockZ());
                 return true;
             } else if (foundationMat == Material.COAL_BLOCK && cart.getMaxSpeed() > MINECART_SPEED_VANILLA) {
                 // Retrieve the last location at which the cart was boosted (to prevent double boosting)
-                if (!cart.getMetadata(Keys.LAST_RAIL_X).isEmpty()) {
-                    int lastX = cart.getMetadata(Keys.LAST_RAIL_X).get(0).asInt();
-                    int lastZ = cart.getMetadata(Keys.LAST_RAIL_Z).get(0).asInt();
+                if (pdc.has(Keys.LAST_RAIL_X)) {
+                    int lastX = Objects.requireNonNull(pdc.get(Keys.LAST_RAIL_X, PersistentDataType.INTEGER));
+                    int lastZ = Objects.requireNonNull(pdc.get(Keys.LAST_RAIL_Z, PersistentDataType.INTEGER));
                     if (rail.getLocation().getBlockX() == lastX && rail.getLocation().getBlockZ() == lastZ)
                         return false;
                 }
                 // Coal Block: Decrease max speed by 25%
                 cart.setMaxSpeed(cart.getMaxSpeed() - MINECART_SPEED_FACTOR);
-                cart.setMetadata(Keys.LAST_RAIL_X, new FixedMetadataValue(StadtServer.getInstance(), rail.getLocation().getBlockX()));
-                cart.setMetadata(Keys.LAST_RAIL_Z, new FixedMetadataValue(StadtServer.getInstance(), rail.getLocation().getBlockZ()));
+                pdc.set(Keys.LAST_RAIL_X, PersistentDataType.INTEGER, rail.getLocation().getBlockX());
+                pdc.set(Keys.LAST_RAIL_Z, PersistentDataType.INTEGER, rail.getLocation().getBlockZ());
                 return true;
             } else if (foundationMat == Material.EMERALD_BLOCK) {
                 // Emerald Block: Reset to 0.4
                 cart.setMaxSpeed(MINECART_SPEED_VANILLA);
-                cart.removeMetadata(Keys.LAST_RAIL_X, StadtServer.getInstance());
-                cart.removeMetadata(Keys.LAST_RAIL_Z, StadtServer.getInstance());
+                pdc.remove(Keys.LAST_RAIL_X);
+                pdc.remove(Keys.LAST_RAIL_Z);
                 return true;
             }
         }
@@ -315,12 +317,6 @@ public class MinecartLogic {
 
         cartYaw = normalizeYaw(cartYaw);
         followerYaw = normalizeYaw(followerYaw);
-
-        //if (Math.abs(cartYaw - followerYaw) == 90F) {
-        //    // HACK: Occurs only at train start
-        //    follower.setVelocity(cart.getVelocity().clone().setY(follower.getVelocity().getY()));
-        //    return;
-        //}
 
         // Now it is known that the follower trails the cart and that both carts are moving
         // The cart determines the speed, while the follower has to adjust itself against the cart
@@ -434,35 +430,41 @@ public class MinecartLogic {
     // Helpers
 
     public static boolean hasMaster(@NotNull Minecart cart) {
-        return cart.hasMetadata(Keys.CART_MASTER) && getMaster(cart) != null;
+        PersistentDataContainer pdc = cart.getPersistentDataContainer();
+        return pdc.has(Keys.CART_MASTER) && getMaster(cart) != null;
     }
 
     public static Minecart getMaster(@NotNull Minecart cart) {
-        String metaCartID = cart.getMetadata(Keys.CART_MASTER).get(0).asString();
+        PersistentDataContainer pdc = cart.getPersistentDataContainer();
+        String metaCartID = Objects.requireNonNull(pdc.get(Keys.CART_MASTER, PersistentDataType.STRING));
         return (Minecart) cart.getWorld().getEntity(UUID.fromString(metaCartID));
     }
 
     public static void setMaster(@NotNull Minecart cart, Minecart master) {
+        PersistentDataContainer pdc = cart.getPersistentDataContainer();
         if (master != null)
-            cart.setMetadata(Keys.CART_MASTER, new FixedMetadataValue(StadtServer.getInstance(), master.getUniqueId().toString()));
+            pdc.set(Keys.CART_MASTER, PersistentDataType.STRING, master.getUniqueId().toString());
         else
-            cart.removeMetadata(Keys.CART_MASTER, StadtServer.getInstance());
+            pdc.remove(Keys.CART_MASTER);
     }
 
     public static boolean hasFollower(@NotNull Minecart cart) {
-        return cart.hasMetadata(Keys.CART_FOLLOWER) && getFollower(cart) != null;
+        PersistentDataContainer pdc = cart.getPersistentDataContainer();
+        return pdc.has(Keys.CART_FOLLOWER) && getFollower(cart) != null;
     }
 
     public static Minecart getFollower(@NotNull Minecart cart) {
-        String metaCartID = cart.getMetadata(Keys.CART_FOLLOWER).get(0).asString();
+        PersistentDataContainer pdc = cart.getPersistentDataContainer();
+        String metaCartID = Objects.requireNonNull(pdc.get(Keys.CART_FOLLOWER, PersistentDataType.STRING));
         return (Minecart) cart.getWorld().getEntity(UUID.fromString(metaCartID));
     }
 
     public static void setFollower(@NotNull Minecart cart, Minecart follower) {
+        PersistentDataContainer pdc = cart.getPersistentDataContainer();
         if (follower != null)
-            cart.setMetadata(Keys.CART_FOLLOWER, new FixedMetadataValue(StadtServer.getInstance(), follower.getUniqueId().toString()));
+            pdc.set(Keys.CART_FOLLOWER, PersistentDataType.STRING, follower.getUniqueId().toString());
         else
-            cart.removeMetadata(Keys.CART_FOLLOWER, StadtServer.getInstance());
+            pdc.remove(Keys.CART_FOLLOWER);
     }
 
     private static float normalizeYaw(float yaw) {

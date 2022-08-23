@@ -1,4 +1,2 @@
 send_player_message: true
 chop_max_logs: 1600
-candle_store:
-  chest_slots: 9

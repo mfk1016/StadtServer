@@ -13,7 +13,7 @@ import org.bukkit.inventory.MerchantRecipe;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.mfk1016.stadtserver.util.Functions.copyRecipe;
+import static me.mfk1016.stadtserver.util.Functions.copyMerchantRecipe;
 
 public class WorkerEnchantmentOrigin extends VillagerEnchantmentOrigin {
 
@@ -43,7 +43,7 @@ public class WorkerEnchantmentOrigin extends VillagerEnchantmentOrigin {
         ItemStack newItem = oldRecipe.getResult();
         int enchLevel = getEnchantmentLevel();
         EnchantmentManager.enchantItem(newItem, enchantment, enchLevel);
-        MerchantRecipe result = copyRecipe(oldRecipe, newItem);
+        MerchantRecipe result = copyMerchantRecipe(oldRecipe, newItem);
         int cost = oldRecipe.getIngredients().get(0).getAmount() + addedCosts[enchLevel - 1];
         result.setIngredients(List.of(new ItemStack(Material.EMERALD, cost)));
         return result;

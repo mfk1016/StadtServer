@@ -38,13 +38,13 @@ public class SmithingEnchantment extends CustomEnchantment {
         if (meta instanceof EnchantmentStorageMeta bookMeta) {
             if (bookMeta.hasStoredEnchant(Enchantment.MENDING)) {
                 bookMeta.removeStoredEnchant(Enchantment.MENDING);
+                bookMeta.addStoredEnchant(EnchantmentManager.SMITHING, bookTargetLevel, true);
                 item.setItemMeta(bookMeta);
-                EnchantmentManager.enchantItem(item, EnchantmentManager.SMITHING, bookTargetLevel);
             }
         } else {
             if (EnchantmentManager.isEnchantedWith(item, Enchantment.MENDING)) {
                 item.removeEnchantment(Enchantment.MENDING);
-                EnchantmentManager.enchantItem(item, EnchantmentManager.SMITHING, itemTargetLevel);
+                item.addUnsafeEnchantment(EnchantmentManager.SMITHING, itemTargetLevel);
             }
         }
     }
@@ -54,7 +54,8 @@ public class SmithingEnchantment extends CustomEnchantment {
         AnvilInventory anvil = event.getInventory();
         ItemStack result = Objects.requireNonNull(event.getResult());
 
-        if (!EnchantmentManager.getItemEnchantments(result).containsKey(EnchantmentManager.SMITHING))
+        int smithingLevel = result.getEnchantmentLevel(EnchantmentManager.SMITHING);
+        if (smithingLevel == 0)
             return;
 
         // Prevent a repair cost overflow
@@ -64,7 +65,6 @@ public class SmithingEnchantment extends CustomEnchantment {
         }
 
         // Adjust the repair cost
-        int smithingLevel = EnchantmentManager.getItemEnchantments(result).get(EnchantmentManager.SMITHING);
         int newRepairCost = Math.min(anvil.getRepairCost(), repairCostLimit(smithingLevel));
         anvil.setRepairCost(newRepairCost);
     }

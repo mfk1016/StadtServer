@@ -1,7 +1,7 @@
 package me.mfk1016.stadtserver.enchantments;
 
-import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.util.Keys;
+import me.mfk1016.stadtserver.util.pdc.PersistentDataVector;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -13,10 +13,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class EagleEyeEnchantment extends CustomEnchantment {
 
@@ -72,9 +74,10 @@ public class EagleEyeEnchantment extends CustomEnchantment {
 
         int level = bow.getEnchantmentLevel(this);
         Entity projectile = event.getProjectile();
-        projectile.setMetadata(Keys.EAGLE_EYE_LEVEL, new FixedMetadataValue(StadtServer.getInstance(), level));
+        PersistentDataContainer pdc = projectile.getPersistentDataContainer();
+        pdc.set(Keys.EAGLE_EYE_LEVEL, PersistentDataType.INTEGER, level);
         Entity shooter = event.getEntity();
-        projectile.setMetadata(Keys.EAGLE_EYE_VECTOR, new FixedMetadataValue(StadtServer.getInstance(), shooter.getLocation().toVector()));
+        pdc.set(Keys.EAGLE_EYE_VECTOR, PersistentDataVector.TYPE, shooter.getLocation().toVector());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -83,35 +86,18 @@ public class EagleEyeEnchantment extends CustomEnchantment {
             return;
 
         AbstractArrow projectile = (Arrow) event.getDamager();
-        if (!projectile.hasMetadata(Keys.EAGLE_EYE_LEVEL))
+        PersistentDataContainer pdc = projectile.getPersistentDataContainer();
+        if (pdc.has(Keys.EAGLE_EYE_LEVEL))
             return;
 
-        int eagleEyeLevel = getMetaEagleEyeLevel(projectile);
+        int eagleEyeLevel = Objects.requireNonNull(pdc.get(Keys.EAGLE_EYE_LEVEL, PersistentDataType.INTEGER));
+        Vector eagleEyeVector = Objects.requireNonNull(pdc.get(Keys.EAGLE_EYE_VECTOR, PersistentDataVector.TYPE));
         Entity target = event.getEntity();
-        double distance = target.getLocation().toVector().distance(getMetaEagleEyeVector(projectile));
+        double distance = target.getLocation().toVector().distance(eagleEyeVector);
         double effect = (distance - 30D) * eagleEyeLevel;
         double itemFactor = (projectile.isShotFromCrossbow() && effect > 0D) ? 1.25D : 1D;
         effect = Math.max(-25D, Math.min(effect, 100D)) * itemFactor / 50D;
         double damageEffect = Math.round(event.getDamage() * effect) / 2D;
         event.setDamage(event.getDamage() + damageEffect);
-    }
-
-
-    private int getMetaEagleEyeLevel(AbstractArrow arrow) {
-        try {
-            MetadataValue val = arrow.getMetadata(Keys.EAGLE_EYE_LEVEL).get(0);
-            return val.asInt();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    private Vector getMetaEagleEyeVector(AbstractArrow arrow) {
-        try {
-            MetadataValue val = arrow.getMetadata(Keys.EAGLE_EYE_VECTOR).get(0);
-            return (Vector) val.value();
-        } catch (Exception e) {
-            return new Vector();
-        }
     }
 }

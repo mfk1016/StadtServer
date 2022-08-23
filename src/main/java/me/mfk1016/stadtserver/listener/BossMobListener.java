@@ -17,7 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Objects;
 
@@ -37,7 +38,8 @@ public class BossMobListener implements Listener {
     }
 
     public static void createBoss(LivingEntity mob, int level, String bossName) {
-        mob.setMetadata(Keys.IS_BOSS, new FixedMetadataValue(StadtServer.getInstance(), level));
+        PersistentDataContainer pdc = mob.getPersistentDataContainer();
+        pdc.set(Keys.IS_BOSS, PersistentDataType.INTEGER, level);
 
         // Boss health (in base max health): 2 / 3 / 4 / 5
         AttributeInstance maxHealth = Objects.requireNonNull(mob.getAttribute(Attribute.GENERIC_MAX_HEALTH));
@@ -88,14 +90,14 @@ public class BossMobListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBossHit(EntityDamageByEntityEvent event) {
-        if (!event.getDamager().hasMetadata(Keys.IS_BOSS))
+        PersistentDataContainer pdc = event.getDamager().getPersistentDataContainer();
+        if (!pdc.has(Keys.IS_BOSS))
             return;
 
-        LivingEntity mob = (LivingEntity) event.getDamager();
         // Boss Damage (in base damage): 1,5 / 2 / 2,5 / 3
-        int bossLevel = mob.getMetadata(Keys.IS_BOSS).get(0).asInt();
+        int bossLevel = Objects.requireNonNull(pdc.get(Keys.IS_BOSS, PersistentDataType.INTEGER));
         double damageFactor = 1 + ((double) (bossLevel) / 2);
-        Difficulty difficulty = mob.getWorld().getDifficulty();
+        Difficulty difficulty = event.getDamager().getWorld().getDifficulty();
         if (difficulty == Difficulty.NORMAL) {
             damageFactor *= 0.9D;
         } else if (difficulty == Difficulty.HARD) {
@@ -110,10 +112,11 @@ public class BossMobListener implements Listener {
             return;
         if (!(projectile.getShooter() instanceof LivingEntity shooter))
             return;
-        if (!shooter.hasMetadata(Keys.IS_BOSS))
+        PersistentDataContainer pdc = shooter.getPersistentDataContainer();
+        if (!pdc.has(Keys.IS_BOSS))
             return;
         // Boss Damage (in base damage): 1,5 / 2 / 2,5 / 3
-        int bossLevel = shooter.getMetadata(Keys.IS_BOSS).get(0).asInt();
+        int bossLevel = Objects.requireNonNull(pdc.get(Keys.IS_BOSS, PersistentDataType.INTEGER));
         double damageFactor = 1 + ((double) (bossLevel) / 2);
         event.setDamage(event.getDamage() * damageFactor);
     }
@@ -122,9 +125,10 @@ public class BossMobListener implements Listener {
     public void onCreeperBossExplode(EntityExplodeEvent event) {
         if (!(event.getEntity() instanceof Creeper creeper))
             return;
-        if (!(event.getEntity().hasMetadata(Keys.IS_BOSS)))
+        PersistentDataContainer pdc = event.getEntity().getPersistentDataContainer();
+        if (!pdc.has(Keys.IS_BOSS))
             return;
-        float bossLevel = creeper.getMetadata(Keys.IS_BOSS).get(0).asInt();
+        float bossLevel = Objects.requireNonNull(pdc.get(Keys.IS_BOSS, PersistentDataType.INTEGER));
         float power = 3F + bossLevel / 2;
         if (creeper.isPowered())
             power += 3F;
@@ -135,7 +139,8 @@ public class BossMobListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBossSunlightBurn(EntityCombustEvent event) {
-        if (!event.getEntity().hasMetadata(Keys.IS_BOSS))
+        PersistentDataContainer pdc = event.getEntity().getPersistentDataContainer();
+        if (!pdc.has(Keys.IS_BOSS))
             return;
         if (event.getEntity().getWorld().getEnvironment() != World.Environment.NORMAL)
             return;
@@ -146,9 +151,10 @@ public class BossMobListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBossDeath(EntityDeathEvent event) {
-        if (!event.getEntity().hasMetadata(Keys.IS_BOSS))
+        PersistentDataContainer pdc = event.getEntity().getPersistentDataContainer();
+        if (!pdc.has(Keys.IS_BOSS))
             return;
-        int bossLevel = event.getEntity().getMetadata(Keys.IS_BOSS).get(0).asInt();
+        int bossLevel = Objects.requireNonNull(pdc.get(Keys.IS_BOSS, PersistentDataType.INTEGER));
         if (event.getDroppedExp() == 0)
             return; // Not death by player
 

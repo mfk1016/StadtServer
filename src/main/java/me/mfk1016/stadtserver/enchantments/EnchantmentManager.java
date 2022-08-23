@@ -116,11 +116,21 @@ public class EnchantmentManager {
     /* --- ENCHANTING --- */
 
     public static boolean isEnchantedWith(ItemStack item, Enchantment enchantment, int level) {
-        return getItemEnchantments(item).getOrDefault(Enchantment.getByKey(enchantment.getKey()), -1) == level;
+        if (stackEmpty(item) || !item.hasItemMeta())
+            return false;
+        if (item.getType() == Material.ENCHANTED_BOOK)
+            return ((EnchantmentStorageMeta) item.getItemMeta()).getStoredEnchantLevel(enchantment) == level;
+
+        return item.getEnchantmentLevel(enchantment) == level;
     }
 
     public static boolean isEnchantedWith(ItemStack item, Enchantment enchantment) {
-        return getItemEnchantments(item).containsKey(Enchantment.getByKey(enchantment.getKey()));
+        if (stackEmpty(item) || !item.hasItemMeta())
+            return false;
+        if (item.getType() == Material.ENCHANTED_BOOK)
+            return ((EnchantmentStorageMeta) item.getItemMeta()).getStoredEnchantLevel(enchantment) != 0;
+
+        return item.getEnchantmentLevel(enchantment) != 0;
     }
 
     public static Map<Enchantment, Integer> getItemEnchantments(ItemStack item) {
@@ -133,11 +143,13 @@ public class EnchantmentManager {
     }
 
     public static boolean canEnchantItem(ItemStack item, Enchantment enchantment) {
+        if (stackEmpty(item) || !enchantment.canEnchantItem(item))
+            return false;
         for (Enchantment ench : getItemEnchantments(item).keySet()) {
             if (enchantment.conflictsWith(ench) || ench.conflictsWith(enchantment))
                 return false;
         }
-        return enchantment.canEnchantItem(item);
+        return true;
     }
 
     public static void enchantItem(ItemStack item, Enchantment enchantment, int level) {
@@ -147,11 +159,11 @@ public class EnchantmentManager {
         } else {
             item.addUnsafeEnchantment(enchantment, level);
         }
-        updateLore(item);
+        updateItemLore(item);
     }
 
     public static void disenchantItem(ItemStack item, Enchantment enchantment) {
-        if (item.getEnchantments().containsKey(enchantment)) {
+        if (item.getEnchantmentLevel(enchantment) != 0) {
             item.removeEnchantment(enchantment);
         } else if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
             if (meta.hasStoredEnchant(enchantment)) {
@@ -159,10 +171,10 @@ public class EnchantmentManager {
                 item.setItemMeta(meta);
             }
         }
-        updateLore(item);
+        updateItemLore(item);
     }
 
-    public static void updateLore(ItemStack item) {
+    public static void updateItemLore(ItemStack item) {
         Map<Enchantment, Integer> enchantments = getItemEnchantments(item);
         ItemMeta meta = item.getItemMeta();
         List<Component> newLore = new ArrayList<>();

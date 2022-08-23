@@ -50,10 +50,9 @@ public class StadtServer extends JavaPlugin {
         OriginManager.initialize(false);
 
         LOGGER.info(getDescription().getName() + ": enable listeners...");
-        SmallFunctionsListener smallFunctionsListener = new SmallFunctionsListener();
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new MinecartListener(), this);
-        pm.registerEvents(smallFunctionsListener, this);
+        pm.registerEvents(new SmallFunctionsListener(), this);
         pm.registerEvents(new EnchantmentListener(), this);
         pm.registerEvents(new SpellListener(), this);
         pm.registerEvents(new BossMobListener(), this);

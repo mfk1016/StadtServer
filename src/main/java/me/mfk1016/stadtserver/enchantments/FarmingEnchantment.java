@@ -79,13 +79,13 @@ public class FarmingEnchantment extends CustomEnchantment {
         ItemStack hoe = player.getInventory().getItemInMainHand();
         if (!PluginCategories.isHoe(hoe.getType()) || !PluginCategories.isMushroomBlock(target.getType()))
             return;
-        int farmingLevel = hoe.getEnchantments().getOrDefault(this, 0);
+        int farmingLevel = hoe.getEnchantmentLevel(this);
         if (farmingLevel == 0)
             return;
         if (event.getPlayer().isSneaking())
             farmingLevel = 1;
 
-        int unbreakingFactor = hoe.getEnchantments().getOrDefault(Enchantment.DURABILITY, 0) + 1;
+        int unbreakingFactor = hoe.getEnchantmentLevel(Enchantment.DURABILITY) + 1;
         List<Block> toHarvest = mushroomTargets(target, farmingLevel - 1);
         for (Block block : toHarvest) {
             block.breakNaturally(hoe);
@@ -109,13 +109,13 @@ public class FarmingEnchantment extends CustomEnchantment {
         ItemStack hoe = player.getInventory().getItemInMainHand();
         if (!PluginCategories.isHoe(hoe.getType()) || event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
-        int farmingLevel = hoe.getEnchantments().getOrDefault(this, 0);
+        int farmingLevel = hoe.getEnchantmentLevel(this);
         Block target = event.getClickedBlock();
         if (farmingLevel == 0 || target == null || !target.getRelative(BlockFace.UP).getType().isAir())
             return;
-
         if (event.getPlayer().isSneaking())
             farmingLevel = 1;
+
         boolean result = switch (target.getType()) {
             case GRASS_BLOCK, DIRT, DIRT_PATH -> onTillFarmland(player, hoe, target, farmingLevel);
             case WHEAT, POTATOES, CARROTS, BEETROOTS, NETHER_WART ->
@@ -129,7 +129,7 @@ public class FarmingEnchantment extends CustomEnchantment {
 
     @SuppressWarnings("SameReturnValue")
     private boolean onTillFarmland(Player player, ItemStack hoe, Block target, int farmingLevel) {
-        int unbreakingFactor = hoe.getEnchantments().getOrDefault(Enchantment.DURABILITY, 0) + 1;
+        int unbreakingFactor = hoe.getEnchantmentLevel(Enchantment.DURABILITY) + 1;
         List<Block> toTill = farmingTargets(target, farmingLevel - 1, true);
         for (Block block : toTill) {
             block.setType(Material.FARMLAND);
@@ -148,7 +148,7 @@ public class FarmingEnchantment extends CustomEnchantment {
     }
 
     private boolean onReplantNormalCrop(Player player, ItemStack hoe, Block target, int farmingLevel) {
-        int unbreakingFactor = hoe.getEnchantments().getOrDefault(Enchantment.DURABILITY, 0) + 1;
+        int unbreakingFactor = hoe.getEnchantmentLevel(Enchantment.DURABILITY) + 1;
         List<Block> toReplant = farmingTargets(target, farmingLevel - 1, false);
         Material cropType = toReplant.get(0).getType();
         int replanted = 0;
@@ -175,7 +175,7 @@ public class FarmingEnchantment extends CustomEnchantment {
     }
 
     private boolean onPlantNormalCrop(Player player, ItemStack hoe, Block target, int farmingLevel) {
-        int unbreakingFactor = hoe.getEnchantments().getOrDefault(Enchantment.DURABILITY, 0) + 1;
+        int unbreakingFactor = hoe.getEnchantmentLevel(Enchantment.DURABILITY) + 1;
         if (!target.getRelative(BlockFace.UP).isEmpty())
             return false;
         List<Block> toPlant = farmingTargets(target, farmingLevel - 1, false);

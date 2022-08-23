@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
-import static me.mfk1016.stadtserver.util.Functions.copyRecipe;
+import static me.mfk1016.stadtserver.util.Functions.copyMerchantRecipe;
 
 public class WanderingTraderSpellOrigin extends WanderingTraderOrigin {
 
@@ -53,7 +53,7 @@ public class WanderingTraderSpellOrigin extends WanderingTraderOrigin {
     protected MerchantRecipe createRecipe(MerchantRecipe oldRecipe) {
         int charges = getSpellCharges();
         ItemStack result = SpellManager.createSpellMedium(spell, charges);
-        MerchantRecipe newRecipe = copyRecipe(oldRecipe, result);
+        MerchantRecipe newRecipe = copyMerchantRecipe(oldRecipe, result);
         newRecipe.setMaxUses(maxRecipeUses);
         newRecipe.setPriceMultiplier(0.2f);
         newRecipe.setIngredients(List.of(new ItemStack(Material.EMERALD, chargeCosts[charges - 1])));
