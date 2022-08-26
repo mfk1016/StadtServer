@@ -28,7 +28,7 @@ public class BlockLocationJSONAdapter implements JsonSerializer<Location>, JsonD
         if (obj.has("world")) {
             world = Bukkit.getWorld(obj.get("world").getAsString());
             if (world == null) {
-                throw new IllegalArgumentException("unknown world");
+                throw new JsonParseException("unknown world");
             }
         }
         int x = obj.get("x").getAsInt();

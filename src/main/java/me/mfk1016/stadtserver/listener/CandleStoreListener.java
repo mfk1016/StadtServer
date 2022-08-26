@@ -5,6 +5,7 @@ import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.candlestore.*;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
+import me.mfk1016.stadtserver.ticklib.trigger.BlockTriggerEvent;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Hopper;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -63,7 +65,8 @@ public class CandleStoreListener implements Listener {
         PersistentDataContainer pdc = dispenser.getPersistentDataContainer();
         if (!pdc.has(Keys.CANDLE_STORE_MEMBER_TYPE))
             return;
-        if (CandleMemberType.getMemberType(pdc) == CandleMemberType.EXPORT)
+        CandleMemberType memberType = CandleMemberType.getMemberType(pdc);
+        if (memberType == CandleMemberType.EXPORT || CandleMemberType.isActorType(memberType))
             return;
         Optional<CandleStore> currentStore = CandleStoreManager.getStore(dispenser);
         if (currentStore.isPresent()) {
@@ -289,6 +292,28 @@ public class CandleStoreListener implements Listener {
                 } catch (CandleStoreException ignored) {
                 }
             }, 1L);
+        });
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onMemberTrigger(BlockTriggerEvent event) {
+        Optional<CandleStore> optCandleStore = CandleStoreManager.getStore(event.getBlockActorType());
+        if (optCandleStore.isEmpty())
+            return;
+        CandleStore store = optCandleStore.get();
+        event.getBlockStream().forEach(block -> {
+            Dispenser dispenser = (Dispenser) block.getState(false);
+            ItemStack filter = dispenser.getInventory().getItem(0);
+            if (filter == null)
+                return;
+            CandleMemberType memberType = CandleMemberType.getMemberType(dispenser.getPersistentDataContainer());
+            if (memberType == CandleMemberType.LIGHT) {
+                boolean isLit = store.contains(filter.getType(), 1);
+                Block lamp = block.getRelative(BlockFace.DOWN);
+                Lightable lightable = (Lightable) lamp.getBlockData();
+                lightable.setLit(isLit);
+                lamp.setBlockData(lightable);
+            }
         });
     }
 

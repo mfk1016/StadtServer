@@ -9,6 +9,7 @@ import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
 import me.mfk1016.stadtserver.origin.OriginManager;
 import me.mfk1016.stadtserver.rituals.RitualManager;
 import me.mfk1016.stadtserver.spells.SpellManager;
+import me.mfk1016.stadtserver.ticklib.BlockActorManager;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -37,6 +38,8 @@ public class StadtServer extends JavaPlugin {
         Keys.initialize();
         CategoryManager.initialize(false);
 
+        LOGGER.info(getDescription().getName() + ": load blocks actors...");
+        BlockActorManager.loadRegisteredBlocks();
         LOGGER.info(getDescription().getName() + ": load candle stores...");
         CandleStoreManager.loadStores();
         LOGGER.info(getDescription().getName() + ": register enchantments...");
@@ -51,6 +54,7 @@ public class StadtServer extends JavaPlugin {
 
         LOGGER.info(getDescription().getName() + ": enable listeners...");
         PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new BlockActorManager(), this);
         pm.registerEvents(new MinecartListener(), this);
         pm.registerEvents(new SmallFunctionsListener(), this);
         pm.registerEvents(new EnchantmentListener(), this);
@@ -72,14 +76,17 @@ public class StadtServer extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        LOGGER.info(getDescription().getName() + ": stop block actors...");
+        BlockActorManager.unregisterBlockActorTypes();
         LOGGER.info(getDescription().getName() + ": stop managers and handlers...");
         RitualManager.onPluginDisable();
         HandlerList.unregisterAll(this);
         EnchantmentManager.onPluginDisable();
         SpellManager.onPluginDisable();
-        LOGGER.info(getDescription().getName() + ": save config and candle stores...");
+        LOGGER.info(getDescription().getName() + ": save config and persist data...");
         saveConfig();
         CandleStoreManager.saveStoresOnPluginStop();
+        BlockActorManager.saveRegisteredBlocks();
         LOGGER.info(getDescription().getName() + " " + getDescription().getVersion() + " stopped.");
     }
 

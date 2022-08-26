@@ -2,9 +2,12 @@ package me.mfk1016.stadtserver.candlestore;
 
 import com.google.gson.*;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.ticklib.BlockActorManager;
+import me.mfk1016.stadtserver.ticklib.BlockActorTypeBase;
 import me.mfk1016.stadtserver.util.Keys;
 import me.mfk1016.stadtserver.util.json.CandleStoreJSONAdapter;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.block.Dispenser;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -28,6 +31,15 @@ public class CandleStoreManager {
         return Optional.of(ALL_STORES.get(key));
     }
 
+    public static Optional<CandleStore> getStore(BlockActorTypeBase blockActorType) {
+        if (!blockActorType.getKey().startsWith(CandleStore.ACTOR_TYPE_PREFIX))
+            return Optional.empty();
+        long key = Long.parseLong(blockActorType.getKey().split(":")[1]);
+        if (!ALL_STORES.containsKey(key))
+            return Optional.empty();
+        return Optional.of(ALL_STORES.get(key));
+    }
+
     public static void createStore(@NotNull Dispenser dispenser, @NotNull CandleMemberType memberType) {
         PersistentDataContainer pdc = dispenser.getPersistentDataContainer();
         boolean hasChest = memberType == CandleMemberType.CHEST;
@@ -38,6 +50,7 @@ public class CandleStoreManager {
         CandleMemberType.setMemberType(pdc, memberType);
         dispenser.customName(undecoratedText("Filter"));
         dispenser.update();
+        updateBlockTrigger(store, dispenser.getBlock(), null, memberType);
     }
 
     public static void addToStore(@NotNull Dispenser dispenser, @NotNull Dispenser partner, @NotNull CandleMemberType memberType) {
@@ -48,6 +61,7 @@ public class CandleStoreManager {
         CandleMemberType.setMemberType(pdc, memberType);
         dispenser.customName(undecoratedText("Filter"));
         dispenser.update();
+        updateBlockTrigger(store, dispenser.getBlock(), null, memberType);
     }
 
     public static void updateStoreMember(Dispenser dispenser, CandleMemberType newType) {
@@ -62,6 +76,7 @@ public class CandleStoreManager {
         CandleMemberType.setMemberType(pdc, newType);
         dispenser.customName(undecoratedText("Filter"));
         dispenser.update();
+        updateBlockTrigger(store, dispenser.getBlock(), oldType, newType);
     }
 
     public static void deleteFromStore(Dispenser dispenser) {
@@ -75,12 +90,14 @@ public class CandleStoreManager {
         if (store.getMemberCount() > 1) {
             store.deleteMember(dispenser.getLocation(), memberType);
         } else {
+            BlockActorManager.deleteBlockActorType(store.getActor());
             ALL_STORES.remove(key);
         }
         pdc.remove(Keys.CANDLE_STORE);
         pdc.remove(Keys.CANDLE_STORE_MEMBER_TYPE);
         dispenser.customName(null);
         dispenser.update();
+        updateBlockTrigger(store, dispenser.getBlock(), memberType, null);
     }
 
     /* --- Persistence --- */
@@ -145,6 +162,13 @@ public class CandleStoreManager {
         while (ALL_STORES.containsKey(nextKey))
             nextKey++;
         return nextKey;
+    }
+
+    private static void updateBlockTrigger(CandleStore store, Block block, CandleMemberType oldType, CandleMemberType newType) {
+        if (oldType != null && CandleMemberType.isActorType(oldType))
+            BlockActorManager.unregisterBlock(store.getActor(), block);
+        else if (newType != null && CandleMemberType.isActorType(newType))
+            BlockActorManager.registerBlock(store.getActor(), block);
     }
 
     private static File getStoresFile() {

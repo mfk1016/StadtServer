@@ -1,6 +1,8 @@
 package me.mfk1016.stadtserver.candlestore;
 
 import lombok.Getter;
+import me.mfk1016.stadtserver.ticklib.BlockActorManager;
+import me.mfk1016.stadtserver.ticklib.trigger.BlockTriggerActorType;
 import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
@@ -17,6 +19,7 @@ import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 @Getter
 public class CandleStore implements InventoryHolder {
 
+    public static final String ACTOR_TYPE_PREFIX = "candle_store:";
     public static final int MAX_STORAGE_SLOTS = 54;
     public static final int SLOTS_PER_CHEST = 9;
 
@@ -32,6 +35,8 @@ public class CandleStore implements InventoryHolder {
     private final EnumMap<Material, Long> storage;
     private Inventory view;
 
+    private final BlockTriggerActorType actor;
+
     public CandleStore(Long key, int memberCount, int storageSlots, int usedSlots, EnumMap<Material, Long> storage, Vector centerLocation) {
         this.key = key;
         this.memberCount = memberCount;
@@ -40,6 +45,8 @@ public class CandleStore implements InventoryHolder {
         this.centerLocation = centerLocation;
         this.storage = storage;
         recreateView();
+        actor = BlockActorManager.registerBlockTriggerType(ACTOR_TYPE_PREFIX + key);
+        actor.trigger();
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -62,6 +69,7 @@ public class CandleStore implements InventoryHolder {
         }
         usedSlots = currentAmount == 0 ? usedSlots + 1 : usedSlots;
         storage.put(stack.getType(), currentAmount + stack.getAmount());
+        actor.trigger();
         updateView(false);
     }
 
@@ -80,6 +88,7 @@ public class CandleStore implements InventoryHolder {
             storage.put(material, newAmount);
         }
         updateView(false);
+        actor.trigger();
         return stack;
     }
 
@@ -104,6 +113,7 @@ public class CandleStore implements InventoryHolder {
                 storage.remove(mat);
                 usedSlots--;
             }
+            actor.trigger();
             recreateView();
         }
     }

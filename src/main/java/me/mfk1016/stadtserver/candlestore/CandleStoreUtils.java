@@ -28,6 +28,7 @@ public class CandleStoreUtils {
         return switch (subBlockMat) {
             case ENDER_CHEST -> CandleMemberType.CHEST;
             case HOPPER -> CandleMemberType.EXPORT;
+            case REDSTONE_LAMP -> CandleMemberType.LIGHT;
             default -> CandleMemberType.NORMAL;
         };
     }
