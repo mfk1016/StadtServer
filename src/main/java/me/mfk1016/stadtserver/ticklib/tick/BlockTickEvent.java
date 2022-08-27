@@ -15,10 +15,10 @@ public class BlockTickEvent extends Event {
 
     public static HandlerList getHandlerList() { return HANDLER_LIST; }
 
-    private final @NotNull BlockTickActorType blockActorType;
+    private final @NotNull BlockTickActor blockActorType;
     private final @NotNull Stream<Block> blockStream;
 
-    public BlockTickEvent(@NotNull BlockTickActorType blockActorType, @NotNull Stream<Block> blockStream) {
+    public BlockTickEvent(@NotNull BlockTickActor blockActorType, @NotNull Stream<Block> blockStream) {
         super(false);
         this.blockActorType = blockActorType;
         this.blockStream = blockStream;

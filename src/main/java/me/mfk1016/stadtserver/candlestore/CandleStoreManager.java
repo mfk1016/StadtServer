@@ -3,7 +3,7 @@ package me.mfk1016.stadtserver.candlestore;
 import com.google.gson.*;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.ticklib.BlockActorManager;
-import me.mfk1016.stadtserver.ticklib.BlockActorTypeBase;
+import me.mfk1016.stadtserver.ticklib.BlockActorBase;
 import me.mfk1016.stadtserver.util.Keys;
 import me.mfk1016.stadtserver.util.json.CandleStoreJSONAdapter;
 import org.bukkit.Bukkit;
@@ -31,7 +31,7 @@ public class CandleStoreManager {
         return Optional.of(ALL_STORES.get(key));
     }
 
-    public static Optional<CandleStore> getStore(BlockActorTypeBase blockActorType) {
+    public static Optional<CandleStore> getStore(BlockActorBase blockActorType) {
         if (!blockActorType.getKey().startsWith(CandleStore.ACTOR_TYPE_PREFIX))
             return Optional.empty();
         long key = Long.parseLong(blockActorType.getKey().split(":")[1]);

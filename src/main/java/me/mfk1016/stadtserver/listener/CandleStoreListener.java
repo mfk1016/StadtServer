@@ -164,7 +164,7 @@ public class CandleStoreListener implements Listener {
                 return;
             }
         }
-        CandleMemberType memberType = CandleStoreUtils.getMemberType(target.getRelative(BlockFace.DOWN).getType());
+        CandleMemberType memberType = CandleMemberType.getMemberType(target.getRelative(BlockFace.DOWN).getType());
         CandleStoreManager.createStore(dispenser, memberType);
         playerMessage(event.getPlayer(), "New " + candleName + " store created.");
     }
@@ -193,7 +193,7 @@ public class CandleStoreListener implements Listener {
                             "Too far away from " + candleName + " store center (must be within 16 Blocks)");
                     return;
                 }
-                CandleMemberType memberType = CandleStoreUtils.getMemberType(target.getRelative(BlockFace.DOWN).getType());
+                CandleMemberType memberType = CandleMemberType.getMemberType(target.getRelative(BlockFace.DOWN).getType());
                 CandleStoreManager.addToStore(dispenser, partner, memberType);
                 playerMessage(event.getPlayer(), "New Member added to " + candleName + " store.");
                 return;
@@ -232,7 +232,7 @@ public class CandleStoreListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAddBlockToStoreMember(BlockPlaceEvent event) {
         Material addedType = event.getItemInHand().getType();
-        CandleMemberType newMemberType = CandleStoreUtils.getMemberType(addedType);
+        CandleMemberType newMemberType = CandleMemberType.getMemberType(addedType);
         if (newMemberType == CandleMemberType.NORMAL) // No valid block placed
             return;
         Block possibleTarget = event.getBlockPlaced();
@@ -296,23 +296,20 @@ public class CandleStoreListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onMemberTrigger(BlockTriggerEvent event) {
-        Optional<CandleStore> optCandleStore = CandleStoreManager.getStore(event.getBlockActorType());
-        if (optCandleStore.isEmpty())
-            return;
-        CandleStore store = optCandleStore.get();
+    public void onMemberTrigger(BlockTriggerEvent<CandleStore> event) {
         event.getBlockStream().forEach(block -> {
             Dispenser dispenser = (Dispenser) block.getState(false);
-            ItemStack filter = dispenser.getInventory().getItem(0);
-            if (filter == null)
-                return;
             CandleMemberType memberType = CandleMemberType.getMemberType(dispenser.getPersistentDataContainer());
             if (memberType == CandleMemberType.LIGHT) {
-                boolean isLit = store.contains(filter.getType(), 1);
+                boolean isLit = false;
+                for (int i = 0; i < dispenser.getInventory().getSize() && !isLit; i++) {
+                    ItemStack item = dispenser.getInventory().getItem(i);
+                    isLit = !stackEmpty(item) && event.getSource().contains(item.getType(), 1);
+                }
                 Block lamp = block.getRelative(BlockFace.DOWN);
                 Lightable lightable = (Lightable) lamp.getBlockData();
                 lightable.setLit(isLit);
-                lamp.setBlockData(lightable);
+                lamp.setBlockData(lightable, false);
             }
         });
     }

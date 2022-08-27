@@ -4,11 +4,11 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public abstract class BlockActorTypeBase {
+public abstract class BlockActorBase {
 
     protected final @NotNull String key;
 
-    public BlockActorTypeBase(@NotNull String key) {
+    public BlockActorBase(@NotNull String key) {
         this.key = key;
     }
 
@@ -20,7 +20,7 @@ public abstract class BlockActorTypeBase {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof BlockActorTypeBase other)
+        if (obj instanceof BlockActorBase other)
             return key.equals(other.key);
         return false;
     }

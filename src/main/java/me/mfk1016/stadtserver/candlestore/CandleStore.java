@@ -2,7 +2,7 @@ package me.mfk1016.stadtserver.candlestore;
 
 import lombok.Getter;
 import me.mfk1016.stadtserver.ticklib.BlockActorManager;
-import me.mfk1016.stadtserver.ticklib.trigger.BlockTriggerActorType;
+import me.mfk1016.stadtserver.ticklib.trigger.BlockTriggerActor;
 import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
@@ -35,7 +35,7 @@ public class CandleStore implements InventoryHolder {
     private final EnumMap<Material, Long> storage;
     private Inventory view;
 
-    private final BlockTriggerActorType actor;
+    private final BlockTriggerActor<CandleStore> actor;
 
     public CandleStore(Long key, int memberCount, int storageSlots, int usedSlots, EnumMap<Material, Long> storage, Vector centerLocation) {
         this.key = key;
@@ -45,7 +45,7 @@ public class CandleStore implements InventoryHolder {
         this.centerLocation = centerLocation;
         this.storage = storage;
         recreateView();
-        actor = BlockActorManager.registerBlockTriggerType(ACTOR_TYPE_PREFIX + key);
+        actor = BlockActorManager.registerBlockTriggerType(ACTOR_TYPE_PREFIX + key, this);
         actor.trigger();
     }
 

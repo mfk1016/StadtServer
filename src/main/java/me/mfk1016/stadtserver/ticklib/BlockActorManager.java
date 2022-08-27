@@ -5,9 +5,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.ticklib.tick.BlockTickActorType;
+import me.mfk1016.stadtserver.ticklib.tick.BlockTickActor;
 import me.mfk1016.stadtserver.ticklib.tick.BlockTickEvent;
-import me.mfk1016.stadtserver.ticklib.trigger.BlockTriggerActorType;
+import me.mfk1016.stadtserver.ticklib.trigger.BlockTriggerActor;
 import me.mfk1016.stadtserver.ticklib.trigger.BlockTriggerEvent;
 import me.mfk1016.stadtserver.util.json.BlockLocationJSONAdapter;
 import org.bukkit.Bukkit;
@@ -27,14 +27,14 @@ import java.util.stream.Stream;
 
 public class BlockActorManager implements Listener {
 
-    private static final HashSet<BlockActorTypeBase> REGISTERED_ACTOR_TYPES = new HashSet<>();
+    private static final HashSet<BlockActorBase> REGISTERED_ACTOR_TYPES = new HashSet<>();
     private static final HashMap<String, List<Block>> REGISTERED_BLOCKS = new HashMap<>();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onServerTick(ServerTickEndEvent event) {
         int tickNumber = event.getTickNumber();
-        for (BlockActorTypeBase actorType : REGISTERED_ACTOR_TYPES) {
-            if (!(actorType instanceof BlockTickActorType tickType))
+        for (BlockActorBase actorType : REGISTERED_ACTOR_TYPES) {
+            if (!(actorType instanceof BlockTickActor tickType))
                 continue;
             if (tickNumber % tickType.getDelay() != tickType.getDelayMod())
                 continue;
@@ -47,28 +47,28 @@ public class BlockActorManager implements Listener {
         }
     }
 
-    public static void executeTrigger(BlockTriggerActorType triggerType) {
+    public static <T> void executeTrigger(BlockTriggerActor<T> triggerType) {
         List<Block> registered = REGISTERED_BLOCKS.getOrDefault(triggerType.getKey(), List.of());
         if (registered.isEmpty())
             return;
         Stream<Block> blockStream = registered.stream().filter(BlockActorManager::isBlockLoaded);
-        BlockTriggerEvent triggerEvent = new BlockTriggerEvent(triggerType, blockStream);
+        BlockTriggerEvent<T> triggerEvent = new BlockTriggerEvent<>(triggerType, blockStream);
         StadtServer.getInstance().getServer().getPluginManager().callEvent(triggerEvent);
     }
 
-    public static BlockTriggerActorType registerBlockTriggerType(@NotNull String key) {
-        BlockTriggerActorType blockActorType = new BlockTriggerActorType(key);
+    public static <T> BlockTriggerActor<T> registerBlockTriggerType(@NotNull String key, @NotNull T source) {
+        BlockTriggerActor<T> blockActorType = new BlockTriggerActor<>(key, source);
         REGISTERED_ACTOR_TYPES.add(blockActorType);
         return blockActorType;
     }
 
-    public static BlockTickActorType registerBlockTickType(@NotNull String key, int delay) {
-        BlockTickActorType blockActorType = new BlockTickActorType(key, delay);
+    public static BlockTickActor registerBlockTickType(@NotNull String key, int delay) {
+        BlockTickActor blockActorType = new BlockTickActor(key, delay);
         REGISTERED_ACTOR_TYPES.add(blockActorType);
         return blockActorType;
     }
 
-    public static void deleteBlockActorType(@NotNull BlockActorTypeBase blockActorType) {
+    public static void deleteBlockActorType(@NotNull BlockActorBase blockActorType) {
         REGISTERED_ACTOR_TYPES.remove(blockActorType);
         REGISTERED_BLOCKS.remove(blockActorType.getKey());
     }
@@ -77,7 +77,7 @@ public class BlockActorManager implements Listener {
         REGISTERED_ACTOR_TYPES.clear();
     }
 
-    public static void registerBlock(@NotNull BlockActorTypeBase blockActorType, @NotNull Block block) {
+    public static void registerBlock(@NotNull BlockActorBase blockActorType, @NotNull Block block) {
         if (REGISTERED_BLOCKS.containsKey(blockActorType.getKey())) {
             List<Block> registered = REGISTERED_BLOCKS.get(blockActorType.getKey());
             registered.add(block);
@@ -88,7 +88,7 @@ public class BlockActorManager implements Listener {
         }
     }
 
-    public static void unregisterBlock(@NotNull BlockActorTypeBase blockActorType, @NotNull Block block) {
+    public static void unregisterBlock(@NotNull BlockActorBase blockActorType, @NotNull Block block) {
         if (REGISTERED_BLOCKS.containsKey(blockActorType.getKey())) {
             List<Block> registered = REGISTERED_BLOCKS.get(blockActorType.getKey());
             registered.remove(block);

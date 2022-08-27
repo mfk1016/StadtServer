@@ -24,15 +24,6 @@ import static me.mfk1016.stadtserver.util.Functions.*;
 
 public class CandleStoreUtils {
 
-    public static CandleMemberType getMemberType(Material subBlockMat) {
-        return switch (subBlockMat) {
-            case ENDER_CHEST -> CandleMemberType.CHEST;
-            case HOPPER -> CandleMemberType.EXPORT;
-            case REDSTONE_LAMP -> CandleMemberType.LIGHT;
-            default -> CandleMemberType.NORMAL;
-        };
-    }
-
     public static boolean isValidStoreItem(ItemStack item) {
         if (item.hasItemMeta() && item.getItemMeta().hasEnchants())
             return false;

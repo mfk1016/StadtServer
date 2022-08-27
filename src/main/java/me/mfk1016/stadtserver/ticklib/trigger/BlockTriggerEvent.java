@@ -9,16 +9,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.stream.Stream;
 
 @Getter
-public class BlockTriggerEvent extends Event {
+public class BlockTriggerEvent<T> extends Event {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     public static HandlerList getHandlerList() { return HANDLER_LIST; }
 
-    private final @NotNull BlockTriggerActorType blockActorType;
+    private final @NotNull BlockTriggerActor<T> blockActorType;
     private final @NotNull Stream<Block> blockStream;
 
-    public BlockTriggerEvent(@NotNull BlockTriggerActorType blockActorType, @NotNull Stream<Block> blockStream) {
+    public BlockTriggerEvent(@NotNull BlockTriggerActor<T> blockActorType, @NotNull Stream<Block> blockStream) {
         super(false);
         this.blockActorType = blockActorType;
         this.blockStream = blockStream;
@@ -27,5 +27,9 @@ public class BlockTriggerEvent extends Event {
     @Override
     public @NotNull HandlerList getHandlers() {
         return HANDLER_LIST;
+    }
+
+    public T getSource() {
+        return blockActorType.getSource();
     }
 }
