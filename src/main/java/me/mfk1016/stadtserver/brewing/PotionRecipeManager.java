@@ -30,7 +30,7 @@ public class PotionRecipeManager implements Listener {
     private static final List<AdvancedPotionRecipe> recipes = new ArrayList<>();
     private static final List<BarrelRecipe> barrelRecipes = new ArrayList<>();
 
-    public static void initialize() {
+    public static void onPluginEnable() {
         recipes.clear();
 
         recipes.add(new SplashPotionRecipe());

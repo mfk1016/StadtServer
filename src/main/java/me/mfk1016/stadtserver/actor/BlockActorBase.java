@@ -1,7 +1,11 @@
-package me.mfk1016.stadtserver.ticklib;
+package me.mfk1016.stadtserver.actor;
 
 import lombok.Getter;
+import org.bukkit.block.Block;
+import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @Getter
 public abstract class BlockActorBase {
@@ -25,8 +29,5 @@ public abstract class BlockActorBase {
         return false;
     }
 
-    @Override
-    public String toString() {
-        return "BlockTickType(" + key + ")";
-    }
+    public abstract Event createEvent(List<Block> blockStream);
 }

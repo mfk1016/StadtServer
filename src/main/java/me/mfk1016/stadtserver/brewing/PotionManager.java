@@ -83,7 +83,7 @@ public class PotionManager {
     /* --- JSON --- */
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public static void initialize() {
+    public static void onPluginEnable() {
         InputStream configStream = StadtServer.getInstance().getResource("potions.json");
         try {
             JsonObject root = gson.fromJson(new InputStreamReader(Objects.requireNonNull(configStream)), JsonObject.class);

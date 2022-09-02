@@ -15,7 +15,7 @@ public class OriginManager {
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public static void initialize(boolean setDefault) {
+    public static void onPluginEnable(boolean setDefault) {
         File originsConfig = new File(StadtServer.getInstance().getDataFolder(), "origins.json");
         if (!originsConfig.exists()) {
             StadtServer.getInstance().saveResource(originsConfig.getName(), false);

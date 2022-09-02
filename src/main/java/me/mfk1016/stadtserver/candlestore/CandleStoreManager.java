@@ -1,9 +1,10 @@
 package me.mfk1016.stadtserver.candlestore;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.mfk1016.stadtserver.StadtServer;
-import me.mfk1016.stadtserver.ticklib.BlockActorManager;
-import me.mfk1016.stadtserver.ticklib.BlockActorBase;
+import me.mfk1016.stadtserver.actor.BlockActorBase;
+import me.mfk1016.stadtserver.actor.BlockActorManager;
 import me.mfk1016.stadtserver.util.Keys;
 import me.mfk1016.stadtserver.util.json.CandleStoreJSONAdapter;
 import org.bukkit.Bukkit;
@@ -14,7 +15,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 
 import static me.mfk1016.stadtserver.util.Functions.undecoratedText;
 
@@ -90,7 +93,7 @@ public class CandleStoreManager {
         if (store.getMemberCount() > 1) {
             store.deleteMember(dispenser.getLocation(), memberType);
         } else {
-            BlockActorManager.deleteBlockActorType(store.getActor());
+            BlockActorManager.unregisterBlockActor(store.getActor());
             ALL_STORES.remove(key);
         }
         pdc.remove(Keys.CANDLE_STORE);
@@ -102,7 +105,7 @@ public class CandleStoreManager {
 
     /* --- Persistence --- */
 
-    public static void loadStores() {
+    public static void onPluginEnable() {
         File candleStoreFile = getStoresFile();
         if (!candleStoreFile.exists()) {
             StadtServer.getInstance().saveResource(candleStoreFile.getName(), false);
@@ -140,7 +143,7 @@ public class CandleStoreManager {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void saveStoresOnPluginStop() {
+    public static void onPluginDisable() {
         Gson gson = getGsonInstance();
         CandleStore[] toPersist = ALL_STORES.values().toArray(new CandleStore[0]);
         String json = gson.toJson(toPersist);

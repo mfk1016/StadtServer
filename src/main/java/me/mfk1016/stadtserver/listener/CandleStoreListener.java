@@ -3,9 +3,9 @@ package me.mfk1016.stadtserver.listener;
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import me.mfk1016.stadtserver.StadtServer;
+import me.mfk1016.stadtserver.actor.blocktrigger.BlockTriggerEvent;
 import me.mfk1016.stadtserver.candlestore.*;
 import me.mfk1016.stadtserver.enchantments.EnchantmentManager;
-import me.mfk1016.stadtserver.ticklib.trigger.BlockTriggerEvent;
 import me.mfk1016.stadtserver.util.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -297,7 +297,7 @@ public class CandleStoreListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onMemberTrigger(BlockTriggerEvent<CandleStore> event) {
-        event.getBlockStream().forEach(block -> {
+        event.getBlocks().forEach(block -> {
             Dispenser dispenser = (Dispenser) block.getState(false);
             CandleMemberType memberType = CandleMemberType.getMemberType(dispenser.getPersistentDataContainer());
             if (memberType == CandleMemberType.LIGHT) {

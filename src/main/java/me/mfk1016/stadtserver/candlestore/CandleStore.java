@@ -1,9 +1,11 @@
 package me.mfk1016.stadtserver.candlestore;
 
 import lombok.Getter;
-import me.mfk1016.stadtserver.ticklib.BlockActorManager;
-import me.mfk1016.stadtserver.ticklib.trigger.BlockTriggerActor;
-import org.bukkit.*;
+import me.mfk1016.stadtserver.actor.BlockActorManager;
+import me.mfk1016.stadtserver.actor.blocktrigger.BlockTriggerActor;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -45,7 +47,8 @@ public class CandleStore implements InventoryHolder {
         this.centerLocation = centerLocation;
         this.storage = storage;
         recreateView();
-        actor = BlockActorManager.registerBlockTriggerType(ACTOR_TYPE_PREFIX + key, this);
+        actor = new BlockTriggerActor<>(ACTOR_TYPE_PREFIX + key, this);
+        BlockActorManager.registerBlockActor(actor);
         actor.trigger();
     }
 

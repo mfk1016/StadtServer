@@ -37,7 +37,7 @@ public class StadtServerCommand implements CommandExecutor {
                 if (toDo.equals("reload")) {
                     StadtServer.getInstance().reloadConfig();
                     CategoryManager.initialize(true);
-                    OriginManager.initialize(true);
+                    OriginManager.onPluginEnable(true);
                     player.sendMessage("Configuration reloaded.");
                     return true;
                 } else if (toDo.equals("reset")) {
@@ -46,7 +46,7 @@ public class StadtServerCommand implements CommandExecutor {
                     StadtServer.getInstance().saveResource("origins.json", true);
                     StadtServer.getInstance().reloadConfig();
                     CategoryManager.initialize(true);
-                    OriginManager.initialize(true);
+                    OriginManager.onPluginEnable(true);
                     player.sendMessage("Default configuration dumped and reloaded.");
                     return true;
                 }

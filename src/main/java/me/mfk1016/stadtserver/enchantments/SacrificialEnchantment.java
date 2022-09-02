@@ -2,7 +2,7 @@ package me.mfk1016.stadtserver.enchantments;
 
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.logic.sorting.PluginCategories;
-import me.mfk1016.stadtserver.rituals.RitualManager;
+import me.mfk1016.stadtserver.ritual.matcher.SacrificeRitual;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -138,10 +138,12 @@ public class SacrificialEnchantment extends CustomEnchantment {
         while (block.isEmpty() && block.getLocation().getBlockY() > 0) {
             block = block.getRelative(BlockFace.DOWN);
         }
-        if (RitualManager.tryRitual(sacrifice, block)) {
+        Block finalBlock = block;
+        SacrificeRitual.matchRitualType(block, sacrifice).ifPresent(ritualType -> {
+            me.mfk1016.stadtserver.ritual.RitualManager.spawnRitual(ritualType, finalBlock);
             sacrifice.remove();
             event.setCancelled(true);
-        }
+        });
     }
 
     private String properDeathMessage(Player sacrifice, Player killer) {

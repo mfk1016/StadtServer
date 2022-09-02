@@ -6,6 +6,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Axis;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -28,6 +29,10 @@ public class Functions {
             return candleMat.name().toLowerCase().replace('_', ' ');
         return "" + candleMat.name().charAt(0) +
                 candleMat.name().substring(1).toLowerCase().replace('_', ' ');
+    }
+
+    public static boolean isBlockLoaded(Block block) {
+        return block.getWorld().isChunkLoaded(block.getX() >> 4, block.getZ() >> 4);
     }
 
     public static String largeAmountString(long value) {
