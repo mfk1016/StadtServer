@@ -10,6 +10,7 @@ import me.mfk1016.stadtserver.origin.OriginManager;
 import me.mfk1016.stadtserver.spells.CustomSpell;
 import me.mfk1016.stadtserver.spells.SpellManager;
 import me.mfk1016.stadtserver.util.BossName;
+import me.mfk1016.stadtserver.util.library.BookManager;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -71,6 +72,11 @@ public class StadtServerCommand implements CommandExecutor {
         } else if (Objects.equals(section, "candle_tool")) {
             if (sender instanceof Player player) {
                 onCommandCandleTool(player);
+                return true;
+            }
+        } else if (Objects.equals(section, "test_book")) {
+            if (sender instanceof Player player) {
+                onCommandTestBook(player);
                 return true;
             }
         }
@@ -190,5 +196,9 @@ public class StadtServerCommand implements CommandExecutor {
     private void onCommandCandleTool(Player player) {
         player.getWorld().dropItem(player.getLocation(), CandleStoreUtils.getCandleTool());
         player.sendMessage("Candle tool created.");
+    }
+
+    private void onCommandTestBook(Player player) {
+        player.getInventory().addItem(BookManager.createBook("ritual:boss:sheep_witch"));
     }
 }

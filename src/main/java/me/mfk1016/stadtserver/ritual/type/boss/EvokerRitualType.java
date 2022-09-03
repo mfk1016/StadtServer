@@ -1,7 +1,6 @@
-package me.mfk1016.stadtserver.ritual.type;
+package me.mfk1016.stadtserver.ritual.type.boss;
 
 import me.mfk1016.stadtserver.ritual.ActiveRitual;
-import me.mfk1016.stadtserver.ritual.RitualManager;
 import me.mfk1016.stadtserver.ritual.RitualState;
 import me.mfk1016.stadtserver.ritual.ShapeUtils;
 import org.bukkit.Location;
@@ -126,7 +125,7 @@ public class EvokerRitualType extends BossRitualType {
         if (target != -1) {
             ItemFrame frame = FRAME_CACHE.get(activeRitual.getCenter())[target];
             if (stackEmpty(frame.getItem()) || frame.getItem().getType() != Material.DIAMOND)
-                RitualManager.stopRitual(this, activeRitual, false);
+                stopBossRitual(activeRitual, BOSS_CACHE.get(activeRitual.getCenter()), false);
             frame.setItem(null);
             frame.getWorld().playSound(frame.getLocation(), Sound.ENTITY_VILLAGER_DEATH, 4, 1);
         }

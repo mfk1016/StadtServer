@@ -135,7 +135,7 @@ public class SacrificialEnchantment extends CustomEnchantment {
         // Ritual start
         LivingEntity sacrifice = (LivingEntity) event.getEntity();
         Block block = event.getEntity().getLocation().getBlock();
-        while (block.isEmpty() && block.getLocation().getBlockY() > 0) {
+        while (block.isEmpty() && block.getLocation().getBlockY() > block.getWorld().getMinHeight()) {
             block = block.getRelative(BlockFace.DOWN);
         }
         Block finalBlock = block;

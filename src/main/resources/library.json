@@ -1,0 +1,66 @@
+[
+  {
+    "key": "ritual:boss:witch",
+    "title": "Kerzen und Wolle",
+    "author": "mfk1016",
+    "pages": [
+      [
+        "Blauster Stein ist ",
+        "in der Mitte.      ",
+        "",
+        "Vier Block gerade  ",
+        "ein Blumenhaus über",
+        "goldgelbem Block.  ",
+        "",
+        "Drei Block schräg  ",
+        "auf geschmeidigem  ",
+        "Stein vier schmale ",
+        "Herren leuchten.   "
+      ],
+      [
+        "Unter Sternenlicht ",
+        "ein wolliges Leben ",
+        "erlischt in der    ",
+        "Mitte und ruft die ",
+        "Herrin der Wässer. ",
+        "",
+        "Halte dich fern von",
+        "ihrer Flasche.     "
+      ]
+    ]
+  },
+  {
+    "key": "ritual:boss:thieves",
+    "title": "Die Diebe",
+    "author": "mfk1016",
+    "pages": [
+      [
+        "Stiehlt den blauen ",
+        "färbenden Stein aus",
+        "der Mitte.         ",
+        "",
+        "Stiehlt drei Block ",
+        "schräg das Banner  ",
+        "von Mauern aus     ",
+        "Ziegeln der Tiefe  ",
+        "auf gekauftem Block",
+        "von hohem Wert.    "
+      ],
+      [
+        "Stiehlt drei Block ",
+        "gerade zwei Block  ",
+        "quer von steinernen",
+        "Ziegeln den schlei-",
+        "fenden Stein.      ",
+        "",
+        "Stiehlt Leben von  ",
+        "Rind oder Schwein  ",
+        "in der Mitte unter ",
+        "hellstem Lichte    ",
+        "der Sonne.         ",
+        "",
+        "Haltet den Dieb!   "
+      ]
+    ]
+  }
+]

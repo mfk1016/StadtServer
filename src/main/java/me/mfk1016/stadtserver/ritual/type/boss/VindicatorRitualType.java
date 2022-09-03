@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.ritual.type;
+package me.mfk1016.stadtserver.ritual.type.boss;
 
 import me.mfk1016.stadtserver.ritual.RitualState;
 import me.mfk1016.stadtserver.ritual.ActiveRitual;
@@ -12,19 +12,17 @@ import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
 
-public class PillagerRitualType extends BossRitualType {
+public class VindicatorRitualType extends BossRitualType {
 
     private static final String SK_EMERALD = "emerald";
     private static final String SK_DEEPSLATE = "deepslate_brick_wall";
     private static final String SK_BANNER = "banner";
-    private static final String SK_STONE_1 = "stone_bricks_1";
-    private static final String SK_STONE_2 = "stone_bricks_2";
-    private static final String SK_GRIND_1 = "grindstone_1";
-    private static final String SK_GRIND_2 = "grindstone_2";
+    private static final String SK_STONE = "stone_bricks";
+    private static final String SK_GRIND = "grindstone";
 
 
-    public PillagerRitualType() {
-        super("cow_pillager", Material.LAPIS_BLOCK, EntityType.PILLAGER, 20);
+    public VindicatorRitualType() {
+        super("pig_vindicator", Material.LAPIS_BLOCK, EntityType.VINDICATOR, 20);
     }
 
     @Override
@@ -35,7 +33,7 @@ public class PillagerRitualType extends BossRitualType {
 
     @Override
     public boolean isValidSacrifice(Entity entity) {
-        return entity.getType() == EntityType.COW;
+        return entity.getType() == EntityType.PIG;
     }
 
     @Override
@@ -44,10 +42,8 @@ public class PillagerRitualType extends BossRitualType {
         shapeMap.put(SK_EMERALD, ShapeUtils.horizontalCornerBlocks(center, 3, 0));
         shapeMap.put(SK_DEEPSLATE, ShapeUtils.horizontalCornerBlocks(center, 3, 1));
         shapeMap.put(SK_BANNER, ShapeUtils.horizontalCornerBlocks(center, 3, 2));
-        shapeMap.put(SK_STONE_1, ShapeUtils.horizontalBlocks(center, 2, 0, 3));
-        shapeMap.put(SK_GRIND_1, ShapeUtils.horizontalBlocks(center, 2, 1, 3));
-        shapeMap.put(SK_STONE_2, ShapeUtils.horizontalBlocks(center, 3, 0, 2));
-        shapeMap.put(SK_GRIND_2, ShapeUtils.horizontalBlocks(center, 3, 1, 2));
+        shapeMap.put(SK_STONE, ShapeUtils.horizontalBlockOctagon(center, 2, 0, 3));
+        shapeMap.put(SK_GRIND, ShapeUtils.horizontalBlockOctagon(center, 2, 1, 3));
         return shapeMap;
     }
 
@@ -62,16 +58,10 @@ public class PillagerRitualType extends BossRitualType {
         for (Block banner : shapeMap.get(SK_BANNER))
             if (tick == 0 && !banner.getType().name().endsWith("_BANNER"))
                 return false;
-        for (Block bricks : shapeMap.get(SK_STONE_1))
+        for (Block bricks : shapeMap.get(SK_STONE))
             if (bricks.getType() != Material.STONE_BRICKS)
                 return false;
-        for (Block bricks : shapeMap.get(SK_STONE_2))
-            if (bricks.getType() != Material.STONE_BRICKS)
-                return false;
-        for (Block grindstone : shapeMap.get(SK_GRIND_1))
-            if (grindstone.getType() != Material.GRINDSTONE)
-                return false;
-        for (Block grindstone : shapeMap.get(SK_GRIND_2))
+        for (Block grindstone : shapeMap.get(SK_GRIND))
             if (grindstone.getType() != Material.GRINDSTONE)
                 return false;
         return true;

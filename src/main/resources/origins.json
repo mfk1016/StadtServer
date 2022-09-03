@@ -496,5 +496,17 @@
       "material" : "DRAGON_BREATH",
       "amount" : 4
     }
+  ],
+  "mob:witch_library" : [
+    {
+      "key" : "ritual:boss:thieves",
+      "chance" : 25,
+      "minlevel" : 1
+    },
+    {
+      "key" : "ritual:boss:witch",
+      "chance" : 25,
+      "minlevel" : 2
+    }
   ]
 }

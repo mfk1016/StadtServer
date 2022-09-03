@@ -1,11 +1,11 @@
-package me.mfk1016.stadtserver.ritual.type;
+package me.mfk1016.stadtserver.ritual.type.boss;
 
 import lombok.Getter;
 import me.mfk1016.stadtserver.StadtServer;
 import me.mfk1016.stadtserver.listener.BossMobListener;
-import me.mfk1016.stadtserver.ritual.RitualState;
 import me.mfk1016.stadtserver.ritual.ActiveRitual;
 import me.mfk1016.stadtserver.ritual.RitualManager;
+import me.mfk1016.stadtserver.ritual.RitualState;
 import me.mfk1016.stadtserver.ritual.RitualType;
 import me.mfk1016.stadtserver.ritual.matcher.SacrificeRitual;
 import me.mfk1016.stadtserver.util.BossName;
@@ -20,7 +20,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public abstract class BossRitualType extends RitualType implements SacrificeRitu
             cache.bossBar = Bukkit.getBossBar(cache.bossBarKey);
         }
         if (cache.boss == null && data.length == 2) {
-            cache.boss = (LivingEntity) ritual.getCenter().getWorld().getEntity(UUID.fromString(data[1]));
+            cache.boss = (Mob) ritual.getCenter().getWorld().getEntity(UUID.fromString(data[1]));
         }
         if (!BOSS_CACHE.containsKey(ritual.getCenter()))
             BOSS_CACHE.put(ritual.getCenter(), cache);
@@ -93,10 +93,11 @@ public abstract class BossRitualType extends RitualType implements SacrificeRitu
 
     @Override
     public void onRitualTick(ActiveRitual activeRitual) {
-        BossRitualCache cache = Objects.requireNonNull(BOSS_CACHE.get(activeRitual.getCenter()));
-
-        if (cache.bossBar == null || (activeRitual.getState() == RitualState.RUNNING && cache.boss == null)) {
+        if (activeRitual.getCenter().getType() != getFocusMaterial())
             RitualManager.stopRitual(this, activeRitual, false);
+        BossRitualCache cache = Objects.requireNonNull(BOSS_CACHE.get(activeRitual.getCenter()));
+        if (cache.bossBar == null || (activeRitual.getState() == RitualState.RUNNING && cache.boss == null)) {
+            stopBossRitual(activeRitual, cache, false);
 
         } else if (activeRitual.getTick() < spawnTick) {
             cache.bossBar.setProgress((double) (activeRitual.getTick() + 1) / (double) spawnTick);
@@ -104,7 +105,7 @@ public abstract class BossRitualType extends RitualType implements SacrificeRitu
         } else if (activeRitual.getTick() == spawnTick) {
             cache.bossBar.setProgress(1D);
             Location bossSpawnLocation = activeRitual.getCenter().getLocation().add(0, 1, 0);
-            cache.boss = (LivingEntity) Objects.requireNonNull(bossSpawnLocation.getWorld()).spawnEntity(bossSpawnLocation, bossType);
+            cache.boss = (Mob) Objects.requireNonNull(bossSpawnLocation.getWorld()).spawnEntity(bossSpawnLocation, bossType);
             BossMobListener.createBoss(cache.boss, 4, cache.bossBar.getTitle());
             bossSpawnLocation.getWorld().strikeLightningEffect(bossSpawnLocation);
             activeRitual.setState(RitualState.RUNNING);
@@ -115,17 +116,29 @@ public abstract class BossRitualType extends RitualType implements SacrificeRitu
             AttributeInstance maxHealth = Objects.requireNonNull(cache.boss.getAttribute(Attribute.GENERIC_MAX_HEALTH));
             cache.bossBar.setProgress(cache.boss.getHealth() / maxHealth.getBaseValue());
             for (Player player : cache.bossBar.getPlayers()) {
-                if (!player.isOnline() || player.isDead() || player.getLocation().distance(cache.boss.getLocation()) > 64)
+                if (!player.isOnline())
+                    continue;
+                if (player.isDead() || player.getLocation().distance(cache.boss.getLocation()) > 64)
                     cache.bossBar.removePlayer(player);
             }
             if (cache.boss.isDead() || cache.bossBar.getPlayers().isEmpty())
-                RitualManager.stopRitual(this, activeRitual, cache.boss.isDead());
+                stopBossRitual(activeRitual, cache, cache.boss.isDead());
         }
+    }
+
+    protected void stopBossRitual(ActiveRitual ritual, BossRitualCache cache,  boolean success) {
+        if (success)
+            RitualManager.stopRitual(this, ritual, true);
+        if (cache.deathTimer == 10)
+            RitualManager.stopRitual(this, ritual, false);
+        else
+            cache.deathTimer = cache.deathTimer + 1;
     }
 
     protected static class BossRitualCache {
         public NamespacedKey bossBarKey = null;
         public BossBar bossBar = null;
-        public LivingEntity boss = null;
+        public Mob boss = null;
+        public int deathTimer = 0;
     }
 }

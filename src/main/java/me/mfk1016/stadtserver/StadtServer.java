@@ -9,9 +9,10 @@ import me.mfk1016.stadtserver.listener.*;
 import me.mfk1016.stadtserver.logic.sorting.CategoryManager;
 import me.mfk1016.stadtserver.origin.OriginManager;
 import me.mfk1016.stadtserver.ritual.RitualManager;
-import me.mfk1016.stadtserver.ritual.type.*;
+import me.mfk1016.stadtserver.ritual.type.boss.*;
 import me.mfk1016.stadtserver.spells.SpellManager;
 import me.mfk1016.stadtserver.util.Keys;
+import me.mfk1016.stadtserver.util.library.BookManager;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,6 +44,7 @@ public class StadtServer extends JavaPlugin {
         BlockActorManager.loadRegisteredBlocks();
         RitualManager.onPluginEnable();
         CandleStoreManager.onPluginEnable();
+        BookManager.onPluginEnable();
 
         LOGGER.info(getDescription().getName() + ": load logic...");
         EnchantmentManager.onPluginEnable();

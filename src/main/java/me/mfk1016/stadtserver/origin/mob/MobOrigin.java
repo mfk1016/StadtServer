@@ -39,6 +39,10 @@ public abstract class MobOrigin {
         for (JsonElement jsonElement : loot) {
             ORIGINS.add(BossMobItemOrigin.fromJson(jsonElement.getAsJsonObject()));
         }
+        JsonArray book = root.getAsJsonArray("mob:witch_library");
+        for (JsonElement jsonElement : book) {
+            ORIGINS.add(BossWitchLibraryOrigin.fromJson(jsonElement.getAsJsonObject()));
+        }
 
         // Candle Tool: Witch Boss Level 4 (ritual), 10% chance
         BossMobItemOrigin candleToolOrigin = new BossMobItemOrigin(

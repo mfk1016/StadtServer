@@ -1,4 +1,4 @@
-package me.mfk1016.stadtserver.ritual.type;
+package me.mfk1016.stadtserver.ritual.type.boss;
 
 import me.mfk1016.stadtserver.ritual.RitualState;
 import me.mfk1016.stadtserver.ritual.ActiveRitual;

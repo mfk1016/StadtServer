@@ -39,7 +39,7 @@ dependencies {
 }
 
 group = "me.mfk1016"
-version = "1.13.4"
+version = "1.13.5"
 description = "StadtServer"
 
 java {
